@@ -96,7 +96,7 @@ Berisi file html yang memuat UI dari laman dashboard admin IPFEST 2027. Terdiri 
 #### - dist
 Berisi file bundle JavaScript. `bundle.js` adalah hasil configurasi oleh `webpack.config.babel.js` dari file-file yang berasal dari folder `src`. Tujuannya adalah untuk minifikasi dan tree-shaking
 #### - events
-Berisi file html yang memuat UI dari event IPFEST 2026
+Berisi file html yang memuat UI dari event IPFEST 2027
 #### - src
 Berisi file JavaScript yang akan memuat logika backend yang diintegrasikan dengan Firebase. `index.js` akan menjadi entry point dari file-file lain (seperti `auth.js`, dll.) dan akan dikonfigurasi oleh webpack menjadi `bundle.js` di folder `dist`
 #### - static
