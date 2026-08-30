@@ -1,7 +1,7 @@
 # IPFEST 2027
 
 ## Introduction
-Ini adalah repository untuk pengembangan website IPFEST 2026. Laman website terdiri dari home/landing page, login page, registration page, events page, dan competitions page.
+Ini adalah repository untuk pengembangan website IPFEST 2027. Laman website terdiri dari home/landing page, login page, registration page, events page, dan competitions page.
 
 ## Directory Structure
 Struktur folder pengembangan saat ini:
