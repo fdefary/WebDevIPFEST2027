@@ -1,4 +1,4 @@
-# IPFEST 2026
+# IPFEST 2027
 
 ## Introduction
 Ini adalah repository untuk pengembangan website IPFEST 2026. Laman website terdiri dari home/landing page, login page, registration page, events page, dan competitions page.
@@ -90,9 +90,9 @@ Struktur folder pengembangan saat ini:
 ### Public
 Ini adalah folder utama. Pengembangan hampir seluruhnya akan dilakukan disini.
 #### - competitions
-Berisi file html yang memuat UI dari kompetisi IPFEST 2026
+Berisi file html yang memuat UI dari kompetisi IPFEST 2027
 #### - dashboard
-Berisi file html yang memuat UI dari laman dashboard admin IPFEST 2026. Terdiri atas laman admin untuk treasury, competition manager, delegates relation, dan delegates
+Berisi file html yang memuat UI dari laman dashboard admin IPFEST 2027. Terdiri atas laman admin untuk treasury, competition manager, delegates relation, dan delegates
 #### - dist
 Berisi file bundle JavaScript. `bundle.js` adalah hasil configurasi oleh `webpack.config.babel.js` dari file-file yang berasal dari folder `src`. Tujuannya adalah untuk minifikasi dan tree-shaking
 #### - events
