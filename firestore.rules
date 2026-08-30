@@ -1,0 +1,26 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // This rule allows anyone with your Firestore database reference to view, edit,
+    // and delete all data in your Firestore database. It is useful for getting
+    // started, but it is configured to expire after 30 days because it
+    // leaves your app open to attackers. At that time, all client
+    // requests to your Firestore database will be denied.
+    //
+    // Make sure to write security rules for your app before that time, or else
+    // all client requests to your Firestore database will be denied until you Update
+    // your rules
+    match /Team/{document=**} {
+      allow write: if true;
+      allow read: if request.auth != null && request.auth.uid in ["8RATH0TSrXNPZgHfLg6tALhlh933", "kFHGRVeBcGVa41JyHWiGqfK8Gdr2", "RWhQeiJMw4NQ5lq0gwNb68AZrnf2", "FLkRL8x7ljNqPPfAwpfu7FxYT8z1", "FyPOX3W8xXaOdxxHtSQXjf4Yf4E2", "1VDPRzEZW8OlFGizcQRGs3NJdmM2", "tfRjtv1VxgMfsGx0ik3PjAx0wTA3", "9dyh9cWOVAYGtRDl3XyvFsG2RMk1", "6xWoxoPFf7OWHaiiUihPUG4Xkjl1", "MfbiHNuVIydGAZUNQR5NCK13J9N2"]
+    }
+    match /Team/{userId} {
+    	allow read, write: if request.auth != null && request.auth.uid == userId
+    }
+    match /Payment_Summary/{document=**} {
+    	allow read, write: if request.auth != null && request.auth.uid in ["8RATH0TSrXNPZgHfLg6tALhlh933", "kFHGRVeBcGVa41JyHWiGqfK8Gdr2", "RWhQeiJMw4NQ5lq0gwNb68AZrnf2", "FLkRL8x7ljNqPPfAwpfu7FxYT8z1", "FyPOX3W8xXaOdxxHtSQXjf4Yf4E2", "1VDPRzEZW8OlFGizcQRGs3NJdmM2", "tfRjtv1VxgMfsGx0ik3PjAx0wTA3", "9dyh9cWOVAYGtRDl3XyvFsG2RMk1", "6xWoxoPFf7OWHaiiUihPUG4Xkjl1", "MfbiHNuVIydGAZUNQR5NCK13J9N2"] 
+    }
+  }
+}

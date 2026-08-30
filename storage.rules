@@ -1,0 +1,55 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Case files per competition (restricted to authenticated users)
+    match /Case/{competition}/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Preliminary submissions - authenticated users only
+    match /preliminary_submissions/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Payments (adjust if you want to restrict)
+    match /payments/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Final submissions - allow users to write only into their own folder
+    match /final_submissions/{userId}/{allPaths=**} {
+      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null;
+    }
+
+    // Also allow older/alternate path used by other code paths
+    match /finalreg_submissions/{userId}/{allPaths=**} {
+      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null;
+    }
+
+    // Team folder - authenticated users (consider stricter admin rules if needed)
+    match /team/{allPaths=**} {
+      allow read, write: if request.auth != null;
+    }
+
+    // Merchandise folder - public get/create allowed, but listing/deleting restricted to official emails
+    match /Merch/{allPaths=**} {
+      allow get, create: if true;
+      allow read: if true;
+      allow list, delete: if request.auth != null && request.auth.token.email in [
+        "officialdelegates.ipfest2026@gmail.com",
+        "treasury.ipfest2026@gmail.com",
+        "entrepreneurship.ipfest2026@gmail.com",
+        "event@ipfest2026.com"
+      ];
+    }
+
+    // Default: deny everything else
+    match /{allPaths=**} {
+      allow read: if false;
+      allow write: if false;
+    }
+  }
+}

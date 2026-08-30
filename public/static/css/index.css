@@ -1,0 +1,9 @@
+@font-face{
+	font-family: 'Solomon Sans';
+	src: url('../fonts/Solomon\ Sans\ Normal.otf');
+}
+
+#logo-name{
+	font-family: 'Solomon Sans';
+	color: black;
+}

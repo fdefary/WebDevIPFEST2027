@@ -1,0 +1,154 @@
+@font-face {
+	font-family: "Plus Jakarta Sans SemiBold";
+	src: url("../fonts/PlusJakartaSans-SemiBold.ttf") format("truetype");
+	font-weight: 600;
+	font-style: normal;
+	font-display: swap;
+}
+
+@font-face {
+	font-family: 'Solomon Sans';
+	src: url("../fonts/Solomon Sans Normal.otf");
+}
+
+/* Update navbar styling */
+.navbar {
+    background: #FFFFFF !important;
+    box-shadow: 0 20px 60px rgba(8, 5, 41, 0.25);
+    z-index: 10;
+    position: relative;
+    min-height: var(--dashboard-nav-height);
+    padding-top: var(--dashboard-nav-padding) !important;
+    padding-bottom: var(--dashboard-nav-padding) !important;
+}
+
+.navbar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #FFFFFF;
+    z-index: -1;
+}
+
+.navbar .navbar-brand img {
+    display: block;
+}
+
+.navbar .navbar-nav .nav-link {
+    color: var(--dashboard-dark) !important;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-radius: 999px;
+    transition: background-color .3s ease, color .3s ease;
+}
+
+.navbar .navbar-nav .nav-link.active,
+.navbar .navbar-nav .nav-link:focus,
+.navbar .navbar-nav .nav-link:hover {
+    color: #FFFFFF !important;
+    background-color: var(--bs-primary);
+}
+
+p, label, a{
+	font-family: "Plus Jakarta Sans SemiBold", "Plus Jakarta Sans", "Rubik";
+	color: white
+}
+button {
+	font-size: 15px;
+	/* letter-spacing: 2px; */
+	background-color: white;
+	/* text-transform: uppercase; */
+	display: inline-block;
+	text-align: center;
+	font-weight: bold;
+	padding: 0.3em 0.8em;
+	border: 15 px solid #671c84;
+	border-radius: 5px;
+	position: relative;
+	/* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.1); */
+	color:#671c84;
+	text-decoration: none;
+	transition: 0.3s ease all;
+	z-index: 1;
+}
+
+button:before {
+	transition: 0.5s all ease;
+	position: absolute;
+	top: 0;
+	left: 50%;
+	right: 50%;
+	bottom: 0;
+	opacity: 0;
+	content: '';
+	background-color: #671c84;
+	z-index: -1;
+}
+
+button:hover, button:focus {
+	color: white;
+}
+
+button:hover:before, button:focus:before {
+	transition: 0.5s all ease;
+	left: 0;
+	right: 0;
+	opacity: 1;
+}
+
+body {
+	--bs-primary: #4C41A9;
+	--bs-secondary: #160840;
+	--bs-dark: #160840;
+	--bs-light: #FFFFFF;
+	--bs-info: #4C41A9;
+	--bs-danger: #4C41A9;
+	--bs-warning: #4C41A9;
+	--dashboard-surface: #FFFFFF;
+	--dashboard-dark: #160840;
+	--dashboard-gradient-start: #160840;
+	--dashboard-gradient-stop: #4C41A9;
+	--dashboard-nav-height: 96px;
+	--dashboard-nav-padding: 1.25rem;
+	font-family: "Plus Jakarta Sans SemiBold", "Plus Jakarta Sans", "Rubik", sans-serif;
+	font-weight: 600;
+	background: linear-gradient(180deg, #160840 43%, #4C41A9 100%);
+	color: white;
+	min-height: 100vh;
+	position: relative;
+	overflow-x: hidden;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("../images/dotted-halftone.svg");
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 0;
+}
+
+button:active {
+	transform: scale(0.9);
+}
+
+#email{
+	border-radius: 0;
+}
+#email:focus{
+	outline: none;
+	border-color: none;
+	box-shadow: none; 
+}
+#password{
+	border-radius: 0;
+}
+#password:focus{
+	outline: none;
+	border-color: none;
+	box-shadow: none;
+}

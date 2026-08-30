@@ -1,0 +1,1242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+   <meta charset="utf-8">
+	<title>Home - IPFEST 2026</title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<meta content="" name="keywords">
+	<link rel="preload" href="static/images/ipfest_2026_logo.svg" as="image">
+	<link rel="preload" href="static/images/ipfest_2026_logo.svg" as="image">
+	<link rel="icon" href="static/images/ipfest_2026_logo.svg">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Rubik:wght@400;500&display=swap" rel="stylesheet"> 
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link href="static/lib/animate/animate.min.css" rel="stylesheet">
+	<link href="static/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+	<link href="static/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+	<link href="static/css/bootstrap.min.css" rel="stylesheet">	
+	<link href="static/css/style.css" rel="stylesheet">
+	<link href="static/css/Homepage.css" rel="stylesheet">
+</head>
+<body>
+	<!-- Spinner Start -->
+	<div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+		<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+				<span class="sr-only">Loading...</span>
+		</div>
+	</div>
+	<!-- Spinner End -->
+
+	<!-- Navbar & Hero Start -->
+	<div class="container-fluid header position-relative overflow-hidden p-0">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-light px-4 px-lg-5 py-3 py-lg-0">
+			<a href="index.html" class="navbar-brand p-0 d-flex align-items-center">
+				<img src="static/images/ipfest_2026_logo.svg" alt="Logo">
+				<img src="static/images/ipfest_2026_text.svg" alt="Logo">
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+				<span class="fa fa-bars"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarCollapse">
+				<div class="navbar-nav ms-auto py-0">
+					<a href="index.html" class="nav-item nav-link">Home</a>
+					<div class="dropdown">
+						<a href="#" class="nav-item nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Competitions</a>
+						<ul class="dropdown-menu">
+							<li><a href="competitions/business-case.html" class="dropdown-item">Business Case</a></li>
+							<li><a href="competitions/geothermal-development-plan.html" class="dropdown-item">Geothermal Development Plan</a></li>
+							<li><a href="competitions/mud-innovation.html" class="dropdown-item">Mud Innovation</a></li>
+							<li><a href="competitions/oil-rig-design.html" class="dropdown-item">Oil Rig Design</a></li>
+							<li><a href="competitions/paper-and-poster.html" class="dropdown-item">Paper and Poster</a></li>
+							<li><a href="competitions/plan-of-development.html" class="dropdown-item">Plan of Development</a></li>
+							<li><a href="competitions/smart-competition.html" class="dropdown-item">Smart Competition</a></li>
+							<li><a href="competitions/well-design.html" class="dropdown-item">Well Design</a></li>
+							<li><a href="competitions/hackathon-competition.html" class="dropdown-item">Hackathon</a></li>
+						</ul>
+					</div>
+					<div class="dropdown">
+						<a href="#" class="nav-item nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Events</a>
+						<ul class="dropdown-menu">
+							<li><a href="events/discover-bandung.html" class="dropdown-item">Tour de Bandung</a></li>
+							<li><a href="events/gala-dinner.html" class="dropdown-item">Gala Dinner</a></li>
+							<li><a href="events/ipconvex.html" class="dropdown-item">IPCONVEX</a></li>
+							<li><a href="events/ipexpo.html" class="dropdown-item">IPEXPO</a></li>
+							<li><a href="events/iptraining.html" class="dropdown-item">IPTRAINING</a></li>
+							<li><a href="events/petrocare.html" class="dropdown-item">PetroCare</a></li>
+						</ul>
+					</div>
+					<a href="merchandise.html" 
+					class="nav-item nav-link"
+					onclick="
+						var targetDate = new Date('2026-11-03');
+						var currentDate = new Date();
+						
+						if (currentDate < targetDate) {
+						event.preventDefault(); /* Cegah pindah halaman */
+						alert('Merchandise is not available yet'); /* Tampilkan pesan */
+						}
+						/* Jika sudah tanggal 15, kode ini dilewati dan link jalan normal */
+					">
+					Merchandise
+					</a>
+				</div>
+				<div class="" id="btn-login-status">
+					<a href="login.html" class="btn btn-light border border-primary rounded-pill text-primary py-2 px-4 me-4">Log In</a>
+				</div>
+			</div>
+		</nav>
+
+		<!-- Hero Header Start -->
+		<!-- <section class="container-xl">
+			<div class="hero-header overflow-hidden px-5">
+				<div class="rotate-img">
+					<img src="static/images/sty-1.png" class="img-fluid w-100" alt="">
+					<div class="rotate-sty-2"></div>
+				</div>
+				<div class="row gy-5 align-items-center">
+					<div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.1s">
+
+						<h1 class="display-4 mb-4 wow fadeInUp lead" data-wow-delay="0.3s" style="color: #ffffff;">#TransformTo<span style="color: #E768A8;">Transcend</span></h1>
+
+						<p class="fs-5 mb-4 wow fadeInUp" data-wow-delay="0.5s" style="color: #E768A8;">
+							IPFEST 2026 as the global transformative nexus where academic insight, industry expertise, and learner ingenuity converge to shape actionable pathways and unlock scalable solutions through innovations for future energy challenges.
+						</p>
+						<div class="row">
+							<a href="https://bit.ly/InvitationLetterIPFEST2026" class="col-md-6 col-12 btn btn-outline-light border border-light rounded-pill my-2 py-2 px-4 wow fadeInUp" data-wow-delay="0.7s" style="border-radius: 0; font-weight: 500;" target="_blank">Download Invitation Letter</a>    
+						</div>
+					</div>
+					<div class="col-lg-6 wow fadeInRight ps-5" data-wow-delay="0.2s">
+						<img src="static/images/ipfest_2026_logo.svg" class="img-fluid ms-5 w-100 h-75" alt="">
+					</div>
+				</div>
+			</div>
+		</section> -->
+		<section class="container-xl">
+			<div class="hero-header overflow-hidden px-3 px-lg-5"> 
+				<div class="rotate-img d-none d-lg-block"> 
+					<img src="static/images/sty-1.png" class="img-fluid w-100" alt="">
+					<div class="rotate-sty-2"></div>
+				</div>
+				<ul class="circles">
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+					<li></li>
+				</ul>
+
+				<div class="row gy-5 align-items-center">
+					<div class="col-lg-6 text-center text-lg-start wow fadeInLeft" data-wow-delay="0.1s">
+						
+						<h1 class="display-4 mb-4 wow fadeInUp lead" data-wow-delay="0.3s" style="color: #ffffff; font-weight: bold;">
+							#TransformTo<span style="color: #E768A8;">Transcend</span>
+						</h1>
+
+						<p class="fs-5 mb-4 wow fadeInUp text-white" data-wow-delay="0.5s" id="hero-paragraph">
+							IPFEST 2026 as the global transformative nexus where academic insight, industry expertise, and learner ingenuity converge to shape actionable pathways and unlock scalable solutions through innovations for future energy challenges.
+						</p>
+
+						<div class="d-flex justify-content-center justify-content-lg-start wow fadeInUp" data-wow-delay="0.7s">
+							<a href="https://bit.ly/InvitationLetterIPFEST2026" class="btn btn-outline-light border border-light rounded-pill py-2 px-4" style="border-radius: 0; font-weight: 500;" target="_blank">
+								Download Invitation Letter
+							</a>    
+						</div>
+					</div>
+
+					<div class="col-lg-6 text-center wow fadeInRight" data-wow-delay="0.2s">
+						<img src="static/images/ipfest_2026_logo.svg" class="img-fluid w-50 w-lg-100" alt="IPFest Logo">
+					</div>
+				</div>
+			</div>
+		</section>
+		<!-- Hero Header End -->
+		<!-- Bottom Hero Images Start -->
+
+		<!-- Bottom Hero Images End -->
+	</div>
+	<!-- Navbar & Hero End -->
+
+	<!-- About Start -->
+<div class="container-fluid overflow-hidden py-5" style="margin-top: 6rem;">
+    <div class="container py-5">
+        <div class="row g-5">
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.1s">
+                <div class="RotateMoveLeft">
+                    <img src="static/images/oi.png" class="img-fluid w-100" alt="">
+                </div>
+            </div>
+            <div class="col-lg-6 wow fadeInUp" data-wow-delay="0.3s">
+                <div class="text-background-box"> <h1 class="display-5 mb-4">About <br><span style="color: #4C41A9">IPFEST 2026</span></h1> <p class="mb-4 fs-5">
+                        Integrated Petroleum Festival 2026 is a platform to accommodate development in technical and non-technical skills in petroleum engineering and initiate innovation in petroleum industry through its competition to maintain the sustainability of petroleum industry in facing future energy issues.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+	<!-- About End -->
+	<section class="container-xl mb-5">
+		<div class="col-12 mt-5 mb-5">	
+			<div class="d-flex flex-column align-items-center justify-content-center gap-3">
+				<div class="organized-title wow fadeInDown">
+					Organized By
+				</div>
+				<div class="logo-capsule wow fadeInUp" data-wow-delay="0.2s">
+					<img src="static/images/spe_itb.png" alt="SPE ITB">
+					<img src="static/images/patra.png" alt="PATRA ITB">
+					<img src="static/images/iatmi_itb.png" alt="IATMI ITB">
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- <section class="container-xl py-5">
+		<div class="col-lg-10 col-12 text-center mx-auto">
+			<p class="fs-5 wow fadeInDown" style="margin-bottom: 0;">Supported By:</p>
+			<div class="row wow fadeInUp" style="margin-top: 0;">
+				<div class="col-12 mx-auto g-5">
+					<img src="static/images/skk-migas.png" alt="SKK Migas" class="" style="width: 30%;">
+					<img src="static/images/esdm.png" alt="KEDSM" class="" style="width: 30%;">
+					<img src="static/images/ipa.png" alt="IPA" class="" style="width: 30%;">
+					<img src="static/images/spe-java.png" alt="SPE Java" class="" style="width: 30%;">
+					<img src="static/images/iatmi.png" alt="IATMI" class="" style="width: 30%;">
+				</div>
+			</div>
+		</div>
+	</section> -->
+	<section class="container-xl py-5">
+		<div class="col-12 mt-5 mb-5 text-center">
+			
+			<div class="organized-title wow fadeInDown">
+				Sponsored By
+			</div>
+
+			<div class="sponsor-box wow fadeInUp" data-wow-delay="0.2s">
+				
+				<div class="row justify-content-center align-items-center mb-4">
+					<div class="col-md-4 col-8">
+						<img src="static/images/sponsor/6. Benvors (Gold).png" 
+							alt="Benvors" 
+							class="img-fluid sponsor-gold"
+							style="cursor: pointer;"
+							data-bs-toggle="modal" 
+							data-bs-target="#sponsorModal"
+							data-id="benvors">
+					</div> 
+				</div>
+
+				<div class="row justify-content-center align-items-center g-4 mb-4">
+					
+					<div class="col-lg-4 col-6">
+						<img src="static/images/sponsor/1. EMP (Bronze).png" 
+							alt="EMP" 
+							class="img-fluid sponsor-bronze"
+							style="cursor: pointer;"
+							data-bs-toggle="modal" 
+							data-bs-target="#sponsorModal"
+							data-id="emp">
+					</div>
+					
+					<div class="col-lg-4 col-6">
+						<img src="static/images/sponsor/3. Geodipa (Bronze).png" 
+							alt="Geodipa" 
+							class="img-fluid sponsor-bronze"
+							style="cursor: pointer;"
+							data-bs-toggle="modal" 
+							data-bs-target="#sponsorModal"
+							data-id="geodipa">
+					</div>
+					
+					<div class="col-lg-4 col-6">
+						<img src="static/images/sponsor/5. PYC (Bronze).png" 
+							alt="PYC" 
+							class="img-fluid sponsor-bronze"
+							style="cursor: pointer;"
+							data-bs-toggle="modal" 
+							data-bs-target="#sponsorModal"
+							data-id="pyc">
+					</div>
+
+					<div class="col-lg-4 col-6">
+						<img src="static/images/sponsor/4. HCML (Bronze).png" 
+							alt="HCML" 
+							class="img-fluid sponsor-bronze"
+							style="cursor: pointer;"
+							data-bs-toggle="modal" 
+							data-bs-target="#sponsorModal"
+							data-id="hcml">
+					</div>
+					
+					<div class="col-lg-4 col-6">
+						<img src="static/images/sponsor/10. Pertamina EP (Bronze).png" 
+							alt="Pertamina EP" 
+							class="img-fluid sponsor-bronze"
+							style="cursor: pointer;"
+							data-bs-toggle="modal" 
+							data-bs-target="#sponsorModal"
+							data-id="pertamina_ep">
+					</div>
+					
+					<div class="col-lg-4 col-6">
+						<img src="static/images/sponsor/9. Harbour Energy (Bronze).png" 
+							alt="Harbour" 
+							class="img-fluid sponsor-bronze"
+							style="cursor: pointer;"
+							data-bs-toggle="modal" 
+							data-bs-target="#sponsorModal"
+							data-id="harbour">
+					</div>
+
+				</div>
+
+				<div class="row justify-content-center align-items-center">
+					<div class="col-md-6 col-10"> 
+						<img src="static/images/sponsor/7. ExxonMobil (Bronze).png" 
+							alt="ExxonMobil" 
+							class="img-fluid sponsor-exxon"
+							style="cursor: pointer;"
+							data-bs-toggle="modal" 
+							data-bs-target="#sponsorModal"
+							data-id="exxon">
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</section> 
+
+	<!-- Service Start -->
+	<div class="container-fluid service py-5">
+		<div class="container py-5">
+				<div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 900px;">
+					<h4 class="mb-1" style="color: #FF577F;">Our Competitions</h4>
+					<h1 class="display-5 mb-4" style="color: #FFFFFF;">Discover Exciting <span style="color: #FF577F;">Challenges</span></h1>
+					<p class="mb-0" style="color: #FFFFFF;">
+						Unlock your potential and take on new challenges with our diverse range of competitions. Dive into exciting opportunities designed to inspire, test your skills, and pave the way for your future success!
+					</p>
+				</div>
+				<div class="row g-4 justify-content-center">
+					<div class="col-md-6 col-lg-4 wow fadeInUp text-center" data-wow-delay="0.1s">
+						<img src="static/images/Icon/Competition/bc.png" alt="" class="w-75 mb-4">
+						<h4 class="mb-4 fs-5" style="color: #FFFFFF;">Business Case Competition</h4>
+						<a href="competitions/business-case.html" class="btn btn-light rounded-pill text-primary py-2 px-4">Learn More</a>
+					</div>
+
+					<div class="col-md-6 col-lg-4 wow fadeInUp text-center" data-wow-delay="0.3s">
+						<img src="static/images/Icon/Competition/geothermal.png" alt="" class="w-75 mb-4">
+						<h4 class="mb-4 fs-5" style="color: #FFFFFF;">Geothermal Development Plan Competition</h4>
+						<a href="competitions/geothermal-development-plan.html" class="btn btn-light rounded-pill text-primary py-2 px-4">Learn More</a>
+					</div>
+
+					<div class="col-md-6 col-lg-4 wow fadeInUp text-center" data-wow-delay="0.5s">
+						<img src="static/images/Icon/Competition/mud.png" alt="" class="w-75 mb-4">
+						<h4 class="mb-4 fs-5" style="color: #FFFFFF;">Mud Innovation Competition</h4>
+						<a href="competitions/mud-innovation.html" class="btn btn-light rounded-pill text-primary py-2 px-4">Learn More</a>
+					</div>
+
+					<div class="col-md-6 col-lg-4 wow fadeInUp text-center" data-wow-delay="0.7s">
+						<img src="static/images/Icon/Competition/ordc.png" alt="" class="w-75 mb-4">
+						<h4 class="mb-4 fs-5" style="color: #FFFFFF;">Oil Rig Design Competition</h4>
+						<a href="competitions/oil-rig-design.html" class="btn btn-light rounded-pill text-primary py-2 px-4">Learn More</a>
+					</div>
+
+					<div class="col-md-6 col-lg-4 wow fadeInUp text-center" data-wow-delay="0.1s">
+						<img src="static/images/Icon/Competition/ppc.png" alt="" class="w-75 mb-4">
+						<h4 class="mb-4 fs-5" style="color: #FFFFFF;">Paper and Poster Competition</h4>
+						<a href="competitions/paper-and-poster.html" class="btn btn-light rounded-pill text-primary py-2 px-4">Read More</a>
+					</div>
+
+					<div class="col-md-6 col-lg-4 wow fadeInUp text-center" data-wow-delay="0.3s">
+						<img src="static/images/Icon/Competition/pod.png" alt="" class="w-75 mb-4">
+						<h4 class="mb-4 fs-5" style="color: #FFFFFF;">Plan of Development Competition</h4>
+						<a href="competitions/plan-of-development.html" class="btn btn-light rounded-pill text-primary py-2 px-4">Learn More</a>
+					</div>
+
+					<div class="col-md-6 col-lg-4 wow fadeInUp text-center" data-wow-delay="0.5s">
+						<img src="static/images/Icon/Competition/sc.png" alt="" class="w-75 mb-4">
+						<h4 class="mb-4 fs-4" style="color: #FFFFFF;">Smart Competition</h4>
+						<a href="competitions/smart-competition.html" class="btn btn-light rounded-pill text-primary py-2 px-4">Learn More</a>
+					</div>
+
+					<div class="col-md-6 col-lg-4 wow fadeInUp text-center" data-wow-delay="0.7s">
+						<img src="static/images/Icon/Competition/well.png" alt="" class="w-75 mb-4">
+						<h4 class="mb-4 fs-5" style="color: #FFFFFF;">Well Design Competition</h4>
+						<a href="competitions/well-design.html" class="btn btn-light rounded-pill text-primary py-2 px-4">Learn More</a>
+					</div>
+
+					<div class="col-md-6 col-lg-4 wow fadeInUp text-center" data-wow-delay="0.7s">
+						<img src="static/images/Icon/Competition/Hackathon v3.png" alt="" class="w-75 mb-4">
+						<h4 class="mb-4 fs-5" style="color: #FFFFFF;">Hackathon</h4>
+						<a href="competitions/hackathon-competition.html" class="btn btn-light rounded-pill text-primary py-2 px-4">Learn More</a>
+					</div>
+				</div>
+		</div>
+	</div>
+	<!-- Service End -->
+
+	<!-- Feature Start -->
+	<div class="container-fluid feature overflow-hidden py-5">
+         <div class="container py-5">
+			<div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 900px;">
+				<h4 style="color: #FF577F;">Our Events</h4>
+				<h1 class="display-5 mb-4" style="color: #FFFFFF;">Ignite Your Enthusiasm Through Engaging <span style="color: #FF577F;">Events</span></h1>
+				<p class="mb-0" style="color: #FFFFFF;">
+					Join us on a series of dynamic events designed to inspire, connect, and empower you. Don’t miss the chance to engage with leaders, learn new skills, and expand your knowledges!
+				</p>
+			</div>>
+		</div>
+         <!--<div class="row g-4 justify-content-center text-center mb-5">
+            <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.1s">
+               <div class="text-center p-4">
+                     <div class="d-inline-block rounded p-4 mb-4"><img src="static/images/Icon/event/ipexpo.png" alt="" class="w-75"></div>
+                     <div class="feature-content">
+                        <a href="events/ipexpo.html" class="h4">IPEXPO</a>
+                        <p class="mt-4 mb-0">
+                           Premier exhibition for students and the public, focused on the energy, oil, and gas industries
+                        </p>
+                     </div>
+               </div>
+            </div>
+            <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.3s">
+               <div class="text-center p-4">
+                     <div class="d-inline-block rounded p-4 mb-4"><img src="static/images/Icon/event/softrain.png" alt="" class="w-75"></div>
+                     <div class="feature-content">
+                        <a href="events/iptraining.html" class="h4">IPTRAINING</a>
+                        <p class="mt-4 mb-0">
+                           Platform where people can elevate their skills and gain more knowledge
+                        </p>
+                     </div>
+               </div>
+            </div>
+            <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.5s">
+               <div class="text-center rounded p-4">
+                     <div class="d-inline-block rounded p-4 mb-4"><img src="static/images/Icon/event/aid.png" alt="" class="w-75"></div>
+                     <div class="feature-content">
+                        <a href="events/petrocare.html" class="h4">PetroCare</a>
+                        <p class="mt-4 mb-0">
+									Focuses on making a lasting impact on local communities.
+                        </p>
+                     </div>
+               </div>
+            </div>
+            <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.7s">
+               <div class="text-center rounded p-4">
+                     <div class="d-inline-block rounded p-4 mb-4"><img src="static/images/Icon/event/ipconvex.png" alt="" class="w-75"></div>
+                     <div class="feature-content">
+                        <a href="events/ipconvex.html" class="h4">IPCONVEX</a>
+                        <p class="mt-4 mb-0">
+                           Gain insights and knowledge from professionals on energy-related topics
+                        </p>
+                     </div>
+               </div>
+            </div>
+            <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.7s">
+               <div class="text-center rounded p-4">
+                     <div class="d-inline-block rounded p-4 mb-4"><img src="static/images/Icon/event/muter2bdung.png" alt="" class="w-75"></div>
+                     <div class="feature-content">
+                        <a href="events/discover-bandung.html" class="h4">Discover Bandung</a>
+                        <p class="mt-4 mb-0">
+                           Exploring scenic landscapes, rich culture, and iconic landmarks of Bandung
+                        </p>
+                     </div>
+               </div>
+            </div>
+            <div class="col-md-6 col-lg-4 col-xl-3 wow fadeInUp" data-wow-delay="0.7s">
+               <div class="text-center rounded p-4">
+                     <div class="d-inline-block rounded p-4 mb-4"><img src="static/images/Icon/event/galdin.png" alt="" class="w-75"></div>
+                     <div class="feature-content">
+                        <a href="events/gala-dinner.html" class="h4">Gala Dinner</a>
+                        <p class="mt-4 mb-0">
+									Celebrate and honor the outstanding contributions of all participants with unforgettable moments
+                        </p>
+                     </div>
+               </div>
+            </div>
+         </div>-->
+         <!-- First Feature -->
+         <div class="row g-5 pt-5" style="margin-top: 6rem;">
+			<div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.1s">
+				<div class="feature-img RotateMoveLeft h-100" style="object-fit: cover;">
+					<img src="static/images/iptraining_home.jpg" class="img-fluid w-100" alt="">
+				</div>
+			</div>
+			<div class="col-lg-6 wow fadeInRight" data-wow-delay="0.1s">
+				
+				<div class="text-background-box"> 
+					<h4 class="text-primary">IPTRAINING</h4>
+					<h1 class="display-5 mb-4">Elevate Your <span style="color:#bc2300">Skills</span></h1>
+					<p class="mb-4 fs-5">
+						Our exclusive events designed to enhance your expertise in Excel and software tools while honing your competitive edge. Unlock new opportunities and take your skills to the next level
+					</p>
+					<div class="row g-4">
+						</div>
+					<div class="my-4">
+						<a href="./events/iptraining.html" class="btn btn-primary border border-primary rounded-pill py-2 px-4" style="border-radius:0;">Learn More</a>
+					</div>
+				</div>
+				</div>
+		</div>
+         <!-- Second Feature -->
+        <div class="row g-5 pt-5" style="margin-top: 6rem;">
+			<div class="col-lg-6 wow fadeInRight" data-wow-delay="0.1s">
+				
+				<div class="text-background-box">
+					<h4 class="text-primary">IPCONVEX</h4>
+					<h1 class="display-5 mb-4">Gain <span style="color:#bc2300">Insights</span> from Industry Experts in Oil and Gas</h1>
+					<p class="mb-4 fs-5">
+						Engage with accomplished professionals in the oil and gas field as they share their expertise, innovative strategies, and personal stories to inspire the next generation of leaders
+					</p>
+					<div class="row g-4">
+						</div>
+					<div class="my-4">
+						<a href="./events/ipconvex.html" class="btn btn-primary border border-primary rounded-pill py-2 px-4" style="border-radius:0;">Learn More</a>
+					</div>
+				</div>
+				</div>
+			<div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.1s">
+				<div class="feature-img RotateMoveLeft h-100" style="object-fit: cover;">
+					<img src="static/images/ipconvex_home.jpg" class="img-fluid w-100" alt="">
+				</div>
+			</div>
+		</div>
+         <!-- Third Feature -->
+         <div class="row g-5 pt-5" style="margin-top: 6rem;">
+			<div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.1s">
+				<div class="feature-img RotateMoveLeft h-100" style="object-fit: cover;">
+					<img src="static/images/ipexpo_home.jpg" class="img-fluid w-100" alt="">
+				</div>
+			</div>
+			<div class="col-lg-6 wow fadeInRight" data-wow-delay="0.1s">
+				
+				<div class="text-background-box">
+					<h4 class="text-primary">IPEXPO</h4>
+					<h1 class="display-5 mb-4">Connect with <span style="color:#bc2300">Innovation</span></h1>
+					<p class="mb-4 fs-5">
+						Engage with top companies as they unveil groundbreaking technologies and insights, providing you with a unique opportunity to connect and learn
+					</p>
+					<div class="row g-4">
+						</div>
+					<div class="my-4">
+						<a href="./events/ipexpo.html" class="btn btn-primary border border-primary rounded-pill py-2 px-4" style="border-radius:0;">Learn More</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Feature End -->
+
+	<!-- Timeline Start -->
+    <div class="container py-5">
+       <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 900px;">
+		<h4 style="color: #FF577F;">Timeline</h4>
+		<h1 class="display-5 mb-4" style="color: #FFFFFF;">Explore Detailed <span style="color: #FF577F;">Journey</span></h1>
+	</div>
+        <div class="experience" id="experience">
+            <div class="container">
+                <div class="timeline">
+                    <div class="timeline-item left wow slideInLeft" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">September - November 2025</div>
+                            <h2 class="lead" style="color: #bc2300;">Class Visit & Campus Visit</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item right wow slideInRight" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">November 2025</div>
+                            <h2 class="lead" style="color: #bc2300;">IPExcel</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item left wow slideInLeft" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">November 2025</div>
+                            <h2 class="lead" style="color: #bc2300;">Saving Street Child</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item right wow slideInRight" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">November 2025</div>
+                            <h2 class="lead" style="color: #bc2300;">IPGL</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item left wow slideInLeft" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">November 2025</div>
+                            <h2 class="lead" style="color: #bc2300;">PetroHydro</h2> 
+                        </div>
+                    </div>
+                    <div class="timeline-item right wow slideInRight" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">December 2025</div>
+                            <h2 class="lead" style="color: #bc2300;">Preliminary Submission</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item left wow slideInLeft" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">January 2026</div>
+                            <h2 class="lead" style="color: #bc2300;">Finalist Announcement</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item right wow slideInRight" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">January 2026</div>
+                            <h2 class="lead" style="color: #bc2300;">Final Round Case Release</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item left wow slideInLeft" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">January 2026</div>
+                            <h2 class="lead" style="color: #bc2300;">IPWare: Software Training</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item right wow slideInRight" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">January 2026</div>
+                            <h2 class="lead" style="color: #bc2300;">PetroMed</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item left wow slideInLeft" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">February 2026</div>
+                            <h2 class="lead" style="color: #bc2300;">Final Round Submission Deadline</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item right wow slideInRight" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">February 2026</div>
+                            <h2 class="lead" style="color: #bc2300;">Technical Meeting</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item left wow slideInLeft" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">February 2026</div>
+                            <h2 class="lead" style="color: #bc2300;">Grand Company Expo</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item right wow slideInRight" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">February 2026</div>
+                            <h2 class="lead" style="color: #bc2300;">Final Competition Day</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item left wow slideInLeft" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">February 2026</div>
+                            <h2 class="lead" style="color: #bc2300;">Bandung Unlocked</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item right wow slideInRight" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">February 2026</div>
+                            <h2 class="lead" style="color: #bc2300;">Competition Expo</h2>
+                        </div>
+                    </div>
+                    <div class="timeline-item left wow slideInLeft" data-wow-delay="0.1s">
+                        <div class="timeline-text">
+                            <div class="timeline-date">February 2026</div>
+                            <h2 class="lead" style="color: #bc2300;">Gala Dinner and Winner Announcement</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+	<!-- Timeline End -->
+	
+	<!-- FAQ Start -->
+	<!--<div class="container-fluid FAQ bg-light overflow-hidden py-5">
+		<div class="container py-5">
+				<div class="row g-5 align-items-center justify-content-between">
+					<div class="col-lg-5 wow fadeInRight" data-wow-delay="0.3s">
+						<div class="FAQ-img RotateMoveRight">
+							<img src="static/images/faq.png" class="img-fluid w-75" alt="">
+						</div>
+					</div>
+					<div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.1s">
+						<div class="accordion" id="accordionExample">
+							<div class="accordion-item border-0">
+								<h2 class="accordion-header" id="headingOne">
+									<button class="accordion-button rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseTOne">
+										Is there a maximum and minimum number of team members for the IPFEST 2025 competition?
+									</button>
+								</h2>
+								<div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionExample">
+									<div class="accordion-body my-2">
+										<h5>Is there a maximum and minimum number of team members for the IPFEST 2025 competition?</h5>
+										<p>Each competition has different requirements for the number of team members: SC, MIC, and PPC require 2-3 members, BCC requires exactly 3 members, GDPC requires 4 members, and PODC, ORDC, and WDC require 4-5 members.</p>
+									</div>
+								</div>
+							</div>
+							<div class="accordion-item border-0">
+								<h2 class="accordion-header" id="headingTwo">
+									<button class="accordion-button collapsed rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+										Is there a maximum number of competitions you can participate in? 
+									</button>
+								</h2>
+								<div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionExample">
+									<div class="accordion-body my-2">
+										<h5>Is there a maximum number of competitions you can participate in?</h5>
+										<p>Each participant is only allowed to register for one competition.</p>
+									</div>
+								</div>
+							</div>
+							<div class="accordion-item border-0">
+								<h2 class="accordion-header" id="headingThree">
+									<button class="accordion-button collapsed rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+										Are there any requirements to participate in the IPFEST 2025 competition?
+									</button>
+								</h2>
+								<div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+									<div class="accordion-body my-2">
+										<h5>Are there any requirements to participate in the IPFEST 2025 competition?</h5>
+										<p>Requirements such as an ID card or student card can be viewed later through the registration link.</p>
+									</div>
+								</div>
+							</div>
+							<div class="accordion-item border-0">
+								<h2 class="accordion-header" id="headingFour">
+									<button class="accordion-button collapsed rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+										Are there any specific majors required to participate in the IPFEST 2025 competition?
+									</button>
+								</h2>
+								<div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour" data-bs-parent="#accordionExample">
+									<div class="accordion-body my-2">
+										<h5>Are there any specific majors required to participate in the IPFEST 2025 competition?</h5>
+										<p>There are no major restrictions. All majors are welcome to participate.</p>
+									</div>
+								</div>
+							</div>
+							<div class="accordion-item border-0">
+								<h2 class="accordion-header" id="headingFive">
+									<button class="accordion-button collapsed rounded-top" type="button" data-bs-toggle="collapse" data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+										Are there any specific qualifications required to participate in the IPFEST 2025 competition?
+									</button>
+								</h2>
+								<div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive" data-bs-parent="#accordionExample">
+									<div class="accordion-body my-2">
+										<h5>Are there any specific qualifications required to participate in the IPFEST 2025 competition?</h5>
+										<p>The competition is open to both national and international participants, but all participants must be enrolled in a Bachelor's degree program.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>		
+				</div>
+		</div>
+	</div>-->
+	<!-- FAQ End -->
+
+	<!-- Testimonial Start -->
+						<!-- Rokan Working Area (WK), starting from 9 August 2021 to 8 August 2041. 
+						Production from the Rokan WK represents a quarter of Indonesia's crude oil 
+						production and is a snapshot of Pertamina's total production, 100% of which is 
+						processed by Pertamina's refineries.
+						<br><br>
+						With the support of more than two thousand workers and 38,000 contractors, 
+						WK Rokan is the largest onshore upstream oil and gas operation in Indonesia. 
+						The operational area is approximately 6,200 km2 covering 7 districts/cities in 
+						Riau Province. WK Rokan's first production began in 1952 and currently has more 
+						than 80 active fields with more than 12,000 wells. There are 35 collecting stations, 
+						13,200 km of pipeline networks and 500 km of shipping networks that support the 
+						distribution of crude oil production.
+						<br><br>
+						The Rokan WK is the most productive oil block in Indonesia's oil history and makes 
+						a significant contribution to supporting national energy security and the country's 
+						economy. PHR contributed more than IDR 115 trillion in state revenue through PNBP 
+						and taxes since it was transferred to management in 2021.
+						<br><br>
+						Apart from contributing to providing energy for the nation's economic development, 
+						PHR is also committed to providing as many benefits as possible for the economic 
+						and social development of the Indonesian people, especially the people living around 
+						the operational area in Riau through various Social and Environmental Responsibility 
+						(TJSL) programs. The TJSL PHR program consists of 4 pillars: (1) Education, (2) Health, 
+						(3) Economic Empowerment, (4) Environment and disaster relief
+					</p>
+				</div>
+				<div class="modal-footer">
+					Visit at <a class="text-secondary link-underline-secondary" href="https://www.pertamina.com/id/gallery/image?cat=Hulu">PT Pertamina Hulu Rokan</a>
+				</div>
+			</div>
+		</div>								  
+	</div>
+	<div class="modal fade" id="bp-expand" tabindex="-1" aria-labelledby="bp-expand" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">
+						<img src="static/images/sponsor/BP.png" alt="BP" class="img-fluid w-25">
+					</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body"> -->
+					<!-- <video src="" class=""></video> -->
+					<!--<p>
+						bp is one of the largest foreign investors in Indonesia. Through its heritage companies, 
+						bp has more than 55 years of operating history in the country, and we remain committed to 
+						Indonesia
+					</p>
+				</div>
+				<div class="modal-footer">
+					Visit at <a class="text-secondary link-underline-secondary" href="https://www.bp.com/en_id/indonesia/home/who-we-are.html">bp Indonesia</a>
+				</div>
+			</div>
+		</div>								  
+	</div>
+	<div class="modal fade" id="rfd-expand" tabindex="-1" aria-labelledby="rfd-expand" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">
+						<img src="static/images/sponsor/RFD.png" alt="RFD" class="img-fluid w-25">
+					</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">-->
+					<!-- <video src="" class=""></video> -->
+					<!--<p>
+						tNavigator, by Rock Flow Dynamics, is a state-of-the-art reservoir modeling and 
+						simulation software that integrates geoscience, reservoir engineering, and 
+						production engineering into a single platform. Since its launch in 2005, 
+						tNavigator has evolved into a powerful tool used by over 300 commercial clients
+						worldwide, enabling more efficient and insightful reservoir analysis. 
+						<br><br>
+						With a global presence in 25 countries and a dedicated team of over 120 developers, 
+						Rock Flow Dynamics continues to drive innovation, releasing four major updates 
+						annually. In addition to providing world-class software, the company offers 
+						expert training, support, and consultancy services, making tNavigator the go-to 
+						platform for professionals seeking to optimize reservoir performance and 
+						decision-making.
+					</p>
+				</div>
+				<div class="modal-footer">
+					Visit at <a class="text-secondary link-underline-secondary" href="https://rfdyn.com/">RFD tNavigator</a>
+				</div>
+			</div>
+		</div>								  
+	</div>
+	<div class="modal fade" id="ep-expand" tabindex="-1" aria-labelledby="ep-expand" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">
+						<img src="static/images/sponsor/EP.PNG" alt="EP" class="img-fluid w-25">
+					</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">-->
+					<!-- <video src="" class=""></video> -->
+					<!--<p>
+						PT Pertamina EP was established on September 13, 2005. In line with the 
+						establishment of PT Pertamina EP, on September 17, 2005, PT Pertamina (Persero) 
+						signed a Cooperation Contract (KKS) with BPMIGAS (now SKKMIGAS) which was 
+						retroactive to September 17, 2003 for all Oil and Gas Mining Authority Areas 
+						delegated through legislation based on Law Number 22 of 2001 concerning Oil and Gas
+						<br><br>
+						Most of the PT Pertamina (Persero) area is separated into PT Pertamina EP Working 
+						Area (WK). At the same time, PT Pertamina EP also signed the Pertamina Oil and Gas 
+						Contract for the Pertamina EP Working Area on September 17, 2005 with BPMIGAS 
+						(now SKKMIGAS) which has been in effect since September 17, 2005.
+						<br><br>
+						Thus, the PT Pertamina EP Working Area is a Working Area that was previously managed 
+						solely by PT Pertamina (Persero) and a Working Area managed by PT Pertamina (Persero) through 
+						TAC (Technical Assistance Contract) and JOB EOR (Joint Operating Body Enhanced Oil Recovery).  
+					</p>
+				</div>
+				<div class="modal-footer">
+					Visit at <a class="text-secondary link-underline-secondary" href="https://pep.pertamina.com">PT Pertamina EP</a>
+				</div>
+			</div>
+		</div>								  
+	</div>
+	<div class="modal fade" id="inalum-expand" tabindex="-1" aria-labelledby="inalum-expand" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">
+						<img src="static/images/sponsor/inalum.PNG" alt="Inalum" class="img-fluid w-25">
+					</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">-->
+					<!-- <video src="" class=""></video> -->
+					<!--<p>
+						At Inalum, we are driven by a passion for unleashing and potential inspiring 
+						excellence. As a leading force in the industry, we empower a future of innovation 
+						and progress. Our team of specialists tirelessly to deliver cutting-edge solutions 
+						that address the evolving needs of our clients.
+						<br><br>
+						Our company's history is characterized by continuous achievements of excellence, 
+						pioneering a number of innovations that positively impact millions of lives around 
+						the world, especially Indonesia.
+						<br><br>
+						We are committed to provide the best products and services that meet customer 
+						expectations, while fostering a culture of collaboration and development among our 
+						team members.
+						<br><br>
+						As a state-owned entity engaged in the downstreaming of national aluminum 
+						commodities, INALUM is part of the Indonesian Mining Industry Holding or MIND ID. 
+						We believe that together with the MIND ID family and its spirit, INALUM can realize 
+						the downstreaming and independence of the national aluminum industry.
+					</p>
+				</div>
+				<div class="modal-footer">
+					Visit at <a class="text-secondary link-underline-secondary" href="https://www.inalum.id/id">PT INALUM</a>
+				</div>
+			</div>
+		</div>								  
+	</div>
+	<div class="modal fade" id="ka-expand" tabindex="-1" aria-labelledby="ka-expand" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">
+						<img src="static/images/sponsor/KA.png" alt="Kapal Api" class="img-fluid w-25">
+					</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">-->
+					<!-- <video src="" class=""></video> -->
+					<!--<p>
+						Kapal Api is the number 1 black coffee brand in Indonesia that can inspire and 
+						raise positive spirits. Even though the market has continued to evolve over the 
+						years, Kapal Api is always committed to serving quality original coffee.
+						So, consumers can face all challenges in their daily routines with confidence
+					</p>
+				</div>
+				<div class="modal-footer">
+					Visit at <a class="text-secondary link-underline-secondary" href="https://kapalapi.com">Kapal Api Group</a>
+				</div>
+			</div>
+		</div>								  
+	</div>
+	<div class="modal fade" id="pyc-expand" tabindex="-1" aria-labelledby="pyc-expand" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">
+						<img src="static/images/sponsor/PYC.png" alt="PYC" class="img-fluid w-25">
+					</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">-->
+					<!-- <video src="" class=""></video> -->
+					<!--<p>
+						Purnomo Yusgiantoro Center (PYC) is a non-profit organization that focuses on 
+						independent and in-depth research, to provide policies in the field of energy 
+						and natural resources research at national and global levels.
+						<br><br>
+ 						PYC also focuses on solving problems and challenges in the energy and natural 
+						resources sectors that have an impact on Indonesia's sustainable development. 
+						In achieving its goals, PYC provides solutions through various independent research 
+						projects, seminars, workshops, conferences, and collaboration with government and 
+						private research institutions related to energy and natural resources. 
+						<br><br>
+						Forming social events aimed at helping the community in the fields of health, 
+						welfare and education as well as actively promoting cultural heritage to preserve 
+						traditional Indonesian culture.
+					</p>
+				</div>
+				<div class="modal-footer">
+					Visit at <a class="text-secondary link-underline-secondary" href="https://www.purnomoyusgiantorocenter.org/id/">The PYC</a>
+				</div>
+			</div>
+		</div>								  
+	</div>
+	<div class="modal fade" id="medco-expand" tabindex="-1" aria-labelledby="medco-expand" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">
+						<img src="static/images/sponsor/Medco_alone.png" alt="Medco" class="img-fluid w-25">
+					</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">-->
+					<!-- <video src="" class=""></video> -->
+					<!--<p>
+						PT Medco Energi Internasional Tbk (“MedcoEnergi”) is a leading Southeast Asian energy 
+						and natural resources company listed on the Indonesia Stock Exchange (MEDC-IDX). 
+						MedcoEnergi has three key business segments, Oil & Gas, Power and Copper Mining. 
+						MedcoEnergi explores for and produces oil and gas primarily in Indonesia. The Group 
+						operates gas, PV, geothermal and hydro power plants in Indonesia through Medco Power 
+						and has a non-consolidated interest in PT Amman Mineral Internasional Tbk which 
+						operates a large copper and gold mine. 
+						<br><br>
+						This document may contain projections, plans, 
+						strategies, policies and objectives of MedcoEnergi which should be treated as forward 
+						looking statements within the meaning of applicable law. Forward looking statements, 
+						by their nature, involve risks and uncertainties that could cause actual results to 
+						differ materially from those expressed or implied in these statements. The Company 
+						does not guarantee that any action taken in reliance on this document will bring 
+						specific results.
+					</p>
+				</div>
+				<div class="modal-footer">
+					Visit at <a class="text-secondary link-underline-secondary" href="https://www.medcoenergi.com/">MedcoEnergi</a>
+				</div>
+			</div>
+		</div>								  
+	</div>
+	<div class="modal fade" id="harbour-expand" tabindex="-1" aria-labelledby="harbour-expand" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">
+						<img src="static/images/sponsor/Harbour_alone.png" alt="Harbour" class="img-fluid w-25">
+					</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">-->
+					<!-- <video src="" class=""></video> -->
+					<!--<p>
+						Harbour Energy has grown to become one of the world's largest and most geographically 
+						diverse independent oil and gas companies since its creation in 2014. Today, Harbour is 
+						producing between 475,000 and 485,000 barrels of oil equivalent per day with productions 
+						in Norway, the UK, Germany, Argentina, North Africa, Mexico and Indonesia. Harbour is 
+						headquartered in London with approximately 5,000 staff and contractors across its operations 
+						and offices.
+					</p>
+				</div>
+				<div class="modal-footer">
+					Visit at <a class="text-secondary link-underline-secondary" href="https://www.harbourenergy.com/">Harbour Energy</a>
+				</div>
+			</div>
+		</div>								  
+	</div>
+	<div class="modal fade" id="exxon-expand" tabindex="-1" aria-labelledby="exxon-expand" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h1 class="modal-title fs-5" id="staticBackdropLabel">
+						<img src="static/images/sponsor/Exxon_alone.png" alt="ExxonMobil" class="img-fluid w-25">
+					</h1>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">-->
+					<!-- <video src="" class=""></video> -->
+					<!--<p>
+						ExxonMobil has been present in the Nusantara archipelago for over 125 years. Beginning in 1898 with
+						opening of our marketing office in Java, we began exploration activities in Sumatera in 1912. Following
+						our journey in 1968 as one of the first Production Sharing Contract (PSC) contractors for the B block and
+						North Sumatera Offshore (NSO) in Aceh, we continue our commitment to support Indonesia in meeting
+						its energy demands as the operator for the Cepu Block in East Java since 2005.
+						<br><br>
+						ExxonMobil Cepu Limited (EMCL) represents the company’s presence in Indonesia’s upstream oil and
+						gas industry. We have delivered more than 650 million barrels of cumulative crude oil production from
+						Cepu Block through safe, reliable, and efficient production operations.
+						<br><br>
+						We believe that people are our greatest assets. Our upstream operations are supported by more than
+						450 employees, of which 99 percent are world-class. Indonesians. In 2007, we trained 110 operators
+						from neighboring areas in East Java and Central Java – including Bojonegoro, Tuban, and Blora
+						regencies, where the Banyu Urip project is located. These operators have been trained at ExxonMobil
+						operations around the globe and have now returned to operate Banyu Urip facilities.
+						<br><br>
+						PT ExxonMobil Lubricants Indonesia (PT EMLI) represents ExxonMobil’s downstream presence in
+						lubricants, chemicals, and fuels businesses in the country, and successfully entered the fuels market for
+						industrial and commercial customers in 2016. ExxonMobil also acquired PT Federal Karyatama (FKT) in
+						2018.
+						<br><br>
+						In collaboration with Pertamina, ExxonMobil signs several agreements toward Indonesia’s low-carbon
+						future, assessing the prospect of large-scale implementation of low-carbon technologies and the
+						development of a regional Carbon Capture and Storage (CCS) Hub to support Indonesia’s 2060 net-zero
+						ambition.
+					</p>
+				</div>
+				<div class="modal-footer">
+					Visit at <a class="text-secondary link-underline-secondary" href="https://corporate.exxonmobil.com/">ExxonMobil</a>
+				</div>
+			</div>
+		</div>								  
+	</div>
+	<!-- Sponsors modal end -->
+
+	<!-- Map start -->
+	<div class="container-fluid py-5">
+		<div class="container">
+			<div class="row g-5 align-items-center">
+				<div class="col-12 wow fadeInUp" data-wow-delay="0.1s">
+					<div class="rounded h-100">
+						<iframe class="rounded w-100" 
+						style="height: 500px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.0020509346946!2d107.60761091053743!3d-6.890356367397105!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e65767c9b183%3A0x2478e3dcdce37961!2sInstitut%20Teknologi%20Bandung!5e0!3m2!1sid!2sid!4v1727887337155!5m2!1sid!2sid" 
+						loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- Map End -->
+
+	<!-- Modal -->
+	 <div class="modal fade" id="sponsorModal" tabindex="-1" aria-labelledby="sponsorModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-dialog-scrollable"> 
+			
+			<div class="modal-content" style="background: rgba(20, 20, 50, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; color: white;">
+			
+			<div class="modal-header border-0">
+				<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+			</div>
+			
+			<div class="modal-body text-center p-4">
+				
+				<div class="bg-white p-3 rounded-3 d-inline-block mb-3">
+					<img id="modalImage" src="" alt="Sponsor Logo" class="img-fluid" style="max-height: 80px;">
+				</div>
+				
+				<h3 id="modalTitle" class="fw-bold mb-3" style="color: #ffc107; text-shadow: 0 2px 5px rgba(0,0,0,0.5); letter-spacing: 1px;">
+					Loading...
+				</h3>
+				
+				<p id="modalDesc" style="text-align: justify; opacity: 0.9;">
+					Loading description...
+				</p>
+
+			</div>
+			</div>
+		</div>
+		</div>
+
+	<!-- Footer Start -->
+	<footer class="pt-5" style="background-color: #121212;">
+		<div class="container-xl">
+			<div class="row py-4">
+				<!-- logo -->
+				<div class="text-center col-5 col-md-2" style="margin-bottom: 5rem;">
+					<img src="static/images/ipfest_2026_logo_footer.svg" alt="logo" class="img-fluid">
+				</div>
+				<!-- event and competitions -->
+				<div class="col-md-6 col-12">
+					<div class="row">
+						<div class="col-6">
+							<h5 class="text-light">Competitions</h5>
+							<ul style="list-style-type: none;">
+								<li class="compe-item p-1"><a href="competitions/business-case.html" class="compe-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Business Case</a></li>
+								<li class="compe-item p-1"><a href="competitions/geothermal-development-plan.html" class="compe-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Geothermal Development Plan</a></li>
+								<li class="compe-item p-1"><a href="competitions/mud-innovation.html" class="compe-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Mud Innovation</a></li>
+								<li class="compe-item p-1"><a href="competitions/oil-rig-design.html" class="compe-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Oil Rig Design</a></li>
+								<li class="compe-item p-1"><a href="competitions/paper-and-poster.html" class="compe-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Paper and Poster</a></li>
+								<li class="compe-item p-1"><a href="competitions/plan-of-development.html" class="compe-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Plan of Development</a></li>
+								<li class="compe-item p-1"><a href="competitions/smart-competition.html" class="compe-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Smart Competition</a></li>
+								<li class="compe-item p-1"><a href="competitions/well-design.html" class="compe-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Well Design</a></li>
+								<li class="compe-item p-1"><a href="competitions/hackathon-competition.html" class="compe-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Hackathon</a></li>
+
+							</ul>
+						</div>
+						<div class="col-6">
+							<h5 class="text-light">Events</h5>
+							<ul style="list-style-type: none;" class="event">
+								<li class="event-item p-1"><a href="events/discover-bandung.html" class="event-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Tour de Bandung</a></li>
+								<li class="event-item p-1"><a href="events/gala-dinner.html" class="event-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">Gala Dinner</a></li>
+								<li class="event-item p-1"><a href="events/ipconvex.html" class="event-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">IPCONVEX</a></li>
+								<li class="event-item p-1"><a href="events/iptraining.html" class="event-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">IPTRAINING</a></li>
+								<li class="event-item p-1"><a href="events/ipexpo.html" class="event-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">IPEXPO</a></li>
+								<li class="event-item p-1"><a href="events/petrocare.html" class="event-anchor link-light link-offset-2 link-offset-3-hover link-underline link-underline-opacity-0 link-underline-opacity-75-hover">PetroCare</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- contact person -->
+				<div class="col-12 col-md-4">
+					<h5 class="text-light">Contact Person</h5>
+					<div class="row">
+						<div class="col-md-12 col-sm-6 col-12">
+							<ul style="list-style-type: none;">
+								<li><h5 class="lead text-light">Manager of Delegates Relation</h5></li>
+								<li><h5 class="text-light fs-6">Farrel Luizza</h5></li>
+								<li><a href="https://wa.me/+6281905213626" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style="text-decoration: none;" target="_blank">
+									Phone: +6281905213626
+								</a></li>
+							</ul>
+						</div>
+						<div class="col-md-12 col-sm-6 col-12">
+							<ul style="list-style-type: none;">
+								<li><h5 class="lead text-light">Director of External Department</h5></li>
+								<li><h5 class="text-light fs-6">Muhammad Fiqran Alif</h5></li>
+								<li><a href="https://wa.me/+6281342372640" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style="text-decoration: none;">
+									Phone: +6281342372640
+								</a></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col d-flex justify-content-between align-item-center mt-5 mb-3">
+					<h4 class="text-light">IPFEST 2026</h4>
+					<div class="d-flex align-item-center gap-3 text-light">
+						<a href="https://www.instagram.com/ipfest2026?igsh=MTV5OGhwd3RscDdpcQ==" class="text-white" target="_blank"><i class="bi bi-instagram"></i></a>
+						<a href="https://www.tiktok.com/@ipfest26?_r=1&_t=ZS-91AljL5dbU4" class="text-white" target="_blank"><i class="bi bi-tiktok"></i></a>
+					</div>
+				</div>
+			</div>
+			<div class="row border-top border-light py-3">
+				<p class="text-light">Copyright © IPFEST 2026. All rights reserved</p>
+			</div>
+		</div>
+	</footer>
+	<!-- Footer End -->
+
+	<!-- Back to Top -->
+	<a href="#" class="btn btn-primary btn-lg-square back-to-top"><i class="fa fa-arrow-up"></i></a>   
+
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="static/lib/wow/wow.min.js"></script>
+	<script src="static/lib/easing/easing.min.js"></script>
+	<script src="static/lib/waypoints/waypoints.min.js"></script>
+	<script src="static/lib/counterup/counterup.min.js"></script>
+	<script src="static/lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="static/lib/lightbox/js/lightbox.min.js"></script>
+	<script src="static/js/main.js"></script>
+	<script src="src/sponsor.js"></script>
+	<script>
+		$(document).ready(function() {
+			// Fungsi untuk menghapus total elemen di HP
+			function nukeBackground() {
+				if ($(window).width() < 992) {
+					// 1. Cari elemen wrapper class .rotate-img dan HAPUS DARI DOM
+					$(".rotate-img").remove();
+					
+					// 2. Cari elemen berdasarkan nama file gambar (jaga-jaga classnya berubah)
+					$("img[src*='sty-1.png']").remove();
+					
+					// 3. Hapus elemen dekorasi kedua
+					$(".rotate-sty-2").remove();
+					
+					// 4. Paksa container jadi bersih
+					$(".hero-header").css("background", "none");
+				}
+			}
+
+			// Jalankan saat loading pertama
+			nukeBackground();
+
+			// Jalankan lagi sedikit terlambat (untuk menimpa WOW.js jika dia lambat)
+			setTimeout(nukeBackground, 100); 
+			setTimeout(nukeBackground, 500); 
+			setTimeout(nukeBackground, 1000);
+		});
+	</script>
+</body>
+</html>

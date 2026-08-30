@@ -1,0 +1,181 @@
+/* Menargetkan kontainer spesifik agar tidak merusak halaman lain */
+.container.merch-content h1, 
+.container.merch-content h2, 
+.container.merch-content h3, 
+.container.merch-content h4, 
+.container.merch-content h5, 
+.container.merch-content h6, 
+.container.merch-content p {
+    color: #ffffff !important;
+}
+
+/* Memastikan span warna (pink/merah) tetap terlihat */
+.container.merch-content h1 span {
+    color: #E768A8; /* Mengikuti inline style yang sudah Anda buat di HTML */
+}
+
+/* --- 1. Judul Koleksi --- */
+.merch-product .merch-title h1 {
+    color: #E768A8 !important;
+    font-weight: 700;
+}
+
+/* --- 2. Komponen Kartu (Card) --- */
+.merch-product .card {
+    background-color: #ffffff !important;
+    /* Gunakan border dengan warna transparan di awal agar layout tidak goyang */
+    border: 4px solid transparent; 
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s ease-in-out;
+    cursor: pointer;
+}
+
+/* --- 3. Gambar Produk --- */
+.merch-product .card-img-top {
+    background-color: #f8f9fa;
+    padding: 20px;
+    transition: transform 0.5s ease;
+    aspect-ratio: 1/1;
+    object-fit: contain;
+}
+
+/* --- 4. Teks & Harga --- */
+.merch-product .card-body p {
+    color: #000000 !important;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 5px;
+    transition: color 0.3s ease;
+}
+
+.merch-product .price-tag {
+    color: #E768A8;
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: block;
+}
+
+/* --- 5. Efek Hover dengan Border Jelas --- */
+.merch-product .card:hover {
+    transform: translateY(-10px);
+    /* Border dibuat tebal (4px) dan solid pink */
+    border: 4px solid #E768A8 !important; 
+    /* Shadow diperkuat untuk menambah efek kedalaman */
+    box-shadow: 0 20px 40px rgba(231, 104, 168, 0.5); 
+}
+
+.merch-product .card:hover .card-img-top {
+    transform: scale(1.05);
+}
+
+.merch-product .card:hover .card-body p {
+    color: #E768A8 !important;
+}
+
+/* Style Tombol Keranjang */
+.btn-add-cart {
+    background: none;
+    border: none;
+    font-size: 1.3rem;
+    transition: all 0.2s ease;
+    color: #ff0000 !important; /* Warna hitam sesuai permintaan Anda untuk p */
+}
+
+/* Hover effect khusus ikon keranjang */
+.btn-add-cart:hover {
+    color: #00ff00 !important; /* Berubah pink saat diarahkan mouse */
+    transform: scale(1.2);
+}
+
+#floating-cart-btn {
+    position: fixed;
+    bottom: 30px;
+    left: 30px; /* Posisi kiri bawah sesuai permintaan */
+    z-index: 999;
+    width: 60px;
+    height: 60px;
+    background-color: #E768A8;
+    color: white;
+    font-size: 24px;
+    border: none;
+    transition: transform 0.3s;
+}
+
+#floating-cart-btn:hover {
+    transform: scale(1.1);
+    color: white;
+}
+
+#cart-badge {
+    position: absolute;
+    top: 0;
+    right: 0;
+    font-size: 12px;
+}
+
+/* Mengubah semua teks label dan isi ringkasan menjadi hitam */
+#checkoutModal .modal-title,
+#checkoutModal .form-label,
+#checkout-summary,
+#checkout-summary span,
+#checkout-summary p,
+.summary-item-name,
+.summary-item-price {
+    color: #000000 !important;
+}
+
+/* Mengatur agar teks di dalam input dan textarea juga hitam */
+#checkoutModal .form-control {
+    color: #000000 !important;
+}
+
+/* Opsional: Menebalkan teks Total agar tetap menonjol meskipun sama-sama hitam */
+#checkout-summary .border-top {
+    font-weight: 800;
+}
+
+/* Warna untuk Label Input */
+#checkoutModal .form-label {
+    color: #E768A8; /* Pink */
+    font-weight: bold;
+}
+
+/* Warna Input saat Aktif/Diklik */
+#checkoutModal .form-control:focus {
+    border-color: #E768A8;
+    box-shadow: 0 0 0 0.25rem rgba(231, 104, 168, 0.25);
+}
+
+/* Styling Ringkasan Pesanan agar Lebih Berwarna */
+#checkout-summary {
+    border-left: 4px solid #E768A8;
+    background-color: #fdf2f8 !important; /* Pink sangat muda */
+}
+
+#checkout-summary p {
+    color: #2d2a6e; /* Biru gelap sesuai background web */
+}
+
+/* Warna Item di Ringkasan */
+.summary-item-name {
+    color: #555;
+}
+
+.summary-item-price {
+    color: #E768A8;
+    font-weight: bold;
+}
+
+/* Tombol Pesan Sekarang */
+#checkout-form button[type="submit"] {
+    background-color: #E768A8;
+    border: none;
+    font-weight: bold;
+    transition: 0.3s;
+}
+
+#checkout-form button[type="submit"]:hover {
+    background-color: #c54d8a; /* Pink lebih gelap saat hover */
+    transform: scale(1.02);
+}

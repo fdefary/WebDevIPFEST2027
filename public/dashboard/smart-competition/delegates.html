@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<title>Delegates - IPFEST 2025</title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<meta content="" name="keywords">
+	<meta content="" name="description">
+	<link rel="icon" href="../../static/images/ipfest_2026_logo.svg">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Rubik:wght@400;500&display=swap"
+		rel="stylesheet">
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link href="../../static/lib/animate/animate.min.css" rel="stylesheet">
+	<link href="../../static/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+	<link href="../../static/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+	<link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../../static/css/style.css" rel="stylesheet">
+	<link href="../../static/css/delegates-sc.css" rel="stylesheet">
+</head>
+
+<body class="dashboard-theme">
+	<!-- Spinner Start -->
+	<div id="spinner"
+		class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+		<div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+			<span class="sr-only">Loading...</span>
+		</div>
+	</div>
+	<!-- Spinner End -->
+
+	<!-- Navbar & Hero Start -->
+	<div class="container-fluid p-0">
+		<nav id="master-nav" class="navbar navbar-expand-lg">
+			<div class="container-fluid px-4 px-lg-5">
+				
+				<a href="#" class="navbar-brand p-0 d-flex align-items-center gap-2">
+					<img src="../../static/images/ipfest_2026_logo.svg" alt="Logo" class="brand-logo">
+					<img src="../../static/images/ipfest_2026_text.svg" alt="Text" class="brand-text">
+				</a>
+
+				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+					<span class="fa fa-bars"></span>
+				</button>
+
+				<div class="collapse navbar-collapse py-1" id="navbarCollapse">
+					<div class="navbar-nav ms-auto">
+						<div class="nav-item">
+							<button class="nav-link btn border-0" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home">
+								My Team
+							</button>
+						</div>
+					</div>
+
+					<div class="d-flex align-items-center ms-lg-4 mt-3 mt-lg-0"> 
+						<button class="btn rounded-pill" id="logout-btn">
+							Log Out
+						</button>
+					</div>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<script>
+		(function() {
+			var nav = document.getElementById('master-nav');
+			var collapseDiv = document.getElementById('navbarCollapse');
+
+			function forceDarkNavbar() {
+				if(!nav) return;
+				
+				nav.classList.remove('bg-white', 'navbar-light', 'sticky-top', 'shadow-sm', 'shadow');
+				nav.classList.add('navbar-dark');
+				nav.style.backgroundColor = '#261642'; 
+				nav.style.backgroundImage = 'none';
+
+				if(window.innerWidth > 992 && collapseDiv) {
+					collapseDiv.style.backgroundColor = 'transparent';
+				} else if (collapseDiv) {
+					collapseDiv.style.backgroundColor = '#261642';
+				}
+			}
+
+			forceDarkNavbar();
+			window.addEventListener('scroll', forceDarkNavbar);
+			window.addEventListener('resize', forceDarkNavbar); 
+			setInterval(forceDarkNavbar, 500);
+
+			// --- FUNGSI TAB ---
+			var tabButtons = document.querySelectorAll('#master-nav button[data-bs-toggle="tab"]');
+			tabButtons.forEach(function(btn) {
+				btn.addEventListener('click', function(e) {
+					e.preventDefault();
+					tabButtons.forEach(b => {
+						b.classList.remove('active');
+						b.style.borderBottom = 'none';
+						b.style.fontWeight = '500';
+					});
+					this.classList.add('active');
+					this.style.borderBottom = '2px solid white';
+					this.style.fontWeight = 'bold';
+
+					var allPanes = document.querySelectorAll('.tab-pane');
+					allPanes.forEach(pane => {
+						pane.classList.remove('show', 'active');
+						pane.style.display = 'none'; 
+					});
+
+					var targetId = this.getAttribute('data-bs-target');
+					var targetPane = document.querySelector(targetId);
+					if(targetPane) {
+						targetPane.classList.add('show', 'active');
+						targetPane.style.display = 'block'; 
+						window.scrollTo({top: 0, behavior: 'smooth'});
+					}
+				});
+			});
+		})();
+	</script>
+	<!-- Navbar & Hero End -->
+
+	<!-- Main -->
+	<main class="container-fluid py-5 dashboard-stage">
+		<div class="container d-flex py-5">
+			<section class="col-lg-10 col-md-11 col-sm-12 mx-auto">
+				<div class="tab-content" id="nav-tabContent" style="padding: 1rem;">
+					<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+						<div class="dashboard-panels">
+							<div class="row g-3">
+								<div class="row g-3" id="del-team-members">
+									<div class="col-sm-9 col-md-6 col-lg-4">
+										<div class="card shadow pt-3 mb-2" data-bs-toggle="tooltip" data-bs-title="Leader">
+											<div class="card-body">
+												<div class="text-center">
+													<!-- <svg style="height: 4rem;" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg">
+														<path d="M391.9 464H55.95c-13.25 0-23.1 10.75-23.1 23.1S42.7 512 55.95 512h335.1c13.25 0 23.1-10.75 23.1-23.1S405.2 464 391.9 464zM448 216c0-11.82-3.783-23.51-11.08-33.17c-10.3-14.39-27-22.88-44.73-22.88L247.9 160V104h31.1c13.2 0 24.06-10.8 24.06-24S293.1 56 279.9 56h-31.1V23.1C247.9 10.8 237.2 0 223.1 0S199.9 10.8 199.9 23.1V56H167.9c-13.2 0-23.97 10.8-23.97 24S154.7 104 167.9 104h31.1V160H55.95C24.72 160 0 185.3 0 215.9C0 221.6 .8893 227.4 2.704 233L68.45 432h50.5L48.33 218.4C48.09 217.6 47.98 216.9 47.98 216.1C47.98 212.3 50.93 208 55.95 208h335.9c6.076 0 8.115 5.494 8.115 8.113c0 .6341-.078 1.269-.2405 1.887L328.8 432h50.62l65.1-199.2C447.2 227.3 448 221.7 448 216z"/>
+													</svg> -->
+													<svg style="height:4rem" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+													<circle cx="256" cy="74" r="45" />
+													<circle cx="120" cy="140" r="35" />
+													<circle cx="392" cy="140" r="35" />
+													<circle cx="45" cy="245" r="30" />
+													<circle cx="467" cy="245" r="30" />
+													
+													<path d="M45 245 L110 290 L120 140 L190 270 L256 74 L322 270 L392 140 L402 290 L467 245 L430 410 H82 Z" />
+													
+													<rect x="25" y="445" width="462" height="35" rx="17" />
+													</svg>
+													<p class="lead text-primary mt-3">Team Leader</p>
+													<h4 class="card-title text-primary fs-3"><span id="Team-Leader"></span></h4>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-9 col-md-6 col-lg-4">
+										<div class="card shadow pt-3 mb-2" data-bs-toggle="tooltip" data-bs-title="Member">
+											<div class="card-body">
+												<div class="text-center">
+													<!-- <svg style="height: 4rem" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+														<path d="M256 112c30.88 0 56-25.12 56-56S286.9 0 256 0S199.1 25.12 199.1 56S225.1 112 256 112zM511.1 197.4c0-5.178-2.509-10.2-7.096-13.26L476.4 168.2c-2.5-1.75-5.497-2.62-8.497-2.62c-5.501 .125-10.63 2.87-13.75 7.245c-9.001 12-23.16 19.13-38.16 19.13c-3.125 0-6.089-.2528-9.089-.8778c-23.13-4.25-38.88-26.25-38.88-49.75C367.1 134 361.1 128 354.6 128h-38.75c-6.001 0-11.63 4-12.88 9.875C298.2 160.1 278.7 176 255.1 176c-22.75 0-42.25-15.88-47-38.12C207.7 132 202.2 128 196.1 128h-38.75C149.1 128 143.1 134 143.1 141.4c0 18.49-13.66 50.62-47.95 50.62c-15.13 0-29.3-7.118-38.3-19.24C54.6 168.4 49.66 165.7 44.15 165.6c-3 0-5.931 .8951-8.432 2.645l-28.63 16C2.509 187.2 0 192.3 0 197.4c0 2.438 .5583 4.901 1.72 7.185L109.9 432h53.13L69.85 236.4C78.35 238.8 87.11 240 95.98 240c2.432 0 56.83 1.503 84.76-52.5C198.1 210.5 226.6 224 255.9 224c29.38 0 57.01-13.38 75.26-36.25C336.1 197.6 360.6 240 416 240c8.751 0 17.5-1.125 26-3.5L349 432h53.13l108.1-227.4C511.4 202.3 511.1 199.8 511.1 197.4zM424 464H87.98c-13.26 0-24 10.75-24 23.1S74.72 512 87.98 512h336c13.26 0 24-10.75 24-23.1S437.3 464 424 464z"/>
+													</svg> -->
+													<svg style="height:4rem" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+													<circle cx="256" cy="50" r="35" />
+													
+													<path d="M256 100 L60 140 V300 C60 420 256 460 256 460 C256 460 452 420 452 300 V140 L256 100 Z" />
+													
+													<path d="M256 150 L110 180 V290 C110 370 256 410 256 410 C256 410 402 370 402 290 V180 L256 150 Z" fill="white" opacity="0.3" />
+													
+													<rect x="40" y="465" width="432" height="35" rx="17" />
+													</svg>
+													<p class="lead text-primary mt-3">Team Name</p>
+													<h4 class="card-title text-primary fs-3"><span id="Team-Name"></span></h4>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-9 col-md-6 col-lg-4">
+										<div class="card shadow pt-3 mb-2" data-bs-toggle="tooltip" data-bs-title="Member">
+											<div class="card-body">
+												<div class="text-center">
+													<!-- <svg style="height: 4rem;" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg">
+														<path d="M360 464H23.1C10.75 464 0 474.7 0 487.1S10.75 512 23.1 512H360C373.3 512 384 501.3 384 488S373.3 464 360 464zM345.1 32h-308C17 32 0 49 0 70v139.4C0 218.8 4 227.5 11 233.6L48 265.8c0 8.885 .0504 17.64 .0504 26.46c0 39.32-1.001 79.96-11.93 139.8h49C94.95 374.3 96.11 333.3 96.11 285.5C96.11 270.7 96 255.1 96 238.2L48 196.5V80h64V128H160V80h64V128h48V80h64v116.5L288 238.2c0 16.77-.1124 32.25-.1124 47.1c0 47.79 1.164 89.15 10.99 146.7h49c-10.92-59.83-11.93-100.6-11.93-139.9C335.9 283.3 336 274.6 336 265.8l37-32.13C380 227.5 384 218.8 384 209.4V70C384 49 367 32 345.1 32zM192 224C174.4 224 160 238.4 160 256v64h64V256C224 238.4 209.6 224 192 224z"/>
+													</svg> -->
+													<svg style="height:4rem" viewBox="0 0 512 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+													<circle cx="256" cy="150" r="60" />
+													<path d="M256 220c-70 0-120 40-120 100v130h240V320c0-60-50-100-120-100z" />
+
+													<circle cx="105" cy="200" r="50" opacity="0.9" />
+													<path d="M105 260c-60 0-95 35-95 90v100h110V350c0-50 20-90 20-90z" opacity="0.9" />
+
+													<circle cx="407" cy="200" r="50" opacity="0.9" />
+													<path d="M407 260c60 0 95 35 95 90v100H392V350c0-50-20-90-20-90z" opacity="0.9" />
+
+													<rect x="10" y="455" width="492" height="35" rx="17" />
+													</svg>
+													<p class="lead text-primary mt-3">Team Member</p>
+													<h4 class="card-title text-primary fs-3"><span id="Team-Member"></span></h4>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-9 col-md-6 col-lg-4">
+										<div class="card shadow pt-3 mb-2" data-bs-toggle="tooltip" data-bs-title="Member">
+											<div class="card-body">
+												<div class="text-center">
+													<!-- <svg style="height: 4rem;" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg">
+														<path d="M296 464H23.1C10.75 464 0 474.7 0 487.1S10.75 512 23.1 512h272C309.3 512 320 501.3 320 488S309.3 464 296 464zM0 304c0 51.63 30.12 85.25 64 96v32h48v-67.13l-33.5-10.63C63.75 349.5 48 333.9 48 304c0-84.1 93.2-206.5 112.6-206.5c19.63 0 60.01 67.18 70.28 85.8l-66.13 66.13c-3.125 3.125-4.688 7.219-4.688 11.31S161.6 268.9 164.8 272L176 283.2c3.125 3.125 7.219 4.688 11.31 4.688s8.188-1.562 11.31-4.688L253 229C264.4 256.8 272 283.5 272 304c0 29.88-15.75 45.5-30.5 50.25L208 364.9V432H256v-32c33.88-10.75 64-44.38 64-96c0-73.38-67.75-197.2-120.6-241.5C213.4 59.12 224 47 224 32c0-17.62-14.38-32-32-32H128C110.4 0 96 14.38 96 32c0 15 10.62 27.12 24.62 30.5C67.75 106.8 0 230.6 0 304z"/>
+													</svg> -->
+													<svg viewBox="0 0 512 512" fill="currentColor" style="height:4rem" xmlns="http://www.w3.org/2000/svg">
+													<path d="M170 120 L110 80 L100 180 L170 230 Z" />
+													<path d="M342 120 L402 80 L412 180 L342 230 Z" />
+
+													<path d="M150 90 h212 l-5 60 c-5 110-75 160-101 160 s-96-50-101-160 z" />
+													
+													<path d="M185 120 v90" fill="none" stroke="white" stroke-width="14" stroke-linecap="round" opacity="0.4" />
+													<path d="M210 140 v40" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" opacity="0.2" />
+
+													<path d="M236 310 h40 v45 h-40 z" />
+													<path d="M190 355 h132 l10 40 H180 z" />
+
+													<rect x="20" y="460" width="472" height="25" rx="12" />
+													</svg>
+													<p class="lead text-primary mt-3">Competition</p>
+													<h4 class="card-title text-primary fs-3"><span id="Competition-Name"></span></h4>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-9 col-md-6 col-lg-4">
+										<div class="card shadow pt-3 mb-2" data-bs-toggle="tooltip" data-bs-title="Member">
+											<div class="card-body">
+												<div class="text-center">
+													<!-- <svg style="height: 4rem;" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg">
+														<path d="M44 320.6l14.5 6.5c-17.01 20.24-26.44 45.91-26.44 72.35C32.06 399.7 32.12 432 32.12 432h48v-32c0-24.75 14-47.5 36.13-58.63l38.13-23.37c13.25-6.625 21.75-20.25 21.75-35.13v-58.75l-15.37 9C155.6 235.8 151.9 240.4 150.5 245.9L143 271c-2.25 7.625-8 13.88-15.38 16.75L117.1 292C114 293.3 110.7 293.9 107.4 293.9c-3.626 0-7.263-.7514-10.66-2.254L63.5 276.9C54.12 272.6 48 263.2 48 252.9V140.5c0-5.125 2.125-10.12 5.75-13.88l7.375-7.375L49.5 96C48.5 94.12 48 92 48 89.88C48 84.38 52.38 80 57.88 80h105c86.75 0 156.1 70.38 156.1 157.1V432h48.06l-.0625-194.9C367.9 124 276 32 162.9 32H57.88C25.88 32 0 57.88 0 89.88c0 8.5 1.75 16.88 5.125 24.62C1.75 122.8 0 131.6 0 140.5v112.4C0 282.2 17.25 308.8 44 320.6zM80.12 164c0 11 8.875 20 20 20c11 0 20-9 20-20s-9-20-20-20C89 144 80.12 153 80.12 164zM360 464H23.1C10.75 464 0 474.7 0 487.1S10.75 512 23.1 512H360C373.3 512 384 501.3 384 488S373.3 464 360 464z"/>
+													</svg> -->
+													<svg viewBox="0 0 512 512" fill="currentColor" style="height:4rem" xmlns="http://www.w3.org/2000/svg">
+													<path d="M256 32C132.3 32 32 132.3 32 256c0 42.5 11.8 82.2 32.3 116.2L32 480l110.5-31.4C175.2 467.4 214.3 480 256 480c123.7 0 224-100.3 224-224S379.7 32 256 32z"/>
+													<path fill="white" d="M362.7 311.6c-5.1-2.5-30.1-14.8-34.8-16.5-4.7-1.7-8.1-2.5-11.5 2.5s-13.3 16.5-16.3 20-6.1 3.9-11.2 1.3-21.5-7.9-40.9-25.2c-15.1-13.5-25.3-30.1-28.3-35.2s-.3-7.9 2.2-10.4c2.3-2.2 5.1-5.9 7.6-8.9 2.5-3 3.4-5.1 5.1-8.5s.8-6.3-.4-8.9-11.5-27.7-15.7-37.9c-4.1-10-8.3-8.6-11.5-8.8-3-.1-6.3-.2-9.7-.2s-8.9 1.3-13.5 6.3c-4.7 5.1-17.8 17.4-17.8 42.4s18.2 49.1 20.8 52.5c2.5 3.4 35.9 54.8 87 76.9 12.1 5.2 21.6 8.4 29 10.7 12.2 3.9 23.3 3.3 32.1 2s19.5-8 22.2-15.7c2.8-7.7 2.8-14.3 1.9-15.7s-3.4-2.5-8.5-5z"/>
+													</svg>
+													<p class="lead text-primary mt-3">WhattsApp Group</p>
+													<h4 class="card-title text-primary fs-3">
+														<a id="WhatsApp-Group" href="#" target="_blank" class="text-primary"></a>
+													</h4>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="col-sm-9 col-md-6 col-lg-4">
+										<div class="card shadow pt-3 mb-2" data-bs-toggle="tooltip" data-bs-title="Leader">
+											<div class="card-body">
+												<div class="text-center">
+													<!-- <svg style="height: 4rem;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.97,17.758A1,1,0,0,0,19,17h-.536c-1.377-1.76-1.87-5.044-2-7H17a1,1,0,0,0,0-2h-.064a5.145,5.145,0,0,0,.314-1.75,5.25,5.25,0,0,0-10.5,0A5.145,5.145,0,0,0,7.064,8H7a1,1,0,0,0,0,2h.533c-.127,1.956-.62,5.24-2,7H5a1,1,0,0,0-.97.758l-1,4A1,1,0,0,0,4,23H20a1,1,0,0,0,.97-1.242ZM12,3a3.254,3.254,0,0,1,3.25,3.25A3.158,3.158,0,0,1,14.72,8H9.28a3.158,3.158,0,0,1-.53-1.75A3.254,3.254,0,0,1,12,3ZM9.536,10h4.928a18.915,18.915,0,0,0,1.641,7H7.9A18.915,18.915,0,0,0,9.536,10ZM5.281,21l.5-2H18.219l.5,2Z"/></svg> -->
+													<svg viewBox="0 0 512 512" fill="currentColor" style="height:4rem" xmlns="http://www.w3.org/2000/svg">
+													<path d="M120 40h200l100 100v300c0 17.7-14.3 32-32 32H120c-17.7 0-32-14.3-32-32V72c0-17.7 14.3-32 32-32z" opacity="0.2"/>
+													<path d="M120 40h190v110h110v280c0 13.3-10.7 24-24 24H120c-13.3 0-24-10.7-24-24V64c0-13.3 10.7-24 24-24z" />
+													
+													<rect x="140" y="220" width="160" height="20" rx="10" fill="white" opacity="0.3"/>
+													<rect x="140" y="270" width="120" height="20" rx="10" fill="white" opacity="0.3"/>
+													
+													<circle cx="210" cy="130" r="30" fill="white" opacity="0.2"/>
+
+													<circle cx="400" cy="400" r="80" fill="currentColor" />
+													<path d="M360 400 l30 30 l60 -60" fill="none" stroke="white" stroke-width="25" stroke-linecap="round" stroke-linejoin="round" />
+													</svg>
+													<p class="lead text-primary mt-3">Payment Status</p>
+													<h4 class="card-title text-primary fs-3"><span id="Payment-Status"></span></h4>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div id="final-cards-wrapper" class="row g-3">
+										<div class="col-sm-9 col-md-6 col-lg-4">
+											<div class="card shadow pt-3 mb-2" data-bs-toggle="tooltip" data-bs-title="Member">
+												<div class="card-body">
+													<div class="text-center">
+														<!-- <svg style="height: 4rem;" viewBox="0 0 320 512" xmlns="http://www.w3.org/2000/svg">
+															<path d="M296 464H23.1C10.75 464 0 474.7 0 487.1S10.75 512 23.1 512h272C309.3 512 320 501.3 320 488S309.3 464 296 464zM0 304c0 51.63 30.12 85.25 64 96v32h48v-67.13l-33.5-10.63C63.75 349.5 48 333.9 48 304c0-84.1 93.2-206.5 112.6-206.5c19.63 0 60.01 67.18 70.28 85.8l-66.13 66.13c-3.125 3.125-4.688 7.219-4.688 11.31S161.6 268.9 164.8 272L176 283.2c3.125 3.125 7.219 4.688 11.31 4.688s8.188-1.562 11.31-4.688L253 229C264.4 256.8 272 283.5 272 304c0 29.88-15.75 45.5-30.5 50.25L208 364.9V432H256v-32c33.88-10.75 64-44.38 64-96c0-73.38-67.75-197.2-120.6-241.5C213.4 59.12 224 47 224 32c0-17.62-14.38-32-32-32H128C110.4 0 96 14.38 96 32c0 15 10.62 27.12 24.62 30.5C67.75 106.8 0 230.6 0 304z"/>
+														</svg> -->
+														<svg viewBox="0 0 512 512" fill="currentColor" style="height:4rem" xmlns="http://www.w3.org/2000/svg">
+														<g transform="translate(60, 0)">
+															<rect x="48" y="32" width="32" height="448" rx="16" />
+															<path d="M80 64 c100 -40 150 40 250 0 v160 c-100 40 -150 -40 -250 0 Z" />
+															<path d="M80 64 c100 -40 150 40 250 0 v30 c-100 40 -150 -40 -250 0 Z" opacity="0.2" fill="black" />
+															<circle cx="64" cy="32" r="24" />
+														</g>
+														</svg>
+														<p class="lead text-primary mt-3">Preliminary Leaderboard</p>
+														<h4 class="card-title text-primary fs-3"><span id="Preliminary-Leaderboard"></span></h4>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-9 col-md-6 col-lg-4">
+											<div class="card shadow pt-3 mb-2" data-bs-toggle="tooltip" data-bs-title="Member">
+												<div class="card-body">
+													<div class="text-center">
+														<!-- <svg style="height: 4rem;" viewBox="0 0 384 512" xmlns="http://www.w3.org/2000/svg">
+															<path d="M44 320.6l14.5 6.5c-17.01 20.24-26.44 45.91-26.44 72.35C32.06 399.7 32.12 432 32.12 432h48v-32c0-24.75 14-47.5 36.13-58.63l38.13-23.37c13.25-6.625 21.75-20.25 21.75-35.13v-58.75l-15.37 9C155.6 235.8 151.9 240.4 150.5 245.9L143 271c-2.25 7.625-8 13.88-15.38 16.75L117.1 292C114 293.3 110.7 293.9 107.4 293.9c-3.626 0-7.263-.7514-10.66-2.254L63.5 276.9C54.12 272.6 48 263.2 48 252.9V140.5c0-5.125 2.125-10.12 5.75-13.88l7.375-7.375L49.5 96C48.5 94.12 48 92 48 89.88C48 84.38 52.38 80 57.88 80h105c86.75 0 156.1 70.38 156.1 157.1V432h48.06l-.0625-194.9C367.9 124 276 32 162.9 32H57.88C25.88 32 0 57.88 0 89.88c0 8.5 1.75 16.88 5.125 24.62C1.75 122.8 0 131.6 0 140.5v112.4C0 282.2 17.25 308.8 44 320.6zM80.12 164c0 11 8.875 20 20 20c11 0 20-9 20-20s-9-20-20-20C89 144 80.12 153 80.12 164zM360 464H23.1C10.75 464 0 474.7 0 487.1S10.75 512 23.1 512H360C373.3 512 384 501.3 384 488S373.3 464 360 464z"/>
+														</svg> -->
+														<svg viewBox="0 0 512 512" fill="currentColor" style="height:4rem" xmlns="http://www.w3.org/2000/svg">
+														<path d="M128 64h256c26.5 0 48 21.5 48 48v336c0 26.5-21.5 48-48 48H128c-26.5 0-48-21.5-48-48V112c0-26.5 21.5-48 48-48z" />
+														
+														<path d="M192 32h128c17.7 0 32 14.3 32 32v32H160V64c0-17.7 14.3-32 32-32z" fill-opacity="0.8" />
+														
+														<path d="M180 280 l50 50 l100 -100" fill="none" stroke="white" stroke-width="40" stroke-linecap="round" stroke-linejoin="round" />
+														
+														<rect x="160" y="380" width="192" height="15" rx="7.5" fill="white" opacity="0.2" />
+														</svg>
+														<p class="lead text-primary mt-3">Final Round Registration</p>
+														<h4 class="card-title text-primary fs-3">
+															<a id="Final-Round-Registration" class="text-primary" role = "button"></a>
+														</h4>
+													</div>
+												</div>
+											</div>
+										</div>
+										<div class="col-sm-9 col-md-6 col-lg-4">
+											<div class="card shadow pt-3 mb-2" data-bs-toggle="tooltip" data-bs-title="Leader">
+												<div class="card-body">
+													<div class="text-center">
+														<!-- <svg style="height: 4rem;" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M19.97,17.758A1,1,0,0,0,19,17h-.536c-1.377-1.76-1.87-5.044-2-7H17a1,1,0,0,0,0-2h-.064a5.145,5.145,0,0,0,.314-1.75,5.25,5.25,0,0,0-10.5,0A5.145,5.145,0,0,0,7.064,8H7a1,1,0,0,0,0,2h.533c-.127,1.956-.62,5.24-2,7H5a1,1,0,0,0-.97.758l-1,4A1,1,0,0,0,4,23H20a1,1,0,0,0,.97-1.242ZM12,3a3.254,3.254,0,0,1,3.25,3.25A3.158,3.158,0,0,1,14.72,8H9.28a3.158,3.158,0,0,1-.53-1.75A3.254,3.254,0,0,1,12,3ZM9.536,10h4.928a18.915,18.915,0,0,0,1.641,7H7.9A18.915,18.915,0,0,0,9.536,10ZM5.281,21l.5-2H18.219l.5,2Z"/></svg> -->
+														<svg viewBox="0 0 512 512" fill="currentColor" style="height:4rem" xmlns="http://www.w3.org/2000/svg">
+														<path d="M120 40h200l100 100v300c0 17.7-14.3 32-32 32H120c-17.7 0-32-14.3-32-32V72c0-17.7 14.3-32 32-32z" opacity="0.2"/>
+														<path d="M120 40h190v110h110v280c0 13.3-10.7 24-24 24H120c-13.3 0-24-10.7-24-24V64c0-13.3 10.7-24 24-24z" />
+														
+														<rect x="140" y="220" width="160" height="20" rx="10" fill="white" opacity="0.3"/>
+														<rect x="140" y="270" width="120" height="20" rx="10" fill="white" opacity="0.3"/>
+														
+														<circle cx="210" cy="130" r="30" fill="white" opacity="0.2"/>
+
+														<circle cx="400" cy="400" r="80" fill="currentColor" />
+														<path d="M360 400 l30 30 l60 -60" fill="none" stroke="white" stroke-width="25" stroke-linecap="round" stroke-linejoin="round" />
+														</svg>
+														<p class="lead text-primary mt-3">Final Payment Status</p>
+														<h4 class="card-title text-primary fs-3"><span id="Final-Payment-Status"></span></h4>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</main>
+
+	<!-- Final Payment Modal -->
+	<div class="modal fade" id="finalPaymentModal" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-xl">
+			<div class="modal-content">
+				<div id="final-payment-wrapper"></div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Preliminary Leaderboard Modal -->
+	<div id="prelim-leaderboard-modal-wrapper" class="custom-modal-hidden">
+		<div class="custom-modal-box">
+			<div class="custom-modal-header">
+				<h5 style="margin:0; text-transform:uppercase; letter-spacing:1px;">Preliminary Assessment</h5>
+				<button type="button" class="custom-close-btn" onclick="closePrelimLeaderboardModal()">&times;</button>
+			</div>
+
+			<div class="custom-modal-body">
+				<table class="custom-table">
+					<thead>
+						<tr>
+							<th style="width: 5%;">No</th>
+							<th style="width: 35%;">Nama Tim / Univ</th>
+							<th style="width: 20%;">Final Status</th>
+							<th style="width: 20%;">Rank</th>
+							<th style="width: 20%;">Score</th>
+						</tr>
+					</thead>
+					<tbody id="prelim-table-body"></tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+	<!-- Toast Notification -->
+	<div class="toast-container position-fixed bottom-0 end-0 p-3">
+		<div id="upload-toast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+			<div class="toast-header">
+				<strong class="me-auto text-black">Upload Status</strong>
+				<button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+			</div>
+			<div class="toast-body"></div>
+		</div>
+	</div>
+
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="../../static/lib/wow/wow.min.js"></script>
+	<script src="../../static/lib/easing/easing.min.js"></script>
+	<script src="../../static/lib/waypoints/waypoints.min.js"></script>
+	<script src="../../static/lib/counterup/counterup.min.js"></script>
+	<script src="../../static/lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="../../static/lib/lightbox/js/lightbox.min.js"></script>
+	<script src="../../static/js/main.js"></script>
+	<script src="../../dist/plugin/chart.min.js"></script>
+	<script src="../../dist/index.bundle.js"></script>
+	<script src="../../dist/delegates_sc.bundle.js"></script>
+	<script src="../../static/js/validation.js"></script>
+	<script>
+		window.closePrelimLeaderboardModal = function() {
+			const modal = document.getElementById('prelim-leaderboard-modal-wrapper');
+			if (modal) {
+				modal.style.display = 'none';
+			}
+		};
+	</script>
+</body>
+
+</html>

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<title>Treasury - IPFEST 2025</title>
+	<meta content="width=device-width, initial-scale=1.0" name="viewport">
+	<meta content="" name="keywords">
+	<meta content="" name="description">
+	<link rel="icon" href="../static/images/ipfest_2026_logo.svg">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Rubik:wght@400;500&display=swap" rel="stylesheet"> 
+	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+	<link href="../static/lib/animate/animate.min.css" rel="stylesheet">
+	<link href="../static/lib/owlcarousel/assets/owl.carousel.min.css" rel="stylesheet">
+	<link href="../static/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
+	<link href="../static/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../static/css/style.css" rel="stylesheet">
+</head>
+<body class="dashboard-theme">
+	<!-- Spinner Start -->
+   <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+      <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+         <span class="sr-only">Loading...</span>
+      </div>
+   </div>
+   <!-- Spinner End -->
+
+   <!-- Navbar & Hero Start -->
+	<div class="container-fluid p-0">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-light px-4 px-lg-5 py-3 py-lg-0 dashboard-navbar">
+			<a href="" class="navbar-brand p-0 d-flex align-items-center gap-3">
+				<img src="../static/images/ipfest_2026_logo.svg" alt="IPFEST 2026 Flame" width="69" height="69" class="brand-mark">
+				<img src="../static/images/ipfest_2026_text.svg" alt="IPFEST 2026" width="94" height="53" class="brand-wordmark">
+			</a>
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+				<span class="fa fa-bars"></span>
+			</button>
+			<div class="collapse navbar-collapse py-3 py-lg-0" id="navbarCollapse">
+				<div class="navbar-nav ms-auto">
+					<div class="">
+						<ul class="nav nav-tabs border border-0" id="nav-tab" role="tablist">
+							<li class="nav-item" role="presentation">
+								<button style="background-color: inherit;" class="nav-link active border border-0" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true"><span class="fs-6">Dashboard</span></button>
+							</li>
+							<li class="nav-item" role="presentation">
+								<button style="background-color: inherit;" class="nav-link border border-0" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false"><span class="fs-6">Verification</span></button>
+							</li>
+							<li class="nav-item" role="presentation">
+								<button style="background-color: inherit;" class="nav-link border border-0" id="nav-final-tab" data-bs-toggle="tab" data-bs-target="#nav-final" type="button" role="tab" aria-controls="nav-final" aria-selected="false"><span class="fs-6">Final</span></button>
+							</li>
+							<!--<li class="nav-item" role="presentation">
+								<button style="background-color: inherit;" class="nav-link border border-0" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false"><span class="fs-6">History</span></button>
+							</li>-->
+						</ul>
+					</div>
+					<div class="d-flex align-items-center">	
+						<button class="btn btn-light border border-primary rounded-pill text-primary py-2 px-4 me-4" id="logout-btn">Log Out</button>
+					</div>
+					<script>
+						const navTab = document.getElementById("nav-tab")
+						let resizeTimeOut
+
+						window.addEventListener("resize", () => {
+							clearTimeout(resizeTimeOut)
+							resizeTimeOut = setTimeout(() => {
+								if (window.innerWidth <= 992) {
+									navTab.classList.add("flex-column", "mb-4", "ms-3")
+								} else {
+									navTab.classList.remove("flex-column", "mb-4", "ms-3")
+								}
+							}, 200)
+						})
+					</script>
+				</div>
+			</div>
+		</nav>
+	</div>
+   <!-- Navbar & Hero End -->
+
+	<!-- Main -->
+	<main class="container-fluid py-5 dashboard-stage">
+		<div class="container d-flex py-5">
+			<section class="col-lg-10 col-md-11 col-sm-12 mx-auto">
+				<div class="tab-content" id="nav-tabContent" style="padding: 1rem;">
+					<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
+						<div class="dashboard-panel">
+							<div class="row g-3">
+								<div class="col-sm-9 col-md-6 col-lg-4">
+									<div class="card shadow pt-3 mb-2">
+										<div class="card-body">
+											<div class="text-center">
+												<i class="bi bi-cash-coin text-primary fs-3"></i>
+												<p class="lead text-primary mt-3">Total Registration Fee</p>
+												<h4 class="card-title text-primary fs-3">Rp<span id="total-reg-fee"></span></h4>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-9 col-md-6 col-lg-4">
+									<div class="card shadow pt-3 mb-2">
+										<div class="card-body">
+											<div class="text-center">
+												<i class="bi bi-cash-coin text-primary fs-3"></i>
+												<p class="lead text-primary mt-3">Total Finalist Fee</p>
+												<h4 class="card-title text-primary fs-3">Rp<span id="total-fin-fee"></span></h4>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-9 col-md-6 col-lg-4">
+									<div class="card shadow pt-3 mb-2">
+										<div class="card-body">
+											<div class="text-center">
+												<i class="bi bi-cash-coin text-secondary fs-3"></i>
+												<p class="lead text-secondary mt-3">Total Income</p>
+												<h4 class="card-title text-secondary fs-3">Rp<span id="total-income"></span></h4>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-9 col-md-6 col-lg-4">
+									<div class="card shadow pt-3 mb-2">
+										<div class="card-body">
+											<div class="text-center">
+												<i class="fas fa-users text-primary fs-3"></i>
+												<p class="lead text-primary mt-3">Verified Teams</p>
+												<h4 class="card-title text-primary fs-2"><span id="verified-teams"></span></h4>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-9 col-md-6 col-lg-4">
+									<div class="card shadow pt-3 mb-2">
+										<div class="card-body">
+											<div class="text-center">
+												<i class="fas fa-users text-primary fs-3"></i>
+												<p class="lead text-primary mt-3">Unverified Teams</p>
+												<h4 class="card-title text-primary fs-2"><span id="unverified-teams"></span></h4>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-sm-9 col-md-6 col-lg-4">
+									<div class="card shadow pt-3 mb-2">
+										<div class="card-body">
+											<div class="text-center">
+												<i class="fas fa-users text-secondary fs-3"></i>
+												<p class="lead text-secondary mt-3">Total Registran</p>
+												<h4 class="card-title text-secondary fs-2"><span id="total-reg"></span></h4>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<!--<div class="row py-5">
+								<div class="card shadow rounded">
+									<h3 class="ms-3 mt-3"><span id="total-teams-registered" class="text-secondary"></span> teams have registered</h3>
+									<div class="card-body">
+										<canvas id="registration-chart" width="200" height="100"></canvas>
+									</div>
+								</div>
+							</div>-->
+						</div>
+					</div>
+					<div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab" tabindex="0">
+						<div class="dashboard-panel">
+							<div class="">
+								<form id="treasury-privilage">
+									<div class="overflow-auto" style="max-height: 70vh; width: 100%">
+										<table class="table">
+											<thead class="text-primary">
+												<tr>
+													<th scope="col">No.</th>
+													<th scope="col">Team Name</th>
+													<th scope="col">University</th>
+													<th scope="col">Competition</th>
+													<th scope="col">Join on</th>
+													<th scope="col">Early Bird</th>
+													<th scope="col">Proof Link</th>
+													<th scope="col">Payment Status</th>
+												</tr>
+											</thead>
+											<tbody id="treasury-team-list"></tbody>
+										</table>
+									</div>
+									<div class="d-flex justify-content-end py-2">
+										<button type="submit" class="btn btn-light border border-primary rounded-pill text-primary py-2 px-4 mt-4">Save</button>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="nav-final" role="tabpanel" aria-labelledby="nav-final-tab" tabindex="0">
+						<div class="dashboard-panel">
+							<div class="">
+								<form id="treasury-privilage-final">
+									<div class="overflow-auto" style="max-height: 70vh; width: 100%">
+										<table class="table">
+											<thead class="text-primary">
+												<tr>
+													<th scope="col">No.</th>
+													<th scope="col">Team Name</th>
+													<th scope="col">University</th>
+													<th scope="col">Competition</th>
+													<th scope="col">Scheme</th>
+													<th scope="col">DP Category</th>
+													<th scope="col">Method</th>
+													<th scope="col">Member</th>
+													<th scope="col">First Link</th>
+													<th scope="col">Last Link</th>
+													<th scope="col">Hospitality</th>
+													<th scope="col">Payment Status</th>
+													<th scope="col">Delete</th>
+												</tr>
+											</thead>
+											<tbody id="treasury-final-team-list"></tbody>
+										</table>
+									</div>
+									<div class="d-flex justify-content-end py-2">
+										<button type="submit" class="btn btn-light border border-primary rounded-pill text-primary py-2 px-4 mt-4">Save</button>
+									</div>
+								</form>
+								<div class="">
+
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
+						<div class="dashboard-panel">
+							<div class="">
+								<form id="treasury-history">
+									<div class="overflow-auto" style="max-height: 70vh; width: 100%">
+										<table class="table">
+											<thead class="text-primary">
+												<tr>
+													<th scope="col">No.</th>
+													<th scope="col">Team Name</th>
+													<th scope="col">University</th>
+													<th scope="col">Competition</th>
+													<th scope="col">Join on</th>
+												</tr>
+											</thead>
+											<tbody id="treasury-history-list"></tbody>
+										</table>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+		</div>
+	</main>
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<script src="../static/lib/wow/wow.min.js"></script>
+	<script src="../static/lib/easing/easing.min.js"></script>
+	<script src="../static/lib/waypoints/waypoints.min.js"></script>
+	<script src="../static/lib/counterup/counterup.min.js"></script>
+	<script src="../static/lib/owlcarousel/owl.carousel.min.js"></script>
+	<script src="../static/lib/lightbox/js/lightbox.min.js"></script>
+	<script src="../static/js/main.js"></script>
+	<script src="../dist/plugin/chart.min.js"></script>
+	<script src="../dist/index.bundle.js"></script>
+	<script src="../dist/treasury.bundle.js"></script>
+</body>
+</html>
+

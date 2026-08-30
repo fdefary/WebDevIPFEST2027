@@ -1,0 +1,916 @@
+/*** Dashboard Theme for Competition Pages ***/
+@font-face {
+    font-family: "Plus Jakarta Sans SemiBold";
+    src: url("../fonts/PlusJakartaSans-SemiBold.ttf") format("truetype");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+	font-family: 'Solomon Sans';
+	src: url("../fonts/Solomon Sans Normal.otf");
+}
+
+body {
+    --bs-primary: #4C41A9;
+    --bs-secondary: #160840;
+    --bs-dark: #160840;
+    --bs-light: #FFFFFF;
+    --bs-info: #4C41A9;
+    --bs-danger: #4C41A9;
+    --bs-warning: #4C41A9;
+    --dashboard-surface: #FFFFFF;
+    --dashboard-dark: #160840;
+    --dashboard-gradient-start: #160840;
+    --dashboard-gradient-stop: #4C41A9;
+    --dashboard-nav-height: 96px;
+    --dashboard-nav-padding: 1.25rem;
+    font-family: "Plus Jakarta Sans SemiBold", "Plus Jakarta Sans", "Rubik", sans-serif;
+    font-weight: 600;
+    background: linear-gradient(180deg, #160840 43%, #4C41A9 100%);
+    color: var(--dashboard-dark);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background-image: url("../images/dotted-halftone.svg");
+    background-repeat: no-repeat;
+    background-position: center top;
+    background-size: cover;
+    opacity: 0.25;
+    pointer-events: none;
+    z-index: 0;
+}
+
+@media (max-width: 992px) {
+    body {
+        --dashboard-nav-height: 80px;
+        --dashboard-nav-padding: 0.9rem;
+    }
+}
+
+/* Competition specific fonts */
+h1, h2, h3 {
+	font-family: 'Solomon Sans', "Plus Jakarta Sans SemiBold", "Plus Jakarta Sans", sans-serif;
+}
+
+h4, h5, h6, p, a, label, button {
+	font-family: "Plus Jakarta Sans SemiBold", "DM Sans", sans-serif;
+}
+
+#compe-title {
+	font-family: 'Solomon Sans';
+	font-weight: bold;
+}
+
+/* Update navbar styling */
+.navbar {
+    background: #FFFFFF !important;
+    box-shadow: 0 20px 60px rgba(8, 5, 41, 0.25);
+    z-index: 10;
+    position: relative;
+    min-height: var(--dashboard-nav-height);
+    padding-top: var(--dashboard-nav-padding) !important;
+    padding-bottom: var(--dashboard-nav-padding) !important;
+}
+
+.navbar::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-color: #FFFFFF;
+    z-index: -1;
+}
+
+.navbar .navbar-brand img {
+    display: block;
+}
+
+.navbar .navbar-nav .nav-link {
+    color: var(--dashboard-dark) !important;
+    font-weight: 600;
+    padding: 0.5rem 1.25rem;
+    border-radius: 999px;
+    transition: background-color .3s ease, color .3s ease;
+}
+
+.navbar .navbar-nav .nav-link.active,
+.navbar .navbar-nav .nav-link:focus,
+.navbar .navbar-nav .nav-link:hover {
+    color: #FFFFFF !important;
+    background-color: var(--bs-primary);
+}
+
+/* Competition specific button styles */
+#hero-register {
+    border-color: var(--bs-primary);
+    color: var(--bs-primary) !important;
+    font-weight: 600;
+    background-color: transparent;
+    box-shadow: 0 10px 20px rgba(76, 65, 169, 0.15);
+    border-radius: 999px;
+    transition: all 0.3s ease;
+}
+
+#hero-register:hover {
+    background-color: var(--bs-primary) !important;
+    color: #FFFFFF !important;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(76, 65, 169, 0.25);
+}
+
+#hero-guide-book {
+    background: linear-gradient(135deg, var(--dashboard-gradient-start), var(--dashboard-gradient-stop));
+    border-color: var(--dashboard-gradient-stop);
+    color: #FFFFFF !important;
+    font-weight: 600;
+    box-shadow: 0 12px 30px rgba(76, 65, 169, 0.25);
+    border-radius: 999px;
+    transition: all 0.3s ease;
+}
+
+#hero-guide-book:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 15px 35px rgba(76, 65, 169, 0.35);
+}
+
+/* General content styling */
+#about-content {
+    text-align: justify;
+    background: var(--dashboard-surface);
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(14, 9, 65, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    z-index: 1;
+    margin: 1rem 0;
+}
+
+/* Update section backgrounds */
+section {
+    position: relative;
+    z-index: 1;
+}
+
+section .container {
+    position: relative;
+    z-index: 1;
+}
+
+/* Card styling */
+.card {
+    background: var(--dashboard-surface);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(14, 9, 65, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 15px 40px rgba(14, 9, 65, 0.25);
+}
+
+/* Table styling */
+.table {
+    color: var(--dashboard-dark);
+    border: 1px solid rgba(76, 65, 169, 0.35) !important;
+    background-color: rgba(255, 255, 255, 0.85);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.table thead {
+    background: rgba(76, 65, 169, 0.15);
+    color: var(--bs-primary);
+    border-bottom: 2px solid rgba(76, 65, 169, 0.35);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.table tbody tr:nth-child(even) {
+    background-color: rgba(76, 65, 169, 0.05);
+}
+
+.table tbody tr:hover {
+    background-color: rgba(76, 65, 169, 0.1);
+}
+
+/* Button general styling */
+.btn {
+    border-radius: 999px;
+    font-weight: 600;
+    box-shadow: 0 8px 20px rgba(76, 65, 169, 0.2);
+    transition: all 0.3s ease;
+}
+
+.btn.btn-light {
+    background-color: #FFFFFF !important;
+    color: var(--bs-primary) !important;
+    border-color: var(--bs-primary);
+}
+
+.btn.btn-light:hover {
+    background-color: var(--bs-primary) !important;
+    color: #FFFFFF !important;
+    transform: translateY(-2px);
+}
+
+.btn.btn-primary {
+    background: var(--bs-primary) !important;
+    border-color: var(--bs-primary);
+    color: #FFFFFF !important;
+}
+
+.btn.btn-primary:hover {
+    background: var(--dashboard-gradient-start) !important;
+    border-color: var(--dashboard-gradient-start);
+    transform: translateY(-2px);
+}
+
+/* Form styling */
+.form-control {
+    border-radius: 10px;
+    border: 1px solid rgba(76, 65, 169, 0.3);
+    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.2rem rgba(76, 65, 169, 0.25);
+    background: #FFFFFF;
+}
+
+.form-label {
+    color: var(--dashboard-dark);
+    font-weight: 600;
+}
+
+/* Inverted text colors for dark background */
+.text-primary {
+    color: var(--bs-primary) !important;
+}
+
+.text-secondary {
+    color: var(--dashboard-dark) !important;
+}
+
+/* Fix text colors for dark theme competition pages */
+body:not(.dashboard-theme) .text-dark,
+body:not(.dashboard-theme) h1:not(.text-primary):not(.text-secondary):not(.text-info):not(.text-danger):not(.text-warning),
+body:not(.dashboard-theme) h2:not(.text-primary):not(.text-secondary):not(.text-info):not(.text-danger):not(.text-warning),
+body:not(.dashboard-theme) h3:not(.text-primary):not(.text-secondary):not(.text-info):not(.text-danger):not(.text-warning),
+body:not(.dashboard-theme) h4:not(.text-primary):not(.text-secondary):not(.text-info):not(.text-danger):not(.text-warning),
+body:not(.dashboard-theme) h5:not(.text-primary):not(.text-secondary):not(.text-info):not(.text-danger):not(.text-warning),
+body:not(.dashboard-theme) h6:not(.text-primary):not(.text-secondary):not(.text-info):not(.text-danger):not(.text-warning),
+body:not(.dashboard-theme) p:not(.text-primary):not(.text-secondary):not(.text-info):not(.text-danger):not(.text-warning):not(.text-muted),
+body:not(.dashboard-theme) span:not(.text-primary):not(.text-secondary):not(.text-info):not(.text-danger):not(.text-warning),
+body:not(.dashboard-theme) .display-1,
+body:not(.dashboard-theme) .display-2,
+body:not(.dashboard-theme) .display-3,
+body:not(.dashboard-theme) .display-4,
+body:not(.dashboard-theme) .display-5,
+body:not(.dashboard-theme) .display-6,
+body:not(.dashboard-theme) .lead,
+body:not(.dashboard-theme) .fs-1,
+body:not(.dashboard-theme) .fs-2,
+body:not(.dashboard-theme) .fs-3,
+body:not(.dashboard-theme) .fs-4,
+body:not(.dashboard-theme) .fs-5,
+body:not(.dashboard-theme) .fs-6 {
+    color: var(--dashboard-dark) !important;
+}
+
+/* Fix muted text */
+body:not(.dashboard-theme) .text-muted {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Fix blockquote footer */
+body:not(.dashboard-theme) .blockquote-footer {
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+/* Fix specific competition page sections */
+body:not(.dashboard-theme) .contact *,
+body:not(.dashboard-theme) .bg-breadcrumb * {
+    color: var(--dashboard-dark) !important;
+}
+
+body:not(.dashboard-theme) .bg-breadcrumb .display-3,
+body:not(.dashboard-theme) .contact h1,
+body:not(.dashboard-theme) .contact h2,
+body:not(.dashboard-theme) .contact h3,
+body:not(.dashboard-theme) .contact h4,
+body:not(.dashboard-theme) .contact h5,
+body:not(.dashboard-theme) .contact h6,
+body:not(.dashboard-theme) .contact p {
+    color: var(--dashboard-dark) !important;
+}
+
+/* Override timeline text colors */
+body:not(.dashboard-theme) .timeline-text {
+    color: #FFFFFF !important;
+}
+
+body:not(.dashboard-theme) .timeline-text h1,
+body:not(.dashboard-theme) .timeline-text h2,
+body:not(.dashboard-theme) .timeline-text h3,
+body:not(.dashboard-theme) .timeline-text h4,
+body:not(.dashboard-theme) .timeline-text h5,
+body:not(.dashboard-theme) .timeline-text h6,
+body:not(.dashboard-theme) .timeline-text p {
+    color: #FFFFFF !important;
+}
+
+body:not(.dashboard-theme) .timeline-date {
+    color: #FFFFFF !important;
+}
+
+/* Additional fixes for better readability on dark background */
+
+/* Fix breadcrumb section background and text - ensure centering */
+body:not(.dashboard-theme) .bg-breadcrumb {
+    background: linear-gradient(to right, #fefaf2, #fce1db) !important;
+    position: relative;
+    z-index: 1;
+}
+
+/* Ensure breadcrumb container is centered */
+body:not(.dashboard-theme) .bg-breadcrumb .container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: var(--bs-container-max-width, 1140px);
+}
+
+body:not(.dashboard-theme) .bg-breadcrumb::before,
+body:not(.dashboard-theme) .bg-breadcrumb::after {
+    background: rgba(76, 65, 169, 0.1) !important;
+}
+
+/* Fix all container sections within main - preserve centering */
+body:not(.dashboard-theme) main .container {
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 20px;
+    padding: 2rem;
+    margin: 1rem auto; /* Changed to auto for centering */
+    box-shadow: 0 10px 30px rgba(14, 9, 65, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    position: relative;
+    z-index: 1;
+    /* Ensure container maintains centering */
+    width: 100%;
+    max-width: var(--bs-container-max-width, 1140px);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Ensure all text in main sections is dark */
+body:not(.dashboard-theme) main .container *,
+body:not(.dashboard-theme) main .container h1,
+body:not(.dashboard-theme) main .container h2,
+body:not(.dashboard-theme) main .container h3,
+body:not(.dashboard-theme) main .container h4,
+body:not(.dashboard-theme) main .container h5,
+body:not(.dashboard-theme) main .container h6,
+body:not(.dashboard-theme) main .container p,
+body:not(.dashboard-theme) main .container span {
+    color: var(--dashboard-dark) !important;
+}
+
+/* Fix main container layout - preserve Bootstrap centering */
+body:not(.dashboard-theme) main {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+/* Ensure container-xl also stays centered */
+body:not(.dashboard-theme) main .container-xl {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    max-width: var(--bs-container-xl-max-width, 1320px);
+}
+
+/* Fix all sections to maintain proper centering */
+body:not(.dashboard-theme) .container,
+body:not(.dashboard-theme) .container-xl {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* Specifically fix competition content sections */
+body:not(.dashboard-theme) main .container.py-5,
+body:not(.dashboard-theme) main .container:not(.timeline-container) {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+/* Fix timeline container to be more readable */
+body:not(.dashboard-theme) .experience .container {
+    background: transparent !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+/* Fix team/champion sections */
+body:not(.dashboard-theme) .champ-container img,
+body:not(.dashboard-theme) .first-runner img,
+body:not(.dashboard-theme) .second-runner img,
+body:not(.dashboard-theme) .fav-winner img {
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(14, 9, 65, 0.2);
+}
+
+/* Fix any remaining dark elements */
+body:not(.dashboard-theme) .text-dark {
+    color: var(--dashboard-dark) !important;
+}
+
+/* Fix dropdown menus */
+body:not(.dashboard-theme) .dropdown-menu {
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    border: 1px solid var(--bs-primary) !important;
+    box-shadow: 0 5px 15px rgba(14, 9, 65, 0.2) !important;
+}
+
+body:not(.dashboard-theme) .dropdown-item {
+    color: var(--dashboard-dark) !important;
+}
+
+body:not(.dashboard-theme) .dropdown-item:hover {
+    background-color: var(--bs-primary) !important;
+    color: #FFFFFF !important;
+}
+
+/* Fix footer styling for competition pages */
+body:not(.dashboard-theme) footer {
+    background-color: #10053C !important;
+    position: relative;
+    z-index: 1;
+}
+
+/* Ensure all footer text is visible with high contrast */
+body:not(.dashboard-theme) footer .text-light,
+body:not(.dashboard-theme) footer .text-white,
+body:not(.dashboard-theme) footer h1,
+body:not(.dashboard-theme) footer h2,
+body:not(.dashboard-theme) footer h3,
+body:not(.dashboard-theme) footer h4,
+body:not(.dashboard-theme) footer h5,
+body:not(.dashboard-theme) footer h6,
+body:not(.dashboard-theme) footer p,
+body:not(.dashboard-theme) footer .lead,
+body:not(.dashboard-theme) footer .fs-6,
+body:not(.dashboard-theme) footer li,
+body:not(.dashboard-theme) footer [style*="color"] {
+    color: #FFFFFF !important;
+}
+
+/* Specific fix for contact person section with higher priority */
+body:not(.dashboard-theme) footer .col-md-12 h5,
+body:not(.dashboard-theme) footer ul li h5 {
+    color: #FFFFFF !important;
+}
+
+/* Fix inline styles with specific selectors - higher priority */
+body:not(.dashboard-theme) footer .col-md-12 .fs-6[style*="rgba"],
+body:not(.dashboard-theme) footer li h5[style*="rgba"],
+body:not(.dashboard-theme) footer li .fs-6[style*="color"],
+body:not(.dashboard-theme) footer h5[style*="rgba"] {
+    color: #FFFFFF !important;
+}
+
+/* Additional specific selectors for email text */
+body:not(.dashboard-theme) footer ul li h5.fs-6[style*="color"],
+body:not(.dashboard-theme) footer .col-sm-6 ul li h5[style*="color"],
+body:not(.dashboard-theme) footer .col-md-12 ul li h5[style*="color"] {
+    color: #FFFFFF !important;
+}
+
+/* Override inline styles with maximum specificity */
+footer#footer .col-md-12 h5.fs-6[style*="color"],
+footer .col-12 .col-md-4 .row .col-md-12 h5[style*="color"],
+footer ul li h5.fs-6[style*="rgba(245, 245, 245"] {
+    color: #FFFFFF !important;
+}
+
+/* Use attribute selector for exact match */
+body:not(.dashboard-theme) footer h5[style*="rgba(245, 245, 245, 0.719)"] {
+    color: #FFFFFF !important;
+}
+
+body:not(.dashboard-theme) footer li h5[style*="rgba(245, 245, 245, 0.719)"] {
+    color: #FFFFFF !important;
+}
+
+/* Aggressive override for any h5 with inline color in footer */
+body:not(.dashboard-theme) footer h5[style*="color:"] {
+    color: #FFFFFF !important;
+}
+
+/* Ultra-specific selector for email text */
+body:not(.dashboard-theme) footer .container-xl .row .col-12 .col-md-4 .row .col-md-12 ul li h5[style*="color"] {
+    color: #FFFFFF !important;
+}
+
+/* Target the exact path */
+body:not(.dashboard-theme) footer .col-12 .col-md-4 .row .col-md-12 ul li h5.fs-6 {
+    color: #FFFFFF !important;
+}
+
+/* Fix specific contact person email text - override dashboard-dark */
+body:not(.dashboard-theme) footer .col-md-12 ul li h5.fs-6:not(.text-light):not(.text-primary):not(.lead) {
+    color: #FFFFFF !important;
+}
+
+/* Specific fix for email entries */
+body:not(.dashboard-theme) footer li h5.fs-6:not(.text-light):not([class*="text"]) {
+    color: #FFFFFF !important;
+}
+
+/* Override any CSS that sets var(--dashboard-dark) */
+body:not(.dashboard-theme) footer .col-md-12 h5:not(.text-light) {
+    color: #FFFFFF !important;
+}
+
+/* Force override any rgba color in footer */
+body:not(.dashboard-theme) footer [style*="rgba(245, 245, 245"] {
+    color: #FFFFFF !important;
+}
+
+/* Override any remaining dark colors - but allow links to have their own colors */
+body:not(.dashboard-theme) footer *:not(a):not(.bi):not(.link-info) {
+    color: #FFFFFF !important;
+}
+
+/* Additional override to prevent var(--dashboard-dark) in footer */
+body:not(.dashboard-theme) footer h5,
+body:not(.dashboard-theme) footer .fs-6 {
+    color: #FFFFFF !important;
+}
+
+/* Final override for any h5 without text-light class in footer */
+body:not(.dashboard-theme) footer h5:not(.text-light) {
+    color: #FFFFFF !important;
+}
+
+/* Fix text-light class in footer - override var(--dashboard-dark) */
+body:not(.dashboard-theme) footer .text-light {
+    color: #FFFFFF !important;
+}
+
+/* Fix lead text-light class in footer */
+body:not(.dashboard-theme) footer .lead.text-light {
+    color: #FFFFFF !important;
+}
+
+/* Override any element with text-light class in footer */
+body:not(.dashboard-theme) footer *[class*="text-light"] {
+    color: #FFFFFF !important;
+}
+
+/* Force override for any dashboard-dark color in footer */
+body:not(.dashboard-theme) footer *[style*="var(--dashboard-dark)"],
+body:not(.dashboard-theme) footer *[style*="#160840"] {
+    color: #FFFFFF !important;
+}
+
+/* Universal override for all footer text elements */
+body:not(.dashboard-theme) footer h1,
+body:not(.dashboard-theme) footer h2,
+body:not(.dashboard-theme) footer h3,
+body:not(.dashboard-theme) footer h4,
+body:not(.dashboard-theme) footer h5,
+body:not(.dashboard-theme) footer h6,
+body:not(.dashboard-theme) footer p,
+body:not(.dashboard-theme) footer span,
+body:not(.dashboard-theme) footer .lead {
+    color: #FFFFFF !important;
+}
+
+/* Maximum specificity overrides for footer text */
+body:not(.dashboard-theme) footer.container-xl .row .col-12 .col-md-4 .row .col-md-12 ul li h5.lead.text-light,
+body:not(.dashboard-theme) footer .col-md-12 ul li h5.lead.text-light,
+body:not(.dashboard-theme) footer ul li h5.lead.text-light {
+    color: #FFFFFF !important;
+}
+
+/* Override any CSS that tries to set dashboard colors */
+body:not(.dashboard-theme) footer * {
+    color: #FFFFFF !important;
+}
+
+/* Restore link colors */
+body:not(.dashboard-theme) footer a {
+    color: #FFFFFF !important;
+}
+
+body:not(.dashboard-theme) footer .link-info {
+    color: #A0D2EB !important;
+}
+
+body:not(.dashboard-theme) footer a.link-info:hover {
+    color: #FFFFFF !important;
+}
+
+/* EXTREMELY HIGH SPECIFICITY OVERRIDES FOR PERSISTENT DARK TEXT */
+
+/* Override for lead text-light */
+footer.container-xl .row .col-12 .col-md-4 .row .col-md-12 ul li h5.lead.text-light,
+footer .col-md-12 ul li h5.lead.text-light,
+footer ul li h5.lead.text-light,
+footer h5.lead.text-light {
+    color: #FFFFFF !important;
+}
+
+/* Override for text-light fs-6 */
+footer.container-xl .row .col-12 .col-md-4 .row .col-md-12 ul li h5.text-light.fs-6,
+footer .col-md-12 ul li h5.text-light.fs-6,
+footer ul li h5.text-light.fs-6,
+footer h5.text-light.fs-6 {
+    color: #FFFFFF !important;
+}
+
+/* Override any text-light in footer */
+footer.container-xl .row .col-12 .col-md-4 .row .col-md-12 ul li h5.text-light,
+footer .col-md-12 ul li h5.text-light,
+footer ul li h5.text-light,
+footer h5.text-light {
+    color: #FFFFFF !important;
+}
+
+/* CSS that will win over almost anything */
+@layer override {
+    footer h5.lead.text-light,
+    footer h5.text-light,
+    footer h5.text-light.fs-6 {
+        color: #FFFFFF !important;
+    }
+}
+
+/* Inline style override - final attempt */
+footer h5[style*="var(--dashboard-dark)"],
+footer h5[style*="#160840"] {
+    color: #FFFFFF !important;
+}
+
+/* Force override with inline style injection via CSS */
+footer h5.lead.text-light::after,
+footer h5.text-light::after,
+footer h5.text-light.fs-6::after {
+    content: "" !important;
+    display: block !important;
+    width: 0 !important;
+    height: 0 !important;
+}
+
+/* Final nuclear option - highest specificity */
+footer h5,
+html body footer h5,
+body footer h5,
+#footer h5 {
+    color: #FFFFFF !important;
+}
+
+/* Override with ID if footer has ID */
+footer#footer h5.lead.text-light,
+footer#footer h5.text-light,
+footer#footer h5.text-light.fs-6 {
+    color: #FFFFFF !important;
+}
+
+/* Use attribute selector for maximum specificity */
+footer h5[class*="lead"][class*="text-light"],
+footer h5[class*="text-light"][class*="fs-6"] {
+    color: #FFFFFF !important;
+}
+
+/* Final attempt - direct element targeting */
+body > footer h5.lead.text-light,
+body > footer h5.text-light,
+body > footer h5.text-light.fs-6 {
+    color: #FFFFFF !important;
+}
+
+/* Fix h4.text-light and p.text-light in footer copyright section */
+body:not(.dashboard-theme) footer h4.text-light,
+body:not(.dashboard-theme) footer p.text-light {
+    color: #FFFFFF !important;
+}
+
+/* High specificity overrides for copyright section */
+footer.container-xl .row .col.d-flex h4.text-light,
+footer.container-xl .row .col.d-flex p.text-light,
+footer .row .col h4.text-light,
+footer .row .col p.text-light {
+    color: #FFFFFF !important;
+}
+
+/* Maximum specificity for copyright elements (accounting for HTML typo) */
+footer.container-xl .row .col.d-flex.justify-content-between.align-item-center.mt-5.mb-3 h4.text-light,
+footer.container-xl .row .col.d-flex.justify-content-between.align-item-center.mt-5.mb-3 p.text-light,
+footer.container-xl .row .col.d-flex.justify-content-between.align-items-center.mt-5.mb-3 h4.text-light,
+footer.container-xl .row .col.d-flex.justify-content-between.align-items-center.mt-5.mb-3 p.text-light {
+    color: #FFFFFF !important;
+}
+
+/* Specific targeting for the actual HTML structure */
+footer.container-xl .row .col.d-flex h4.text-light {
+    color: #FFFFFF !important;
+}
+
+/* Copyright section */
+footer .row.border-top .col p.text-light {
+    color: #FFFFFF !important;
+}
+
+/* Attribute selector override */
+footer h4[class*="text-light"],
+footer p[class*="text-light"] {
+    color: #FFFFFF !important;
+}
+
+/* Universal footer text override including h4 and p */
+footer h1, footer h2, footer h3, footer h4, footer h5, footer h6, footer p, footer span {
+    color: #FFFFFF !important;
+}
+
+/* NUCLEAR OPTION - Maximum Specificity Overrides */
+
+/* Use ID and element combination for maximum specificity */
+html body footer#footer h4.text-light,
+html body footer#footer p.text-light,
+html body footer h4.lead.text-light,
+html body footer p.text-light,
+html body footer h5.lead.text-light,
+html body footer h5.text-light,
+html body footer h5.text-light.fs-6 {
+    color: #FFFFFF !important !important;
+}
+
+/* Use !important twice for maximum priority */
+footer h4.text-light {
+    color: #FFFFFF !important;
+}
+
+footer p.text-light {
+    color: #FFFFFF !important;
+}
+
+footer h5.lead.text-light {
+    color: #FFFFFF !important;
+}
+
+footer h5.text-light {
+    color: #FFFFFF !important;
+}
+
+footer h5.text-light.fs-6 {
+    color: #FFFFFF !important;
+}
+
+/* CSS Cascade Override Technique */
+@layer base {
+    footer h4.text-light,
+    footer p.text-light,
+    footer h5.lead.text-light,
+    footer h5.text-light,
+    footer h5.text-light.fs-6 {
+        color: #FFFFFF !important;
+    }
+}
+
+@layer override {
+    footer h4.text-light,
+    footer p.text-light,
+    footer h5.lead.text-light,
+    footer h5.text-light,
+    footer h5.text-light.fs-6 {
+        color: #FFFFFF !important !important;
+    }
+}
+
+/* Use CSS Custom Properties Override */
+footer {
+    --footer-text-color: #FFFFFF !important;
+}
+
+footer h4.text-light,
+footer p.text-light,
+footer h5.lead.text-light,
+footer h5.text-light,
+footer h5.text-light.fs-6 {
+    color: var(--footer-text-color) !important;
+    color: #FFFFFF !important;
+}
+
+/* ULTIMATE ID SELECTOR OVERRIDE - Maximum Specificity */
+#competition-footer h4.text-light,
+#competition-footer p.text-light,
+#competition-footer h5.lead.text-light,
+#competition-footer h5.text-light,
+#competition-footer h5.text-light.fs-6 {
+    color: #FFFFFF !important;
+}
+
+/* Ultra-specific ID + class + element selectors */
+#competition-footer h4.lead.text-light,
+#competition-footer h4.text-light.fs-6,
+#competition-footer p.lead.text-light,
+#competition-footer p.text-light.fs-6 {
+    color: #FFFFFF !important;
+}
+
+/* ID selector with full path */
+#competition-footer .container-xl .row .col h4.text-light,
+#competition-footer .container-xl .row .col p.text-light,
+#competition-footer .container-xl .row .col h5.lead.text-light,
+#competition-footer .container-xl .row .col h5.text-light,
+#competition-footer .container-xl .row .col h5.text-light.fs-6 {
+    color: #FFFFFF !important;
+}
+
+/* Nuclear option with ID */
+#competition-footer * {
+    color: #FFFFFF !important;
+}
+
+/* Restore link colors after nuclear option */
+#competition-footer a {
+    color: #FFFFFF !important;
+}
+
+#competition-footer .link-info {
+    color: #A0D2EB !important;
+}
+
+/* Fix footer links with better visibility */
+body:not(.dashboard-theme) footer a,
+body:not(.dashboard-theme) footer .link-light,
+body:not(.dashboard-theme) footer .compe-anchor,
+body:not(.dashboard-theme) footer .event-anchor {
+    color: #FFFFFF !important;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+body:not(.dashboard-theme) footer a:hover,
+body:not(.dashboard-theme) footer .link-light:hover,
+body:not(.dashboard-theme) footer .compe-anchor:hover,
+body:not(.dashboard-theme) footer .event-anchor:hover {
+    color: rgba(255, 255, 255, 0.8) !important;
+    text-decoration: underline;
+}
+
+/* Fix info links in footer - light blue for better contrast */
+body:not(.dashboard-theme) footer .link-info {
+    color: #A0D2EB !important;
+}
+
+body:not(.dashboard-theme) footer .link-info:hover {
+    color: #FFFFFF !important;
+}
+
+/* Fix social media icons */
+body:not(.dashboard-theme) footer .bi-instagram,
+body:not(.dashboard-theme) footer .bi-tiktok,
+body:not(.dashboard-theme) footer .bi-line,
+body:not(.dashboard-theme) footer .bi-linkedin {
+    color: #FFFFFF !important;
+    font-size: 1.2rem;
+    transition: color 0.3s ease;
+}
+
+body:not(.dashboard-theme) footer .bi-instagram:hover,
+body:not(.dashboard-theme) footer .bi-tiktok:hover,
+body:not(.dashboard-theme) footer .bi-line:hover,
+body:not(.dashboard-theme) footer .bi-linkedin:hover {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Fix border in footer */
+body:not(.dashboard-theme) footer .border-top {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Fix footer logo */
+body:not(.dashboard-theme) footer img {
+    filter: brightness(0) invert(1); /* Make logo white for dark background */
+    transition: opacity 0.3s ease;
+}
+
+body:not(.dashboard-theme) footer img:hover {
+    opacity: 0.8;
+}

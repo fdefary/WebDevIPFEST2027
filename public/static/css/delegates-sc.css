@@ -1,0 +1,1162 @@
+/* Container Utama */
+#del-team-members, #final-cards-wrapper {
+    padding: 20px 0;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap');
+
+.card.shadow {
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    
+    /* Background Gradasi Keseluruhan (Palet Logo IPFEST) */
+    background: linear-gradient(135deg, 
+        #F3906F 0%, 
+        #E94E77 33%, 
+        #7000ff 66%, 
+        #00f2ff 100%) !important;
+    
+    border: none !important;
+    border-radius: 24px !important;
+    padding: 2.5rem 1.5rem !important;
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Overlay halus agar teks tetap mudah dibaca di atas gradasi terang */
+.card.shadow::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.1); /* Memberi sedikit kedalaman */
+    z-index: -1;
+    border-radius: 24px;
+}
+
+.card.shadow:hover {
+    transform: translateY(-12px) scale(1.02);
+    box-shadow: 0 20px 40px rgba(112, 0, 255, 0.3) !important;
+}
+
+/* --- KONTROL TEKS (PUTIH BERSIH) --- */
+
+.card-body .lead {
+    font-size: 0.8rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #ffffff !important;
+    opacity: 0.9;
+    margin-bottom: 12px !important;
+}
+
+.card-title, .card-title a {
+    font-size: 1.6rem !important;
+    font-weight: 800 !important;
+    color: #ffffff !important;
+    /* Shadow agar teks "angkat" dari background warna-warni */
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    margin: 0 !important;
+    text-decoration: none;
+}
+
+/* Icon: Putih Bersih dengan Glow Halus */
+.card-body svg {
+    color: #ffffff !important;
+    filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.5));
+    margin-bottom: 25px;
+}
+
+/* --- FIX KONTRAS TEKS PUTIH --- */
+
+/* --- FIX TOTAL: TEKS PUTIH MENYALA --- */
+
+.card-body p, 
+.card-body .lead,
+.card-body h5,
+.card-body span {
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
+    opacity: 1 !important;
+    text-transform: uppercase;
+    
+    /* Hapus bayangan hitam, ganti dengan pendaran putih (glow) */
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.8), 
+                 0 0 20px rgba(255, 255, 255, 0.4) !important;
+    
+    filter: brightness(1.5); /* Paksa teks lebih terang dari background */
+}
+
+/* Khusus Label Kecil (Team Leader) */
+.card-body .lead {
+    font-size: 0.8rem !important;
+    letter-spacing: 2px;
+}
+
+/* Khusus Nama Utama */
+.card-title {
+    font-size: 1.8rem !important;
+    color: #FFFFFF !important;
+}
+
+/* Tombol Join: Putih Solid tanpa bayangan aneh */
+.card-title a {
+    background: #FFFFFF !important;
+    color: #7000ff !important; /* Pakai ungu logo agar tetap match */
+    border: none !important;
+    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.3);
+}
+
+/* 2. Warna SVG Per Komponen (Neon Matching) */
+.col-lg-4:nth-child(1) svg { color: #ff007f !important; filter: drop-shadow(0 0 10px #ff007f); } /* Leader - Pink */
+.col-lg-4:nth-child(2) svg { color: #00f2ff !important; filter: drop-shadow(0 0 10px #00f2ff); } /* Name - Cyan */
+.col-lg-4:nth-child(3) svg { color: #7000ff !important; filter: drop-shadow(0 0 10px #7000ff); } /* Member - Purple */
+.col-lg-4:nth-child(4) svg { color: #ffea00 !important; filter: drop-shadow(0 0 10px #ffea00); } /* Competition - Gold */
+.col-lg-4:nth-child(5) svg { color: #25d366 !important; filter: drop-shadow(0 0 10px #25d366); } /* WhatsApp - Green */
+.col-lg-4:nth-child(6) svg { color: #ffffff !important; filter: drop-shadow(0 0 10px #ffffff); } /* Status - White */
+
+/* 3. Teks Putih Bersih & Tajam (Tanpa Bayangan Kusam) */
+.card-body p, .card-body .lead, .card-title {
+    color: #ffffff !important;
+    font-weight: 800 !important;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5) !important;
+    opacity: 1 !important;
+}
+
+/* 1. Transparankan Panel Utama */
+.dashboard-panels {
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+}
+
+/* 2. Menyamakan Dimensi Card */
+.row.g-3 {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.row.g-3 > div {
+    display: flex;
+}
+
+.card.shadow {
+    width: 100% !important;
+    /* Memaksa tinggi minimal agar seragam */
+    min-height: 280px !important; 
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-items: center !important;
+    text-align: center !important;
+    margin-bottom: 0 !important;
+    border-radius: 24px !important;
+}
+
+/* 3. Warna SVG Neon Per Komponen */
+.row.g-3 > div:nth-child(1) svg { color: #ffbb00 !important; filter: drop-shadow(0 0 20px #ff0015); }
+.row.g-3 > div:nth-child(2) svg { color: #00ff40 !important; filter: drop-shadow(0 0 10px #00F2FF); }
+.row.g-3 > div:nth-child(3) svg { color: #7000FF !important; filter: drop-shadow(0 0 10px #ffffff); }
+.row.g-3 > div:nth-child(4) svg { color: #FFD700 !important; filter: drop-shadow(0 0 10px #ffa600); }
+.row.g-3 > div:nth-child(5) svg { color: #01ac40 !important; filter: drop-shadow(0 0 10px #25D366); }
+.row.g-3 > div:nth-child(6) svg { color: #8400ff !important; filter: drop-shadow(0 0 10px #FFFFFF); }
+/* Tambahan untuk card bawahnya jika ada */
+/* Card 7: Preliminary Rank (Red/Pink Neon) */
+#final-cards-wrapper > div:nth-child(1) svg { 
+    color: #fffb00 !important; 
+    filter: drop-shadow(0 0 10px #ff3300); 
+}
+
+/* Card 8: Final Round Registration (Cyan/Blue Neon) */
+#final-cards-wrapper > div:nth-child(2) svg { 
+    color: #2dcc06 !important; 
+    filter: drop-shadow(0 0 10px #00d9ff); 
+}
+
+/* Card 9: Final Payment Status (Purple/Indigo Neon) */
+#final-cards-wrapper > div:nth-child(3) svg { 
+    color: #8a2be2 !important; 
+    filter: drop-shadow(0 0 10px #ffffff); 
+}
+
+/* 4. Teks Putih Terang & Tajam */
+.card-body p, .card-body .lead, .card-title {
+    color: #FFFFFF !important;
+    font-weight: 800 !important;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.6) !important;
+    opacity: 1 !important;
+    margin: 5px 0 !important;
+}
+
+.card-body .lead {
+    font-size: 0.75rem !important;
+    letter-spacing: 1px;
+}
+
+.dashboard-panel {
+        background: linear-gradient(135deg, 
+        #F3906F 0%, 
+        #E94E77 33%, 
+        #7000ff 66%, 
+        #00f2ff 100%) !important;
+}
+
+/* =====================
+    CONTAINER UTAMA PANEL 
+    ===================== */
+/* ========================================= */
+/* 1. MAIN NAVBAR STYLING (Layout & Bg)      */
+/* ========================================= */
+#master-nav {
+    background-color: #261642 !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    padding: 0.8rem 1rem;
+    transition: all 0.3s ease;
+    
+    /* Fixed Position Setup */
+    position: fixed !important;
+    top: 0; left: 0; right: 0;
+    z-index: 99999;
+}
+
+/* ========================================= */
+/* 2. BRANDING (Logo & Text)                 */
+/* ========================================= */
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar-brand img {
+    height: 40px; 
+    width: auto;
+    filter: none !important; /* Warna asli logo muncul */
+    opacity: 1 !important;
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover img {
+    transform: scale(1.05);
+}
+
+/* ========================================= */
+/* 3. NAVIGATION MENU (Tabs) - FIXED         */
+/* ========================================= */
+#master-nav .nav-link {
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-weight: 500;
+    margin: 0 15px;
+    padding: 8px 0;
+    position: relative;
+    transition: all 0.3s ease;
+    background: transparent !important;
+    border: none;
+}
+
+/* Efek Hover */
+#master-nav .nav-link:hover {
+    color: #F1A087 !important;
+    transform: translateY(-2px);
+}
+
+/* State Aktif (Tab yang sedang dibuka) */
+#master-nav .nav-link.active {
+    color: #ffffff !important;
+    font-weight: 700 !important;
+    background: transparent !important;
+    border: none !important;
+}
+
+/* KEMBALI: Garis bawah gradasi (Pink-Orange) untuk menu aktif */
+#master-nav .nav-link.active::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 3px;
+    /* Gradasi dikembalikan sesuai permintaan */
+    background: linear-gradient(90deg, #E45F75, #F1A087); 
+    margin-top: 5px;
+    border-radius: 2px;
+    box-shadow: 0 0 10px rgba(228, 95, 117, 0.6);
+}
+
+/* ========================================= */
+/* 4. BUTTONS (Logout & Toggler)             */
+/* ========================================= */
+#logout-btn {
+    background: rgba(255, 255, 255, 0.05) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    border-radius: 50px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#logout-btn:hover {
+    background: linear-gradient(90deg, #E45F75, #F1A087) !important;
+    border-color: transparent !important;
+    box-shadow: 0 0 15px rgba(228, 95, 117, 0.5);
+    transform: scale(1.05);
+    color: #ffffff !important;
+}
+
+/* Hamburger Menu Mobile */
+#master-nav .navbar-toggler {
+    border: 1px solid rgba(255,255,255,0.5) !important;
+}
+#master-nav .navbar-toggler:focus {
+    box-shadow: none !important;
+}
+#master-nav .navbar-toggler .fa-bars {
+    color: #ffffff !important;
+}
+
+/* Dropdown Mobile Background */
+@media (max-width: 991px) {
+    .navbar-collapse {
+        background-color: #261642;
+        padding: 1rem;
+        border-radius: 0 0 15px 15px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    #logout-btn {
+        width: 100%;
+        margin-top: 10px;
+    }
+}
+
+/* ========================================= */
+/* 5. DASHBOARD & FORM STYLES                */
+/* ========================================= */
+#nav-profile .dashboard-panel {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2.5rem;
+    color: #ffffff;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    margin-top: 2rem;
+}
+
+#nav-profile h1, #nav-profile h2, #nav-profile p, #nav-profile label {
+    color: #ffffff !important;
+}
+
+.alert-glass {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 5px solid #ffeb3b;
+    color: #ffffff !important;
+    padding: 1.5rem;
+    border-radius: 10px;
+}
+.alert-glass h4, .alert-glass strong {
+    color: #ffe082 !important;
+}
+
+#preliminary-submit {
+    background: linear-gradient(90deg, #E45F75, #F1A087);
+    border: none;
+    color: white;
+    font-weight: bold;
+    padding: 10px 30px;
+    border-radius: 8px;
+    transition: opacity 0.3s;
+}
+#preliminary-submit:hover { opacity: 0.9; }
+
+#delete-file-prem {
+    background-color: #495057;
+    border: 1px solid rgba(255,255,255,0.2);
+    color: #fff;
+}
+#delete-file-prem:hover { background-color: #dc3545; }
+
+
+/* =========================================
+   IPFEST LEADERBOARD MODAL - DARK THEME
+   ========================================= */
+
+/* 1. WRAPPER (Backdrop Gelap & Blur) */
+#prelim-leaderboard-modal-wrapper {
+    display: none; /* Default Hidden */
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    
+    /* Background sedikit lebih gelap biar teks modal tetap kebaca */
+    background-color: rgba(0, 0, 0, 0.6); 
+    
+    z-index: 999999; /* Paling atas */
+    align-items: center;
+    justify-content: center;
+    
+    /* Efek Blur di belakang modal */
+    backdrop-filter: blur(5px); 
+    -webkit-backdrop-filter: blur(5px);
+    
+    opacity: 0;
+    animation: fadeInModal 0.3s forwards;
+}
+
+/* Class pembantu untuk toggle JS */
+.custom-modal-hidden {
+    display: none !important;
+}
+
+@keyframes fadeInModal {
+    to { opacity: 1; }
+}
+
+/* 2. KOTAK MODAL (Dark Glassy) */
+.custom-modal-box {
+    /* Background Gelap Deep Purple */
+    background: linear-gradient(145deg, #1e1b4b 0%, #0f172a 100%);
+    width: 90%;
+    max-width: 900px;
+    max-height: 85vh;
+    border-radius: 20px;
+    
+    /* Border tipis menyala */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 50px rgba(76, 29, 149, 0.4); /* Glow Ungu */
+    
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    transform: scale(0.95);
+    animation: zoomInModal 0.3s forwards;
+}
+
+@keyframes zoomInModal {
+    to { transform: scale(1); }
+}
+
+/* 3. HEADER (Gradient IPFest) */
+.custom-modal-header {
+    /* Gradasi Ungu ke Biru (IPFest Theme) */
+    background: linear-gradient(90deg, #4c1d95 0%, #3b82f6 100%);
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+
+.custom-modal-header h5 {
+    color: #FFFFFF !important;
+    font-weight: 800;
+    letter-spacing: 1.5px;
+    font-size: 1.2rem;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    margin: 0;
+}
+
+/* Tombol Close */
+.custom-close-btn {
+    background: rgba(255,255,255,0.1) !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    color: white !important;
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.3s ease;
+    padding-bottom: 4px; /* Adjust centering */
+}
+.custom-close-btn:hover {
+    background: rgba(255,255,255,0.3) !important;
+    transform: rotate(90deg);
+    color: #fff !important;
+}
+
+/* 4. BODY & SCROLLBAR */
+.custom-modal-body {
+    padding: 0; 
+    overflow-y: auto;
+    background: transparent;
+}
+
+/* Custom Scrollbar */
+.custom-modal-body::-webkit-scrollbar { width: 8px; }
+.custom-modal-body::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+.custom-modal-body::-webkit-scrollbar-thumb { 
+    background: rgba(255,255,255,0.2); 
+    border-radius: 10px; 
+}
+.custom-modal-body::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+
+/* 5. TABEL DESAIN BARU (Dark Mode) */
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: #e2e8f0; 
+}
+
+/* Header Tabel */
+.custom-table thead th {
+    background: rgba(15, 23, 42, 0.95); /* Sangat gelap */
+    color: #94a3b8; /* Abu muda */
+    padding: 18px 25px;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    position: sticky; top: 0; 
+    backdrop-filter: blur(5px);
+    z-index: 5;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Isi Tabel */
+.custom-table tbody td {
+    padding: 15px 25px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    vertical-align: middle;
+    transition: background 0.2s;
+}
+
+/* Hover Effect Baris */
+.custom-table tbody tr:hover td {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* ============================================================
+   6. OVERRIDE WARNA JS (PENTING!)
+   Karena JS merender warna inline (style="..."), kita harus
+   menggunakan !important untuk memaksanya jadi tema gelap.
+   ============================================================ */
+
+/* Nama Tim (JS aslinya output warna Slate Gelap) -> Ubah Putih */
+.custom-table td div[style*="color:#334155"] {
+    color: #fff !important; 
+    font-size: 1rem !important;
+    text-shadow: 0 0 10px rgba(255,255,255,0.1);
+}
+
+/* Universitas (JS aslinya output Abu-abu) -> Ubah Abu Terang */
+.custom-table td div[style*="color:#94a3b8"] {
+    color: #cbd5e1 !important; 
+}
+
+/* Score (JS aslinya output Ungu) -> Ubah Emas/Kuning */
+.custom-table td span[style*="color: #4c1d95"] {
+    color: #fbbf24 !important; 
+    font-family: 'Courier New', monospace; 
+    font-weight: bold;
+    font-size: 1.1rem !important;
+}
+
+/* Rank Circle (Background Lingkaran) */
+/* Rank 1-3 (Emas) -> Biarkan Emas tapi kasih Glow */
+.custom-table td div[style*="background: #FFD700"] {
+    background: linear-gradient(135deg, #FFD700 0%, #F59E0B 100%) !important;
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.5) !important;
+    border: 1px solid rgba(255,255,255,0.5);
+    color: #000 !important;
+}
+
+/* Rank 4 ke atas (Abu-abu di JS) -> Ubah jadi Transparan Glassy */
+.custom-table td div[style*="background: #f1f5f9"] {
+    background: rgba(255, 255, 255, 0.1) !important;
+    color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Badge Status (Bootstrap Override untuk Dark Mode) */
+.custom-table .badge.bg-success {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #34d399 !important;
+    border: 1px solid rgba(52, 211, 153, 0.4);
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.1);
+}
+.custom-table .badge.bg-danger {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
+    border: 1px solid rgba(248, 113, 113, 0.4);
+}
+.custom-table .badge.bg-secondary {
+    background: rgba(148, 163, 184, 0.2) !important;
+    color: #cbd5e1 !important;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+/* Spinner Loading */
+.spinner-border.text-primary {
+    color: #22d3ee !important; /* Cyan neon loading */
+}
+
+/* =========================================================
+    DASHBOARD BUTTONS (WA, VIEW, REGIST)
+   ========================================================= */
+
+#WhatsApp-Group,
+#Preliminary-Leaderboard,
+#Final-Round-Registration {
+    /* 1. Layout & Shape */
+    display: inline-block !important;
+    padding: 12px 45px !important;    /* Lebih lebar & tinggi dikit */
+    margin-top: 20px !important;
+    border-radius: 50px !important;
+    border: none !important;
+    
+    /* 2. Background (Premium White) */
+    /* Putih 90% opacity biar background gradient di belakangnya kerasa "nyatu" */
+    background: rgba(255, 255, 255, 0.9) !important; 
+    backdrop-filter: blur(4px); /* Efek kaca tipis */
+
+    /* 3. Typography (Kunci Desain Mewah) */
+    color: #4c1d95 !important;        /* Ungu Gelap */
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    font-weight: 800 !important;      /* Sangat Tebal */
+    font-size: 0.85rem !important;    /* Ukuran font sedikit lebih kecil */
+    text-transform: uppercase !important; /* HURUF BESAR SEMUA */
+    letter-spacing: 2px !important;   /* Jarak antar huruf renggang (Mewah) */
+    text-decoration: none !important;
+    
+    /* 4. Depth & Shadow */
+    /* Shadow hitam halus di bawah biar tombol kerasa "ngambang" */
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15) !important; 
+    
+    /* 5. Animation Setup */
+    cursor: pointer !important;
+    /* Transisi smooth mentul-mentul */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) !important; 
+}
+
+/* --- EFEK HOVER (INTERAKSI KEREN) --- */
+#WhatsApp-Group:hover,
+#Preliminary-Leaderboard:hover,
+#Final-Round-Registration:hover {
+    background: #ffffff !important;   /* Jadi Putih Solid Terang */
+    
+    /* Ganti warna teks jadi Pink/Magenta pas hover biar ada variasi */
+    color: #db2777 !important;        
+    
+    /* Animasi Gerak */
+    transform: translateY(-5px) scale(1.05) !important; /* Naik & Membesar */
+    
+    /* Animasi Teks Melebar */
+    letter-spacing: 3px !important;   /* Spasi huruf makin lebar */
+    
+    /* Double Glow Effect */
+    box-shadow: 
+        0 15px 30px rgba(0, 0, 0, 0.25), /* Shadow Bawah */
+        0 0 20px rgba(255, 255, 255, 0.6) !important; /* Glow Putih Sekeliling */
+}
+
+/* --- STATE DISABLED (BIAR USER TAU GABISA DIKLIK) --- */
+#WhatsApp-Group[style*="pointer-events: none"],
+#Final-Round-Registration[style*="pointer-events: none"],
+#Preliminary-Leaderboard[style*="pointer-events: none"] {
+    background: rgba(0, 0, 0, 0.2) !important; /* Gelap Transparan */
+    color: rgba(255, 255, 255, 0.5) !important; /* Teks Pudar */
+    box-shadow: none !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+    cursor: not-allowed !important;
+    transform: none !important;
+    letter-spacing: 1px !important; /* Reset spasi */
+}
+
+/* =========================================
+   IPFEST FINAL - WIDE GRADIENT THEME (FIXED INPUTS)
+   ========================================= */
+
+/* 1. WRAPPER UTAMA (FIXED POSITIONING) */
+#final-payment-wrapper {
+    position: fixed !important;
+    top: 0; left: 0; width: 100vw; height: 90vh;
+    background: rgba(0, 0, 0, 0.7) !important;
+    z-index: 999999 !important; 
+    display: flex !important;
+    justify-content: center !important; 
+    align-items: center !important;     
+    padding: 360px !important; /* Padding keliling aman */
+}
+/* 2. MODAL CONTENT (Background Gradient Pelangi - TETAP) */
+#final-payment-wrapper .modal-content {
+    width: 95% !important;
+    max-width: 750px !important; 
+    height: auto !important; 
+    max-height: 85vh !important;
+    background: linear-gradient(
+        135deg,         
+        #F3906F 0%, 
+        #E94E77 34%, 
+        #7000ff 72%, 
+        #00f2ff 100%) !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(255,255,255,0.2) !important;
+    box-shadow: 0 50px 100px rgba(0, 0, 0, 0.8) !important;
+    font-family: 'Plus Jakarta Sans', sans-serif !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important; 
+    margin: 0 !important;
+}
+
+/* 3. HEADER (Transparan Blur - TETAP) */
+#final-payment-wrapper .modal-header {
+    flex-shrink: 0;
+    background: rgba(0, 0, 0, 0.3) !important;
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,255,255,0.1) !important;
+    padding: 15px 25px !important;
+    z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+}
+#final-payment-wrapper .modal-title {
+    color: #fff !important; font-size: 1.1rem !important; font-weight: 800 !important; text-transform: uppercase; margin: 0; letter-spacing: 1px;
+}
+#final-payment-wrapper .btn-close {
+    filter: invert(1) brightness(2); opacity: 0.8;
+}
+
+/* 4. BODY (Scrollable - TETAP) */
+#final-payment-wrapper .modal-body {
+    flex-grow: 1; 
+    overflow-y: auto !important; 
+    padding: 20px !important;
+    background: transparent !important;
+    scrollbar-width: thin;
+}
+/* Scrollbar Styling */
+#final-payment-wrapper .modal-body::-webkit-scrollbar { width: 6px; }
+#final-payment-wrapper .modal-body::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); }
+#final-payment-wrapper .modal-body::-webkit-scrollbar-thumb { background-color: rgba(255,255,255,0.4); border-radius: 10px; }
+
+/* 5. KARTU FORM (White Card di dalam Gradient) */
+#leader-final-pay-form,
+.member-final-pay-form {
+    background: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 25px !important;
+    margin-bottom: 15px !important;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2) !important;
+    position: relative;
+    border: none !important;
+    overflow: hidden;
+}
+
+/* Garis Warna di Kiri Kartu */
+#leader-final-pay-form::before,
+.member-final-pay-form::before {
+    content: ""; position: absolute; top: 0; left: 0; width: 6px; height: 100%;
+    background: linear-gradient(180deg, #ff3cac 0%, #784ba0 50%, #2b86c5 100%);
+}
+
+/* --- HEADER TEAM LEADER (Sesuai Gambar) --- */
+.form-header-row {
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    margin-bottom: 20px !important;
+    padding-left: 5px; /* Jarak dikit dari garis warna */
+}
+
+.icon-box-leader {
+    font-size: 2rem !important;
+}
+
+/* Teks "Team Leader" (Orange Kecil) */
+.role-label {
+    font-size: 0.75rem !important;
+    font-weight: 800 !important;
+    text-transform: uppercase !important;
+    color: #ff5722 !important; /* Orange kemerahan */
+    margin-bottom: 0 !important;
+    line-height: 1.2 !important;
+}
+
+/* Teks Nama Leader (Gelap Besar) */
+.name-label {
+    font-size: 1.25rem !important;
+    font-weight: 800 !important;
+    color: #2d3748 !important; /* Warna gelap */
+    margin: 0 !important;
+    line-height: 1.2 !important;
+}
+
+/* --- PRICE BAR (Gradient Pink-Ungu) --- */
+.price-display-box {
+    display: flex !important; justify-content: space-between !important; align-items: center !important;
+    background: linear-gradient(90deg, #ff512f 0%, #dd2476 50%, #7b1fa2 100%) !important;
+    padding: 12px 20px !important; 
+    border-radius: 8px; 
+    margin: 10px 0 20px 0;
+    box-shadow: 0 4px 10px rgba(221, 36, 118, 0.3);
+}
+.price-label { margin: 0 !important; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; color: #fff !important; opacity: 0.95; }
+.price-value { margin: 0 !important; font-size: 1.1rem; font-weight: 800; color: #ffffff !important; background: rgba(0, 0, 0, 0.2); padding: 5px 15px; border-radius: 50px; }
+
+/* --- INPUT & LABEL STYLING (FIXED) --- */
+
+/* Wrapper Input agar Label di Atas */
+#final-payment-wrapper .col-6, 
+#final-payment-wrapper .mb-3 {
+    display: flex !important;
+    flex-direction: column !important; /* Wajib column agar label di atas */
+    align-items: flex-start !important;
+    margin-bottom: 15px !important;
+}
+
+/* Label Judul Input (Ungu Gelap, Kecil, Bold) */
+#final-payment-wrapper .form-label { 
+    color: #4a148c !important; 
+    font-size: 0.7rem !important; 
+    font-weight: 800 !important; 
+    text-transform: uppercase !important; 
+    margin-bottom: 6px !important; 
+    display: block !important;
+    width: 100% !important;
+}
+
+/* Kotak Input */
+#final-payment-wrapper .form-control, 
+#final-payment-wrapper .form-select { 
+    width: 100% !important;
+    background: #f8f9fa !important; 
+    border: 1px solid #ced4da !important; 
+    color: #333 !important; 
+    font-weight: 600 !important; 
+    font-size: 0.9rem !important; 
+    padding: 10px 12px !important; 
+    border-radius: 8px !important;
+    height: auto !important;
+}
+
+/* --- CUSTOM FILE INPUT BUTTON (Sesuai Gambar) --- */
+/* Ini yang membuat tombol "Choose File" jadi Ungu */
+#final-payment-wrapper input[type="file"]::file-selector-button {
+    background-color: #4a148c !important; /* Ungu Tua */
+    color: white !important;
+    border: none !important;
+    border-radius: 5px !important;
+    padding: 6px 12px !important;
+    margin-right: 10px !important;
+    font-weight: 700 !important;
+    cursor: pointer !important;
+    transition: background 0.2s;
+}
+
+#final-payment-wrapper input[type="file"]::file-selector-button:hover {
+    background-color: #6a1b9a !important;
+}
+
+/* 6. FOOTER (TETAP) */
+#final-payment-wrapper .modal-footer {
+    flex-shrink: 0; 
+    background: rgba(0, 0, 0, 0.3) !important;
+    border-top: 1px solid rgba(255,255,255,0.1) !important;
+    padding: 15px 25px !important;
+    display: flex; justify-content: center; gap: 15px;
+    width: 100%;
+}
+
+/* 7. TOMBOL AKSI (Gradient) */
+#final-payment-submit-btn,
+.btn-cancel-custom {
+    flex: 1 !important; 
+    background: linear-gradient(90deg, #ff512f, #dd2476, #7b1fa2) !important;
+    color: white !important;
+    border: none !important;
+    border-radius: 50px !important;
+    padding: 12px 0 !important;
+    font-weight: 800 !important;
+    font-size: 0.9rem !important;
+    text-align: center !important;
+    box-shadow: 0 4px 15px rgba(221, 36, 118, 0.5) !important;
+    transition: all 0.3s ease;
+    margin: 0 !important;
+}
+
+#final-payment-submit-btn:hover,
+.btn-cancel-custom:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+/* 8. RULES BOX */
+.custom-rules-box {
+    display: flex !important; align-items: center !important; gap: 10px !important;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    padding: 12px;
+    margin-top: 10px;
+}
+
+#final-rules-check {
+    margin: 0 !important; 
+    width: 20px !important; 
+    height: 20px !important; 
+    cursor: pointer; 
+    flex-shrink: 0; 
+    
+    /* 1. Cara Cepat (Modern Browser) - Mengubah warna aksen bawaan */
+    accent-color: #784ba0 !important;
+    
+    /* 2. Styling Dasar Kotak */
+    background-color: #fff !important;
+    border: 1px solid rgba(255, 255, 255, 0.5) !important;
+}
+
+/* 3. Override Warna Saat Diklik (Untuk Bootstrap / Custom Style) */
+#final-rules-check:checked {
+    background-color: #784ba0 !important;
+    border-color: #784ba0 !important;
+}
+
+/* Opsional: Ubah warna glow saat difokuskan agar matching */
+#final-rules-check:focus {
+    border-color: #784ba0 !important;
+    box-shadow: 0 0 0 0.25rem rgba(120, 75, 160, 0.25) !important;
+}
+
+.custom-rules-label {
+    margin: 0 !important; color: white !important; font-size: 0.8rem; cursor: pointer; line-height: 1.3;
+}
+
+.custom-rules-label a {
+    color: #ffeb3b !important; font-weight: 800 !important; text-decoration: underline !important;
+}
+
+/* 9. HEADER TEAM LEADER (FIXED ALIGNMENT) --- */
+.form-header-row {
+    display: flex !important;
+    align-items: center !important; /* Vertikal Center */
+    justify-content: flex-start !important; /* Rata Kiri */
+    gap: 15px !important; /* Jarak antara ikon dan teks */
+    margin-bottom: 20px !important;
+    padding-left: 5px; 
+}
+
+/* Container Teks (Label + Nama) */
+.text-group {
+    display: flex;
+    flex-direction: column; /* Label di atas Nama */
+    align-items: flex-start; /* Rata Kiri */
+}
+
+.icon-box-leader {
+    font-size: 2.2rem !important; /* Ukuran Ikon */
+    line-height: 1;
+}
+
+/* Margin helper (Bootstrap utility clone jika tidak pakai bootstrap) */
+.me-3 {
+    margin-right: 1rem !important;
+}
+
+#down-payment-category-col[hidden],
+#down-payment-category-col.d-none {
+    display: none !important;
+}
+
+/* =========================================================
+    Encourage Modal Styles
+   ========================================================= */
+#final-payment-wrapper {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+/* 1. Kartu Modal (Background Gradasi) */
+#encourage-modal-card {
+    border: none;
+    border-radius: 20px;
+    background: linear-gradient(135deg, #671c84 0%, #4facfe 100%);
+    box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+    overflow: hidden;
+
+    margin-top: 20vh; 
+}
+/* 2. Tombol X (Close Icon) */
+#encourage-close-icon {
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 50%;
+    padding: 0.5rem;
+    filter: invert(1); /* Memutihkan icon X bawaan bootstrap */
+    transition: 0.3s;
+    opacity: 1;
+}
+#encourage-close-icon:hover {
+    background-color: rgba(255, 255, 255, 0.4);
+}
+
+/* 3. Wrapper Icon (Lingkaran Putih) */
+#encourage-icon-wrapper {
+    width: 70px;
+    height: 70px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    margin: 0 auto 1rem auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+#encourage-icon {
+    font-size: 32px;
+}
+
+/* 4. Judul (Dear Team...) */
+#encourage-title {
+    color: #ffffff; /* Teks Putih */
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+/* 5. Pesan Utama */
+#encourage-message {
+    color: rgba(255, 255, 255, 0.9); /* Putih agak transparan */
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+}
+
+#encourage-message-highlight {
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-color: rgba(255, 255, 255, 0.5);
+    color: #ffffff;
+}
+
+/* 6. Kotak Quotes */
+#encourage-quote-box {
+    background: rgba(255, 255, 255, 0.95); /* Putih Kaca */
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: left;
+    border-left: 5px solid #671c84; /* Aksen Ungu */
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#encourage-quote-text {
+    font-style: italic;
+    color: #333333; /* Teks Hitam agar terbaca di background putih */
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+}
+
+#encourage-quote-author {
+    font-weight: 700;
+    color: #671c84; /* Nama Author Ungu */
+    display: block;
+}
+
+/* 7. Footer Text */
+#encourage-footer {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    margin-bottom: 1.5rem;
+}
+
+/* 8. Tombol Close Bawah */
+#encourage-btn-action {
+    width: 100%;
+    padding: 12px 0;
+    border-radius: 50px;
+    border: none;
+    background-color: #ffffff;
+    color: #671c84;
+    font-weight: 700;
+    transition: all 0.3s ease;
+}
+
+#encourage-btn-action:hover {
+    background-color: #f0f0f0;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+
+/* =========================================
+   TAMBAHKAN INI DI PALING BAWAH CSS ANDA
+   ========================================= */
+
+@media (max-width: 768px) {
+    /* 1. Hilangkan padding besar yang menghimpit modal */
+    #final-payment-wrapper {
+        padding: 10px !important;
+        height: 100% !important; /* Gunakan tinggi penuh layar hp */
+    }
+
+    /* 2. Pastikan modal memenuhi lebar layar mobile */
+    #final-payment-wrapper .modal-content {
+        width: 90% !important;
+        max-height: 88vh !important; /* Beri ruang sedikit di atas bawah */
+        margin: 0 !important;
+    }
+
+    /* 3. Paksa input yang tadinya bersebelahan (col-6) menjadi satu baris */
+    #final-payment-wrapper .col-6 {
+        width: 100% !important;
+        flex: 0 0 100% !important;
+        max-width: 100% !important;
+    }
+
+    /* 4. Sesuaikan padding body agar tidak terlalu sempit */
+    #final-payment-wrapper .modal-body {
+        padding: 15px !important;
+    }
+
+    /* 5. Kecilkan sedikit ukuran teks agar pas di layar kecil */
+    .name-label {
+        font-size: 1.1rem !important;
+    }
+    
+    .price-value {
+        font-size: 0.9rem !important;
+        padding: 5px 10px !important;
+    }
+
+    /* 6. Atur tombol agar lebih nyaman diklik jari */
+    #final-payment-wrapper .modal-footer {
+        flex-direction: column; /* Tombol jadi tumpuk atas-bawah jika perlu */
+        padding: 15px !important;
+    }
+    
+    #final-payment-submit-btn,
+    .btn-cancel-custom {
+        width: 100% !important;
+    }
+}
+
+/* =========================================
+   FIX UNTUK IPAD / TABLET (Layar Menengah)
+   ========================================= */
+@media (min-width: 768px) and (max-width: 1024px) {
+    /* 1. Atur ulang padding wrapper agar modal tidak gepeng */
+    #final-payment-wrapper {
+        padding: 170px 40px 40px 40px !important;
+    }
+
+    /* 2. Berikan lebar yang ideal untuk tablet */
+    #final-payment-wrapper .modal-content {
+        width: 80% !important;
+        max-width: 600px !important;
+        height: auto !important;
+        max-height: 85vh !important;
+    }
+
+    /* 3. Kembalikan ke 2 kolom jika di iPad layar lebar (Landscape) */
+    #final-payment-wrapper .col-6 {
+        width: 50% !important;
+        flex: 0 0 50% !important;
+        max-width: 50% !important;
+    }
+}
