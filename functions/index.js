@@ -78,7 +78,7 @@ exports.generateCertificate = functions.region('asia-southeast2').firestore
 
    // await admin.firestore().collection('Attendance').add({
    //    to: email,
-   //    message: {
+   //    	message: {
    //      	subject: 'Sertifikat Anda Telah Siap!',
    //      	html: `<p>Halo ${name}, terlampir sertifikat Anda.</p>`,
    //      	attachments: [{
