@@ -4,18 +4,16 @@
   "description": "Ini adalah repository untuk pengembangan website IPFEST 2026. Laman website terdiri dari home/landing page, login page, registration page, events page, dan competitions page.",
   "main": "index.js",
   "scripts": {
-  "start": "webpack serve --config webpack.config.babel.js --mode development",
-  "build": "webpack --config webpack.config.babel.js --mode production",
-  "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "webpack serve --config webpack.config.babel.js --mode development",
+    "build": "webpack --config webpack.config.babel.js --mode production",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ipfest2025/ipfest25web.git"
   },
   "keywords": [],
   "author": "npm run build",
-
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/ipfest2025/ipfest25web/issues"
@@ -26,16 +24,18 @@
     "@babel/preset-env": "^7.28.5",
     "@babel/register": "^7.24.6",
     "babel-loader": "^10.0.0",
+    "baseline-browser-mapping": "^2.11.27",
     "webpack": "^5.102.1",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^6.0.0"
   },
   "dependencies": {
-    "@google-cloud/storage": "^7.14.0",
+    "@google-cloud/storage": "^8.2.0",
     "chart.js": "^4.4.4",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "firebase": "^11.10.0",
-    "googleapis": "^144.0.0"
+    "firebase": "^9.14.0",
+    "googleapis": "^183.0.0"
   },
   "type": "module"
 }

@@ -45,7 +45,7 @@ export default {
     ],
   },
   devServer: {
-    contentBase: path.join(__dirname, 'public/dist'),
+    static: { directory: path.join(__dirname, 'public') },
     compress: true,
     port: 9000,
   },
