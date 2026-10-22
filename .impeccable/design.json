@@ -11,8 +11,8 @@
       "neutral-mid": { "role": "neutral", "displayName": "Slate Grey", "canonical": "#6C677D" }
     },
     "typographyMeta": {
-      "display": { "displayName": "Dream Avenue", "purpose": "Hero and signature campaign headings." },
-      "headline": { "displayName": "Playfair Display", "purpose": "Editorial section headings." },
+      "display": { "displayName": "Plus Jakarta Sans SemiBold", "purpose": "Hero and signature campaign headings." },
+      "headline": { "displayName": "Plus Jakarta Sans SemiBold", "purpose": "Section headings." },
       "title": { "displayName": "Safira March", "purpose": "Selective decorative titles." },
       "body": { "displayName": "Poppins", "purpose": "Readable interface and paragraph copy." },
       "script": { "displayName": "Great Vibes", "purpose": "Rare expressive accent." }
@@ -73,7 +73,7 @@
     "overview": "IPFEST 2027 pairs a cinematic night-sky atmosphere with a refined editorial voice. Midnight navy and the supplied wave background establish depth; orbit lines, nodes, and star-like accents suggest energy, connection, and exploration. Warm ivory protects readability, while muted gold and burnt orange act as controlled light sources rather than broad decorative fills. The identity should feel cinematic and refined, with layered, luminous surfaces and confident, polished controls.",
     "keyCharacteristics": [
       "Celestial motion expressed through orbit lines and nodes.",
-      "Editorial serif display balanced by a legible Poppins body face.",
+      "Confident Plus Jakarta Sans headings balanced by a legible Poppins body face.",
       "Navy-first surfaces, warm ivory content panels, restrained gold/orange accents.",
       "Real IPFEST identity assets take precedence over recreated marks."
     ],
@@ -85,11 +85,12 @@
       "Do use the exact palette and the supplied Grand Design Board as the visual authority.",
       "Do source official logos, mascot, background, and decorative elements from public/static/images/ rather than redrawing them.",
       "Do pair expressive display typography with Poppins for readable interface copy.",
-      "Do preserve contrast over the image background with a navy overlay or a solid content panel.",
+      "Do use ipfest-background.jpg as the sole page background; use content surfaces for contrast without adding a background wash.",
+      "Do keep section headings concise (for example, 'Pilih Kompetisi', 'Ketua Tim', and 'Pembuatan Akun') and place explanations in supporting copy.",
       "Do ensure local font URLs match the supplied filenames."
     ],
     "donts": [
-      "Don't use Plus Jakarta Sans or Solomon Sans as the default 2027 identity fonts; they are legacy/alternate assets.",
+      "Don't use Dream Avenue, Safira March, or Great Vibes as default headings or body faces; reserve them for occasional accents.",
       "Don't stretch, recolor, crop tightly, or add effects to official logo assets.",
       "Don't use orbit lines, nodes, mascot, or gold accents as wallpaper behind dense text.",
       "Don't use Great Vibes for long text, labels, or controls.",

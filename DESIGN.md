@@ -9,14 +9,14 @@ colors:
   neutral-mid: "#6C677D"
 typography:
   display:
-    fontFamily: "Dream Avenue, Playfair Display, serif"
+    fontFamily: "Plus Jakarta Sans SemiBold, sans-serif"
     fontSize: "clamp(2.5rem, 6vw, 4rem)"
-    fontWeight: 400
+    fontWeight: 600
     lineHeight: 1
     letterSpacing: "0.03em"
   headline:
-    fontFamily: "Playfair Display, serif"
-    fontWeight: 400
+    fontFamily: "Plus Jakarta Sans SemiBold, sans-serif"
+    fontWeight: 600
   title:
     fontFamily: "Safira March, Playfair Display, serif"
     fontWeight: 400
@@ -83,16 +83,16 @@ The palette moves from a deep celestial foundation to warm paper neutrals, with 
 
 ## Typography
 
-**Display Font:** Dream Avenue, falling back to Playfair Display and serif.
+**Display and section headings:** Plus Jakarta Sans SemiBold, self-hosted from `PlusJakartaSans-SemiBold.ttf`.
 **Body Font:** Poppins, with a sans-serif fallback.
 **Label Font:** Poppins; use medium weight for navigation and controls.
-**Supporting Fonts:** Safira March for selected titles; Great Vibes for occasional expressive accents.
+**Supporting Fonts:** Dream Avenue only for selected expressive accents; Safira March for rare decorative titles; Great Vibes for occasional script accents.
 
-**Character:** High-contrast editorial serif forms give the identity its ceremonial scale. Poppins keeps information and controls clear at practical sizes; Great Vibes is a rare accent, not a body face.
+**Character:** Plus Jakarta Sans gives headings a confident contemporary voice. Poppins keeps information and controls clear at practical sizes; Dream Avenue, Safira March, and Great Vibes are limited accents, not default heading or body faces.
 
 ### Hierarchy
-- **Display** (regular, responsive `clamp(2.5rem, 6vw, 4rem)`, line-height 1): Hero and signature campaign headings.
-- **Headline** (Playfair Display, regular): Section headings and editorial statements.
+- **Display** (Plus Jakarta Sans SemiBold, 600, responsive `clamp(2.5rem, 6vw, 4rem)`, line-height 1): Hero and signature campaign headings.
+- **Headline** (Plus Jakarta Sans SemiBold, 600): Section headings and editorial statements.
 - **Title** (Safira March, regular): Selective subheadings and ornamental title moments.
 - **Body** (Poppins, regular, `1rem`, line-height `1.5`): Paragraphs, labels, and supporting copy.
 - **Label** (Poppins, medium): Navigation, buttons, and compact controls; preserve readable contrast and avoid excessive tracking.
@@ -103,13 +103,13 @@ The palette moves from a deep celestial foundation to warm paper neutrals, with 
 - `public/static/fonts/PlayfairDisplay-Regular.ttf`
 - `public/static/fonts/poppins.regular.ttf`
 - `public/static/fonts/GreatVibes-Regular.ttf`
-- `public/static/fonts/PlusJakartaSans-SemiBold.ttf` and `Solomon Sans Bold.otf` / `Solomon Sans Normal.otf` are legacy/alternate assets, not the default IPFEST 2027 type system.
+- `public/static/fonts/PlusJakartaSans-SemiBold.ttf` is the default heading face. `Solomon Sans Bold.otf` / `Solomon Sans Normal.otf` remain alternate assets.
 
 The current theme stylesheet references `DreamAvenue.ttf` and `SafiraMarch.ttf`; the supplied filenames include hyphens. Keep `@font-face` URLs aligned with the actual filenames so these display faces load instead of silently falling back.
 
 ## Layout
 
-Use the existing Bootstrap container and grid as the responsive foundation. Keep desktop compositions spacious and editorial, then stack content into a single readable column on narrow screens. Let the background image cover the viewport, centered, under a subtle navy overlay; keep text and interactive content on layers above it.
+Use the existing Bootstrap container and grid as the responsive foundation. Keep desktop compositions spacious and editorial, then stack content into a single readable column on narrow screens. Use `public/static/images/ipfest-background.jpg` as the **only page background**: centered and cover the viewport. Do not add gradients, color washes, patterns, or other images behind the page. Keep content on distinct surfaces where needed for contrast.
 
 Use the supplied visual assets as a coherent kit:
 - `public/static/images/ipfest-background.jpg` — full-page wave background.
@@ -157,6 +157,10 @@ Use clean rounded rectangles for content panels (the existing feature-card treat
 ### Celestial Elements
 - Use the supplied Lines and Nodes assets to frame or connect content, not to compete with it. Keep decorative assets non-interactive and hide them from assistive technology when they convey no information.
 
+### Section Headings
+- Keep section headings short and direct, such as “Pilih Kompetisi”, “Ketua Tim”, and “Pembuatan Akun”.
+- Put instructions and context in a brief supporting sentence below the heading, not inside a long heading.
+
 ## Do's and Don'ts
 
 ### Do:
@@ -167,7 +171,7 @@ Use clean rounded rectangles for content panels (the existing feature-card treat
 - **Do** ensure local font URLs match the supplied filenames.
 
 ### Don't:
-- **Don't** use Plus Jakarta Sans or Solomon Sans as the default 2027 identity fonts; they are legacy/alternate assets.
+- **Don't** use Dream Avenue, Safira March, or Great Vibes as the default for headings, body copy, or controls; reserve them for occasional expressive accents.
 - **Don't** stretch, recolor, crop tightly, or add effects to official logo assets.
 - **Don't** use orbit lines, nodes, mascot, or gold accents as wallpaper behind dense text.
 - **Don't** use Great Vibes for long text, labels, or controls.

@@ -41,7 +41,10 @@ function generateMemberEntry(entry, count) {
     const memberEntry = document.createElement('div');
     memberEntry.innerHTML = `
       <h3 class="lead fs-2 mt-6">Member ${i}</h3>
-      <div class="member-entry" style="margin-bottom: 2rem;">
+      <div class="member-entry">
+        <div class="registration-subsection-grid member-details">
+          <fieldset class="registration-subsection">
+            <legend>Data Diri &amp; Akademik</legend>
         <div class="row my-1">
           <div class="col-md-6">
             <label for="firstName${i}" class="form-label">First Name: </label>
@@ -60,20 +63,21 @@ function generateMemberEntry(entry, count) {
             <input type="text" name="major${i}" id="major${i}" class="form-control" required>
             <div class="invalid-feedback">Please add your member ${i} major</div>
           </div>
-          <div class="col-md-6 batch-parent">
+          <div class="col-md-6">
             <label for="batch${i}" class="form-label">Batch: </label>
-            <select name="batch${i}" id="batch${i}" class="form-select student-batch" required>
+            <select name="batch${i}" id="batch${i}" class="form-select" required>
               <option value="2025">2025</option>
               <option value="2024">2024</option>
               <option value="2023">2023</option>
               <option value="2022">2022</option>
               <option value="2021">2021</option>
-              <option value="0">Other</option>
             </select>
-            <input type="text" name="otherBatch${i}" id="otherBatch${i}" class="d-none form-control" placeholder="your batch">
             <div class="invalid-feedback">Please add your member ${i} batch</div>
           </div>
         </div>
+          </fieldset>
+          <fieldset class="registration-subsection">
+            <legend>Identitas &amp; Kontak</legend>
         <div class="row my-1">
           <div class="col-md-6">
             <label for="idCard${i}" class="form-label">ID(NIK/Pasport): </label>
@@ -98,6 +102,9 @@ function generateMemberEntry(entry, count) {
             <div class="invalid-feedback">Please add your member ${i} phone number</div>
           </div>
         </div>
+          </fieldset>
+          <fieldset class="registration-subsection">
+            <legend>Dokumen Persyaratan</legend>
         <div class="row my-1">
           <div class="col-md-6">
             <label for="studentCardPhoto${i}" class="form-label">Student Card Photo: </label>
@@ -117,24 +124,13 @@ function generateMemberEntry(entry, count) {
             <div class="invalid-feedback">Please upload the proof that you are following IPFEST 2026 Instagram</div>
           </div>
         </div>
+          </fieldset>
+        </div>
       </div>
     `;
     entry.appendChild(memberEntry);
   }
 
-  // Tambahkan listener untuk batch "Other"
-  document.querySelectorAll(".student-batch").forEach(select => {
-    select.addEventListener("change", function () {
-      const otherInput = this.parentNode.querySelector(`input[name='otherBatch${this.id.replace('batch', '')}']`);
-      if (this.value === "0") {
-        otherInput.classList.remove("d-none");
-        otherInput.required = true;
-      } else {
-        otherInput.classList.add("d-none");
-        otherInput.required = false;
-      }
-    });
-  });
 }
 
 // Fungsi upload file ke Firebase Storage
@@ -188,12 +184,51 @@ document.addEventListener("DOMContentLoaded", () => {
   const memberCount = document.getElementById("memberCount");
   const entryContainer = document.querySelector("#entry");
 
-  // Sembunyikan form awal
-  leaderForm?.classList.add("d-none");
-  memberForm?.classList.add("d-none");
-  paymentForm?.classList.add("d-none");
-  if (agreementForm) agreementForm.closest('.col-12')?.classList.add("d-none");
-
+  const steps = [...document.querySelectorAll("[data-registration-step]")];
+  const descriptions = [
+    "Pilih kompetisi yang sesuai. Ringkasan dan persyaratan tim akan membantu kamu melanjutkan pendaftaran.",
+    "Isi informasi ketua tim dan siapkan dokumen yang diminta.",
+    "Lengkapi data setiap anggota sesuai jumlah tim.",
+    "Buat akun untuk login dan memantau pendaftaran.",
+    "Pilih metode pembayaran, unggah bukti bila tersedia, lalu kirim pendaftaran."
+  ];
+  let currentStep = 0;
+  const showStep = (index) => {
+    currentStep = index;
+    sessionStorage.setItem("registration-step", steps[index].dataset.registrationStep);
+    steps.forEach((step, stepIndex) => { step.hidden = stepIndex !== index; });
+    document.querySelectorAll(".registration-progress-step").forEach((item, stepIndex) => {
+      item.classList.toggle("is-complete", stepIndex < index);
+      item.classList.toggle("is-current", stepIndex === index);
+      if (stepIndex === index) item.setAttribute("aria-current", "step");
+      else item.removeAttribute("aria-current");
+    });
+    document.querySelector(".registration-progress").style.setProperty("--step-progress", `${(index / (steps.length - 1)) * 100}%`);
+    document.querySelector("#step-count").textContent = `Langkah ${index + 1} dari ${steps.length}`;
+    document.querySelector("#step-description").textContent = descriptions[index];
+    steps[index]?.querySelector("h2")?.focus({ preventScroll: true });
+    steps[index]?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "start"
+    });
+  };
+  const validateStep = () => {
+    if (currentStep === 0 && !compeInput.value) {
+      showError("Pilih kompetisi terlebih dahulu.");
+      return false;
+    }
+    return true;
+  };
+  document.querySelectorAll("[data-next]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (validateStep()) showStep(Math.min(currentStep + 1, steps.length - 1));
+    });
+  });
+  document.querySelectorAll("[data-back]").forEach(button => {
+    button.addEventListener("click", () => showStep(Math.max(currentStep - 1, 0)));
+  });
+  const savedStepIndex = steps.findIndex(step => step.dataset.registrationStep === sessionStorage.getItem("registration-step"));
+  if (savedStepIndex > 0) showStep(savedStepIndex);
   // Handle klik kompetisi
   document.querySelectorAll(".card-compe").forEach(card => {
     card.addEventListener("click", () => {
@@ -207,16 +242,16 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      document.querySelectorAll(".card-compe").forEach(c => c.classList.remove('active'));
+      document.querySelectorAll(".card-compe").forEach(c => {
+        c.classList.remove('active');
+        c.setAttribute("aria-pressed", "false");
+      });
 
       card.classList.add('active');
+      card.setAttribute("aria-pressed", "true");
 
       compeInput.value = selectedCompetition;
-      leaderForm?.classList.remove("d-none");
-      memberForm?.classList.remove("d-none");
-      paymentForm?.classList.remove("d-none");
-
-      if (agreementForm) agreementForm.closest('.col-12')?.classList.remove("d-none");
+      competitionForm.querySelector("[data-next]").disabled = false;
 
       generateTeamMemberOption(selectedCompetition, memberCount);
       const count = parseInt(memberCount.value, 10) || 1;
@@ -236,20 +271,20 @@ document.addEventListener("DOMContentLoaded", () => {
     return Date.now() < earlybirdDeadline;
   }
 
-  document.querySelectorAll(".payment-method .nav-link").forEach(method => {
-    method.addEventListener('click', () => {
+  const paymentMethods = [...document.querySelectorAll(".payment-method .nav-link")];
+  const showPaymentMethod = (method) => {
       const payMethod = method.dataset.method;
-      document.querySelectorAll(".payment-method .nav-link").forEach(btn => btn.classList.remove('active'));
-      method.classList.add('active');
-
-      document.querySelectorAll(".tab-pane").forEach(pane => {
-        pane.classList.remove('show', 'active');
+      paymentMethods.forEach(btn => {
+        const selected = btn === method;
+        btn.classList.toggle('active', selected);
+        btn.setAttribute("aria-selected", String(selected));
       });
 
       const targetPane = document.querySelector(method.dataset.bsTarget);
       if (!targetPane) return;
-
-      targetPane.classList.add('show', 'active');
+      document.querySelectorAll(".payment-panel").forEach(panel => {
+        panel.hidden = panel !== targetPane;
+      });
 
       const isEarly = earlybirdStatus();
       const indoPrice = isEarly ? "IDR 200.000" : "IDR 250.000";
@@ -257,21 +292,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
       switch (payMethod) {
         case "Bank BCA":
-          targetPane.innerHTML = `<p>BCA - 2650508800 (Mochammad Rafly Ghazany A)</p><small>${indoPrice}</small>`;
+          targetPane.innerHTML = `<div class="payment-total"><span>Total pembayaran</span><strong>${indoPrice}</strong></div><p>Transfer ke rekening BCA <strong>2650508800</strong> atas nama <strong>Mochammad Rafly Ghazany A</strong>.</p>`;
           break;
         case "Gopay":
-          targetPane.innerHTML = `<p>085655226900 (Rafly Ghazany)</p><small>${indoPrice}</small>`;
+          targetPane.innerHTML = `<div class="payment-total"><span>Total pembayaran</span><strong>${indoPrice}</strong></div><p>Kirim GoPay ke nomor <strong>085655226900</strong> atas nama <strong>Rafly Ghazany</strong>.</p>`;
           break;
         case "Paypal":
-          targetPane.innerHTML = `<p><a href="https://www.paypal.me/RaflyGhazany" target="_blank">paypal.me/RaflyGhazany</a></p><small>${intlPrice}</small>`;
+          targetPane.innerHTML = `<div class="payment-total"><span>Total pembayaran</span><strong>${intlPrice}</strong></div><p>Bayar melalui <a href="https://www.paypal.me/RaflyGhazany" target="_blank" rel="noopener noreferrer">paypal.me/RaflyGhazany</a>.</p>`;
           break;
       }
-    });
+  };
+  paymentMethods.forEach(method => {
+    method.addEventListener('click', () => showPaymentMethod(method));
   });
+  if (paymentMethods[0]) showPaymentMethod(paymentMethods[0]);
 
   // Handle submit form
   registrationForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    if (!paymentForm.checkValidity()) {
+      registrationForm.classList.add("was-validated");
+      paymentForm.querySelector(":invalid")?.focus();
+      return;
+    }
     const submitBtn = registrationForm.querySelector("button[type='submit']");
     if (!submitBtn) return;
 
@@ -295,11 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const firstName = document.getElementById("firstName")?.value;
       const lastName = document.getElementById("lastName")?.value;
       const major = document.getElementById("major")?.value;
-      const batchSelect = document.getElementById("batch");
-      let batch = batchSelect?.value;
-      if (batch === "0") {
-        batch = document.querySelector("input[name='other-batch']")?.value || "";
-      }
+      const batch = document.getElementById("batch")?.value;
       const teamName = document.getElementById("teamName")?.value;
       const university = document.getElementById("university")?.value;
       const phoneNo = document.getElementById("phoneNo")?.value;
@@ -371,17 +410,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Ambil data anggota
-      const totalMembers = parseInt(memberCount?.value || "1", 10);
+    const totalMembers = parseInt(memberCount?.value || "1", 10);
       for (let i = 1; i < totalMembers; i++) {
         const mFirstName = document.getElementById(`firstName${i}`)?.value;
         const mLastName = document.getElementById(`lastName${i}`)?.value;
         const mEmail = document.getElementById(`email${i}`)?.value;
         const mMajor = document.getElementById(`major${i}`)?.value;
-        const mBatchSelect = document.getElementById(`batch${i}`);
-        let mBatch = mBatchSelect?.value;
-        if (mBatch === "0") {
-          mBatch = document.getElementById(`otherBatch${i}`)?.value || "";
-        }
+        const mBatch = document.getElementById(`batch${i}`)?.value;
         const mIdCard = document.getElementById(`idCard${i}`)?.value;
         const mStudentId = document.getElementById(`studentId${i}`)?.value;
         const mPhoneNo = document.getElementById(`phoneNo${i}`)?.value;

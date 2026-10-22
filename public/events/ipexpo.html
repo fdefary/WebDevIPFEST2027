@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>IPEXPO - IPFEST 2026</title>
+	<title>IPEXPO - IPFEST 2027</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 	<meta content="" name="keywords">
 	<meta content="" name="description">
-	<link rel="icon" href="../static/images/ipfest_2026_logo.svg">
+	<link rel="icon" href="../static/images/ipfest_2027_logo.png">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Rubik:wght@400;500&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:wght@400;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<link href="../static/lib/animate/animate.min.css" rel="stylesheet">
@@ -18,8 +18,17 @@
 	<link href="../static/css/bootstrap.min.css" rel="stylesheet">
 	<link href="../static/css/style.css" rel="stylesheet">
 	<link href="../static/css/competition.css" rel="stylesheet">
+	<link href="../static/css/Homepage.css" rel="stylesheet">
+	<link href="../static/css/grand-theme.css" rel="stylesheet">
 </head>
-<body>
+<body class="event-page">
+	<ul class="circles" aria-hidden="true">
+		<li></li><li></li><li></li><li></li><li></li>
+		<li></li><li></li><li></li><li></li><li></li>
+		<li></li><li></li><li></li><li></li><li></li>
+		<li></li><li></li><li></li><li></li><li></li>
+		<li></li><li></li><li></li><li></li><li></li>
+	</ul>
    <!-- Spinner Start -->
    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
       <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -29,14 +38,14 @@
    <!-- Spinner End -->
 
    <!-- Navbar & Hero Start -->
-	<div class="container-fluid p-0">
-		<nav class="navbar navbar-expand-lg fixed-top navbar-light px-4 px-lg-5 py-3 py-lg-0">
+	<div class="container-fluid p-0 event-nav-layer">
+		<nav class="navbar event-navbar navbar-expand-lg navbar-dark bg-transparent fixed-top navbar-light px-4 px-lg-5 py-3 py-lg-0">
 			<a href="../index.html" class="navbar-brand p-0 d-flex align-items-center">
-				<img src="../static/images/ipfest_2026_logo.svg" alt="Logo">
-				<img src="../static/images/ipfest_2026_text.svg" alt="Logo">
+				<img src="../static/images/ipfest_2027_logo.png" alt="IPFEST 2027 logo">
+				<img src="../static/images/ipfest_2027_text.png" alt="IPFEST 2027">
 			</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
-				<span class="fa fa-bars"></span>
+				<span class="fa fa-bars text-white"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarCollapse">
 				<div class="navbar-nav ms-auto py-0">
@@ -66,7 +75,18 @@
 							<li><a href="petrocare.html" class="dropdown-item">PetroCare</a></li>
 						</ul>
 					</div>
-					<!--<a href="../merchandise.html" class="nav-item nav-link">Merchandise</a>-->
+					<a href="../merchandise.html"
+					class="nav-item nav-link"
+					onclick="
+						var targetDate = new Date('2026-11-03');
+						var currentDate = new Date();
+						if (currentDate < targetDate) {
+							event.preventDefault();
+							alert('Merchandise is not available yet');
+						}
+					">
+					Merchandise
+					</a>
 				</div>
 				<div class="" id="btn-login-status">
 					<a href="../login.html" class="btn btn-light border border-primary rounded-pill text-primary py-2 px-4 me-4">Log In</a>
@@ -77,8 +97,8 @@
    <!-- Navbar & Hero End -->
 
    <!-- Header Start -->
-	<div class="container-fluid bg-breadcrumb">
-		<ul class="breadcrumb-animation">
+	<div class="container-fluid bg-breadcrumb event-hero">
+		<ul class="breadcrumb-animation event-sparkles" aria-hidden="true">
 			<li></li>
 			<li></li>
 			<li></li>
@@ -90,9 +110,11 @@
 			<li></li>
 			<li></li>
 		</ul>
-		<div class="container text-center py-4" style="max-width: 900px;">
-			<h3 class="display-3 mb-4 wow fadeInDown" data-wow-delay="0.1s">IPEXPO</h1>
-			<img src="../static/images/logo.png" alt="" class="img-fluid w-25">
+		<div class="container text-center py-5 event-hero-content">
+			<div class="event-hero-badge wow fadeInDown" data-wow-delay="0.1s">
+				<img src="../static/images/ipfest_2027_logo.png" alt="IPFEST 2027 logo" class="img-fluid">
+			</div>
+			<h1 class="display-3 mb-0">IPEXPO</h1>
 		</div>
 	</div>
 	<!-- Header End -->
@@ -100,21 +122,16 @@
 	<main class="container-fluid contact py-5">
 		<!-- Detail Start -->
 		<div class="container py-5">
-			<div class="row justify-content-between">
+			<div class="row justify-content-between event-about-card">
 				<div class="col-lg-6 wow fadeInRight" data-wow-delay="0.3s">
 					<h4 class="text-primary mb-0">About</h4>
-					<h1 class="display-5 mt-0 mb-3">Get to Know <span style="color: #bc2300;">More</span></h1>
+					<h1 class="display-5 mt-0 mb-3">Get to Know <span class="text-primary">More</span></h1>
 					<p class="mb-0 fs-5">
-						Join us for an exciting event featuring insightful seminars on the latest trends 
-						and innovations in the oil and gas industry, alongside an exhibition of 
-						cutting-edge projects by participants in our ongoing competition. 
-						This is a unique opportunity to learn from industry leaders, explore 
-						groundbreaking ideas, and witness the creative solutions being developed 
-						by talented individuals, this event promises to inspire and connect you with the future of energy. 
+						The IPEXPO Division is responsible for organizing exhibition activities that showcase company profiles, competition outputs, and innovation within the petroleum and energy sector. The division coordinates both the Company Expo and the Competition Expo as platforms for networking and knowledge dissemination.
 					</p>
 				</div>
 				<div class="col-lg-5 d-flex justify-content-end wow fadeInLeft" data-wow-delay="0.3s">
-					<img src="../static/images/grand_comp_expo.JPG" alt="" class="img-fluid w-100 rounded shadow" style="object-fit: cover;">
+					<img src="../static/images/ipexpo_home.jpg" alt="IPEXPO exhibition" class="img-fluid w-100 rounded shadow" style="object-fit: cover;">
 				</div>
 			</div>
 		</div>
@@ -124,15 +141,15 @@
 		<div class="container-fluid py-5 feature overflow-hidden">
 			<div class="container">
 				<!-- First Feature -->
-				<div class="row g-5 pt-5" style="margin-top: 6rem;">
+				<div class="row g-5 pt-5 event-feature-card" style="margin-top: 6rem;">
 					<div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.1s">
 						<div class="feature-img RotateMoveLeft h-100" style="object-fit: cover;">
-							<img src="../static/images/logo_hd.png" alt="" class="img-fluid w-100 rounded" style="object-fit: cover; object-position: 30% 50%">
+							<img src="../static/images/ipexpo_home.jpg" alt="Grand Company Expo" class="img-fluid w-100 rounded" style="object-fit: cover; object-position: 30% 50%">
 						</div>
 					</div>
 					<div class="col-lg-6 wow fadeInRight" data-wow-delay="0.1s">
 						<h4 class="text-primary">IPEXPO</h4>
-						<h1 class="display-5 mb-4">Grand Company <span style="color:#bc2300">Expo</span></h1>
+						<h1 class="display-5 mb-4">Grand Company <span class="text-primary">Expo</span></h1>
 						<p class="mb-4 fs-5">
 							Grand Company Expo is an exhibition event for energy, oil, and gas 
 							companies to provide an overview of information related to 
@@ -150,7 +167,7 @@
 					</div>
 				</div>
 				<!-- Second Feature -->
-				<div class="row g-5 pt-5" style="margin-top: 6rem;">
+				<div class="row g-5 pt-5 event-feature-card" style="margin-top: 6rem;">
 					<div class="col-lg-6 wow fadeInLeft" data-wow-delay="0.1s">
 						<h4 class="text-primary">IPEXPO</h4>
 						<h1 class="display-5 mb-4">Competition Expo</h1>
@@ -167,7 +184,7 @@
 					</div>
 					<div class="col-lg-6 wow fadeInRight" data-wow-delay="0.1s">
 						<div class="feature-img RotateMoveLeft h-100" style="object-fit: cover;">
-							<img src="../static/images/logo_hd.png" alt="" class="img-fluid w-100 rounded" style="object-fit: cover; object-position: 30% 50%">
+							<img src="../static/images/grand_comp_expo.JPG" alt="Competition Expo" class="img-fluid w-100 rounded" style="object-fit: cover; object-position: 30% 50%">
 						</div>
 					</div>
 				</div>
@@ -179,21 +196,21 @@
 		<div class="container py-5">
 			<div class="text-center mx-auto mt-5 wow fadeInUp" data-wow-delay="0.1s" style="max-width: 900px;">
 				<h4 class="text-primary">Event Timeline</h4>
-				<h1 class="display-5 mb-4">Stay Updated on Important <span style="color:#bc2300">Dates</span></h1>
+				<h1 class="display-5 mb-4">Stay Updated on Important <span class="text-primary">Dates</span></h1>
 			</div>
 			<div class="experience" id="experience">
 				<div class="container">
 					<div class="timeline">
 						<div class="timeline-item left wow slideInLeft" data-wow-delay="0.1s">
 							<div class="timeline-text">
-								<div class="timeline-date">February 13th 2026</div>
-								<h2 class="lead" style="color: #bc2300;">Grand Company Expo</h2>
+								<div class="timeline-date">March 19th, 2027</div>
+								<h2 class="lead">Grand Company Expo</h2>
 							</div>
 						</div>
 						<div class="timeline-item right wow slideInRight" data-wow-delay="0.1s">
 							<div class="timeline-text">
-								<div class="timeline-date">February 14th 2026</div>
-								<h2 class="lead" style="color: #bc2300;">Competition Expo</h2>
+								<div class="timeline-date">March 20th, 2027</div>
+								<h2 class="lead">Competition Expo</h2>
 							</div>
 						</div>
 					</div>
@@ -220,12 +237,12 @@
 	<!-- Map End -->
 
 	<!-- Footer Start -->
-	<footer class="pt-5" style="background-color: #121212;">
+	<footer class="pt-5">
 		<div class="container-xl">
 			<div class="row py-4">
 				<!-- logo -->
 				<div class="text-center col-5 col-md-2" style="margin-bottom: 5rem;">
-					<img src="../static/images/logo.png" alt="logo" class="img-fluid">
+					<img src="../static/images/ipfest_2027_logo_footer.png" alt="IPFEST 2027 logo" class="img-fluid">
 				</div>
 				<!-- event and competitions -->
 				<div class="col-md-6 col-12">
@@ -263,19 +280,10 @@
 					<div class="row">
 						<div class="col-md-12 col-sm-6 col-12">
 							<ul style="list-style-type: none;">
-								<li><h5 class="lead text-light">Manager of IPEXPO</h5></li>
-								<li><h5 class="text-light fs-6">Rasyadan Nashrullah Fadhil</h5></li>
-								<li><a href="https://wa.me/+6282113742005" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style="text-decoration: none;">
-									Phone: +6282113742005
-								</a></li>
-							</ul>
-						</div>
-						<div class="col-md-12 col-sm-6 col-12">
-							<ul style="list-style-type: none;">
-								<li><h5 class="lead text-light">Manager of Delegates Relation</h5></li>
-								<li><h5 class="text-light fs-6">Farrel Luizza</h5></li>
-								<li><a href="https://wa.me/+6281905213626" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style="text-decoration: none;" target="_blank">
-									Phone: +6281905213626
+								<li><h5 class="lead text-light">Kadiv IPEXPO</h5></li>
+								<li><h5 class="text-light fs-6">Bagus</h5></li>
+								<li><a href="https://wa.me/628979157914" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover" style="text-decoration: none;" target="_blank" rel="noopener noreferrer">
+									Phone: +628979157914
 								</a></li>
 							</ul>
 						</div>
@@ -284,14 +292,14 @@
 			</div>
 			<div class="row">
 				<div class="col d-flex justify-content-between align-item-center mt-5 mb-3">
-					<h4 class="text-light">IPFEST 2026</h4>
+					<h4 class="text-light">IPFEST 2027</h4>
 					<div class="d-flex align-item-center gap-3 text-light">
-						<a href="https://www.instagram.com/ipfest2026?igsh=MTV5OGhwd3RscDdpcQ==" class="text-white" target="_blank"><i class="bi bi-instagram"></i></a>
-						<a href="https://www.tiktok.com/@ipfest26?_r=1&_t=ZS-91AljL5dbU4" class="text-white" target="_blank"><i class="bi bi-tiktok"></i></a>
+						<a href="https://www.instagram.com/ipfest27/" class="text-white" target="_blank" rel="noopener noreferrer"><i class="bi bi-instagram"></i></a>
+						<a href="https://www.tiktok.com/@ipfest27" class="text-white" target="_blank" rel="noopener noreferrer"><i class="bi bi-tiktok"></i></a>
 				</div>
 			</div>
 			<div class="row border-top border-light py-3">
-				<p class="text-light">Copyright © IPFEST 2026. All rights reserved</p>
+				<p class="text-light">Copyright © IPFEST 2027. All rights reserved</p>
 			</div>
 		</div>
 	</footer>

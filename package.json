@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack serve --config webpack.config.babel.js --mode development",
     "build": "webpack --config webpack.config.babel.js --mode production",
-    "test": "node scripts/check-frontend-layout.js"
+    "test": "node scripts/check-frontend-layout.js && node scripts/check-registration-flow.js"
   },
   "repository": {
     "type": "git",

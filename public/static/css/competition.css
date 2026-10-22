@@ -335,6 +335,10 @@ body:not(.dashboard-theme) .timeline-date {
     color: #FFFFFF !important;
 }
 
+body:not(.dashboard-theme) main [id^="iptraining-"] {
+    scroll-margin-top: 7rem;
+}
+
 /* Additional fixes for better readability on dark background */
 
 /* Ensure breadcrumb container is centered */
