@@ -337,23 +337,11 @@ body:not(.dashboard-theme) .timeline-date {
 
 /* Additional fixes for better readability on dark background */
 
-/* Fix breadcrumb section background and text - ensure centering */
-body:not(.dashboard-theme) .bg-breadcrumb {
-    background: linear-gradient(to right, #fefaf2, #fce1db) !important;
-    position: relative;
-    z-index: 1;
-}
-
 /* Ensure breadcrumb container is centered */
 body:not(.dashboard-theme) .bg-breadcrumb .container {
     margin-left: auto;
     margin-right: auto;
     max-width: var(--bs-container-max-width, 1140px);
-}
-
-body:not(.dashboard-theme) .bg-breadcrumb::before,
-body:not(.dashboard-theme) .bg-breadcrumb::after {
-    background: rgba(76, 65, 169, 0.1) !important;
 }
 
 /* Fix all container sections within main - preserve centering */
