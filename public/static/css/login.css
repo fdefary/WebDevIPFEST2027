@@ -1,154 +1,197 @@
-@font-face {
-	font-family: "Plus Jakarta Sans SemiBold";
-	src: url("../fonts/PlusJakartaSans-SemiBold.ttf") format("truetype");
-	font-weight: 600;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Solomon Sans';
-	src: url("../fonts/Solomon Sans Normal.otf");
-}
-
-/* Update navbar styling */
-.navbar {
-    background: #FFFFFF !important;
-    box-shadow: 0 20px 60px rgba(8, 5, 41, 0.25);
-    z-index: 10;
-    position: relative;
-    min-height: var(--dashboard-nav-height);
-    padding-top: var(--dashboard-nav-padding) !important;
-    padding-bottom: var(--dashboard-nav-padding) !important;
-}
-
-.navbar::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    background-color: #FFFFFF;
-    z-index: -1;
-}
-
-.navbar .navbar-brand img {
-    display: block;
-}
-
-.navbar .navbar-nav .nav-link {
-    color: var(--dashboard-dark) !important;
-    font-weight: 600;
-    padding: 0.5rem 1.25rem;
-    border-radius: 999px;
-    transition: background-color .3s ease, color .3s ease;
-}
-
-.navbar .navbar-nav .nav-link.active,
-.navbar .navbar-nav .nav-link:focus,
-.navbar .navbar-nav .nav-link:hover {
-    color: #FFFFFF !important;
-    background-color: var(--bs-primary);
-}
-
-p, label, a{
-	font-family: "Plus Jakarta Sans SemiBold", "Plus Jakarta Sans", "Rubik";
-	color: white
-}
-button {
-	font-size: 15px;
-	/* letter-spacing: 2px; */
-	background-color: white;
-	/* text-transform: uppercase; */
-	display: inline-block;
-	text-align: center;
-	font-weight: bold;
-	padding: 0.3em 0.8em;
-	border: 15 px solid #671c84;
-	border-radius: 5px;
-	position: relative;
-	/* box-shadow: 0 2px 10px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.1); */
-	color:#671c84;
-	text-decoration: none;
-	transition: 0.3s ease all;
-	z-index: 1;
-}
-
-button:before {
-	transition: 0.5s all ease;
-	position: absolute;
-	top: 0;
-	left: 50%;
-	right: 50%;
-	bottom: 0;
-	opacity: 0;
-	content: '';
-	background-color: #671c84;
-	z-index: -1;
-}
-
-button:hover, button:focus {
-	color: white;
-}
-
-button:hover:before, button:focus:before {
-	transition: 0.5s all ease;
-	left: 0;
-	right: 0;
-	opacity: 1;
-}
-
 body {
-	--bs-primary: #4C41A9;
-	--bs-secondary: #160840;
-	--bs-dark: #160840;
-	--bs-light: #FFFFFF;
-	--bs-info: #4C41A9;
-	--bs-danger: #4C41A9;
-	--bs-warning: #4C41A9;
-	--dashboard-surface: #FFFFFF;
-	--dashboard-dark: #160840;
-	--dashboard-gradient-start: #160840;
-	--dashboard-gradient-stop: #4C41A9;
-	--dashboard-nav-height: 96px;
-	--dashboard-nav-padding: 1.25rem;
-	font-family: "Plus Jakarta Sans SemiBold", "Plus Jakarta Sans", "Rubik", sans-serif;
-	font-weight: 600;
-	background: linear-gradient(180deg, #160840 43%, #4C41A9 100%);
-	color: white;
+	--navy: #16213E;
+	--ivory: #F8F5F2;
+	--slate: #6C677D;
+	--orange: #D97706;
+	--gold: #E6C72A;
+	font-family: "Poppins", sans-serif;
+	margin: 0;
 	min-height: 100vh;
+	color: var(--navy);
+	background: var(--navy);
+}
+
+.login-layout {
+	min-height: 100vh;
+	min-height: 100dvh;
+	display: grid;
+	grid-template-columns: minmax(420px, 1fr) minmax(0, 1fr);
+}
+
+.login-form-panel {
 	position: relative;
-	overflow-x: hidden;
+	overflow: hidden;
+	min-height: 100vh;
+	min-height: 100dvh;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding: clamp(28px, 5vw, 76px) clamp(28px, 7.5vw, 112px);
+	background: var(--ivory);
 }
 
-body::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    background-image: url("../images/dotted-halftone.svg");
-    background-repeat: no-repeat;
-    background-position: center top;
-    background-size: cover;
-    opacity: 0.25;
-    pointer-events: none;
-    z-index: 0;
+.login-form-panel::before {
+	position: absolute;
+	inset: 0 0 auto;
+	height: 1px;
+	background: linear-gradient(90deg, var(--gold), var(--orange), var(--gold));
+	content: "";
 }
 
-button:active {
-	transform: scale(0.9);
+.login-brand {
+	width: fit-content;
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
 }
 
-#email{
-	border-radius: 0;
+.login-brand img:first-child {
+	width: 48px;
+	height: 48px;
+	object-fit: contain;
 }
-#email:focus{
-	outline: none;
-	border-color: none;
-	box-shadow: none; 
+
+.login-brand img:last-child {
+	width: 138px;
+	height: auto;
 }
-#password{
-	border-radius: 0;
+
+.login-content {
+	width: min(100%, 420px);
+	margin: 64px auto;
 }
-#password:focus{
-	outline: none;
-	border-color: none;
-	box-shadow: none;
+
+.login-heading {
+	margin-bottom: 36px;
+}
+
+.login-heading h1 {
+	margin: 0 0 10px;
+	color: var(--navy);
+	font-family: "Playfair Display", serif;
+	font-size: clamp(2.25rem, 4vw, 3rem);
+	font-weight: 400;
+	letter-spacing: -.025em;
+}
+
+.login-heading h1 span {
+	color: var(--orange);
+	font-family: "Great Vibes", cursive;
+	font-size: 1.2em;
+	font-weight: 400;
+}
+
+.login-heading p {
+	margin: 0;
+	color: var(--slate);
+	font-size: 1rem;
+}
+
+.login-field {
+	margin-bottom: 18px;
+}
+
+.login-field .form-control {
+	min-height: 58px;
+	border: 1px solid rgba(22, 33, 62, .24);
+	border-radius: 8px;
+	background-color: #fff;
+	color: var(--navy);
+}
+
+.login-field .form-control:focus {
+	border-color: var(--gold);
+	box-shadow: 0 0 0 3px rgba(230, 199, 42, .22);
+}
+
+.login-field label {
+	color: #514d60;
+}
+
+.login-links {
+	display: flex;
+	justify-content: space-between;
+	gap: 16px;
+	margin: 12px 0 28px;
+}
+
+.login-links a {
+	color: var(--navy);
+	font-size: .9rem;
+	text-underline-offset: 3px;
+}
+
+.login-links a:hover {
+	color: var(--orange);
+}
+
+.login-submit {
+	width: 100%;
+	min-height: 52px;
+	border: 0;
+	border-radius: 8px;
+	background: var(--gold);
+	color: var(--navy);
+	font: 500 1rem "Poppins", sans-serif;
+	letter-spacing: .02em;
+	transition: background-color .18s ease, transform .18s ease;
+}
+
+.login-submit:hover {
+	background: var(--orange);
+	color: var(--navy);
+}
+
+.login-submit:active {
+	transform: scale(.99);
+}
+
+.login-submit:focus-visible,
+.login-brand:focus-visible,
+.login-links a:focus-visible {
+	outline: 3px solid var(--gold);
+	outline-offset: 3px;
+}
+
+.login-footer {
+	color: var(--slate);
+	font-size: .75rem;
+	letter-spacing: .12em;
+}
+
+.login-image {
+	position: relative;
+	min-height: 100%;
+	background:
+		linear-gradient(180deg, rgba(22, 33, 62, .05), rgba(22, 33, 62, .34)),
+		url("../images/ipfest-background.jpg") center / cover no-repeat;
+	box-shadow: inset 1px 0 rgba(230, 199, 42, .45);
+}
+
+@media (max-width: 767.98px) {
+	.login-layout {
+		grid-template-columns: 1fr;
+		grid-template-rows: 190px 1fr;
+	}
+
+	.login-image {
+		grid-row: 1;
+		min-height: 190px;
+	}
+
+	.login-form-panel {
+		grid-row: 2;
+		min-height: calc(100dvh - 190px);
+		padding: 26px clamp(24px, 8vw, 48px);
+	}
+
+	.login-content {
+		margin: 56px auto;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.login-submit {
+		transition: none;
+	}
 }

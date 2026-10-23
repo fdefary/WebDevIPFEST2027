@@ -146,19 +146,4 @@ window.addEventListener("DOMContentLoaded", () => {
 
   });
 
-  function registrationClosed() {
-    const closeTime = new Date("2026-12-13T00:00:00").getTime();
-    const now = Date.now();
-    return now >= closeTime;
-  }
-
-  document.querySelector("#registerLink").addEventListener("click", (e) => {
-    if (registrationClosed()) {
-      e.preventDefault(); 
-      alert("Registration is currently closed. Please contact the committee for more information.");
-      return;
-    }
-  });
-
-
 });

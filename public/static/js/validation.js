@@ -5,7 +5,10 @@
  
 	Array.from(forms).forEach(form => {
 	  	form.addEventListener('submit', event => {
-		 	if (!form.checkValidity()) {
+	 	 	const activeStep = form.id === 'registration-form'
+	 	 		? form.querySelector('[data-registration-step]:not([hidden])')
+	 	 		: form;
+	 	 	if (!activeStep?.checkValidity()) {
 				event.preventDefault()
 				event.stopPropagation()
 		 	}
