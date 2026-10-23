@@ -14,6 +14,11 @@ assert.match(script, /setAttribute\("aria-current", "step"\)/);
 assert.match(script, /setProperty\("--step-progress"/);
 assert.match(html, /class="navbar registration-navbar"[\s\S]*ipfest_2027_logo\.png[\s\S]*ipfest_2027_text\.png/);
 assert.match(html, /<main class="registration-shell">/);
+assert.match(html, /<html lang="en">/);
+assert.match(html, /<title>IPFEST 2027 Registration<\/title>/);
+assert.doesNotMatch(html, /id="step-count"/);
+assert.doesNotMatch(script, /#step-count/);
+assert.match(css, /\.registration-heading p \{ max-width:none;/);
 assert.doesNotMatch(html, /gap-10/);
 assert.match(html, /name="email"[^>]*id="email"/);
 assert.match(html, /name="password"[^>]*id="password"/);
@@ -22,8 +27,8 @@ assert.match(html, /id="memberCount"/);
 assert.doesNotMatch(html, /other-batch|Angkatan kamu|value="0">Lainnya/);
 assert.doesNotMatch(script, /otherBatch|other-batch/);
 assert.match(html, /id="payment-proof"/);
-assert.match(html, /data-next>Lanjut ke Ketua Tim<\/button>/);
-assert.match(html, /class="btn btn-primary" data-back>Kembali<\/button>/);
+assert.match(html, /data-next>Continue to Team Leader Information<\/button>/);
+assert.match(html, /class="btn btn-primary" data-back>Back<\/button>/);
 assert.match(script, /const validateStep = \(\) => \{\s*if \(currentStep === 0 && !compeInput\.value\)/);
 assert.match(script, /const validateStep = \(\) => \{[\s\S]*?return true;/);
 assert.doesNotMatch(script, /step\.checkValidity\(\)/);
@@ -38,13 +43,22 @@ assert.match(script, /classList\.toggle\('active', selected\)/);
 assert.match(css, /\.payment-panel \{[^\n]*background:transparent/);
 assert.match(css, /#payment \.form-check \{[^\n]*display:flex[^\n]*align-items:center/);
 assert.match(css, /#payment \.form-check \.invalid-feedback \{[^\n]*flex-basis:100%/);
-assert.match(html, /<fieldset class="registration-subsection">[\s\S]*<legend>Data Ketua Tim<\/legend>/);
-assert.match(html, /<span class="registration-progress-label">Informasi dan Ketua Tim<\/span>/);
+assert.match(html, /<fieldset class="registration-subsection">[\s\S]*<legend>Team Leader Details<\/legend>/);
+assert.match(html, /<span class="registration-progress-label">Team Leader Information<\/span>/);
 assert.doesNotMatch(html, /<legend>Informasi Tim<\/legend>|<legend>Identitas &amp; Kontak<\/legend>/);
-assert.match(html, /<legend>Dokumen Persyaratan<\/legend>/);
+assert.match(html, /<legend>Required Documents<\/legend>/);
 assert.match(script, /class="registration-subsection-grid member-details"/);
-assert.match(script, /<legend>Identitas &amp; Kontak<\/legend>/);
-assert.match(script, /<legend>Dokumen Persyaratan<\/legend>/);
+assert.match(script, /<legend>Identity &amp; Contact Information<\/legend>/);
+assert.match(script, /<legend>Required Documents<\/legend>/);
+for (const copy of [
+  'Choose one competition', 'Prepare Your Twibbon Proof', 'Team Members', 'Account Setup',
+  'Upload payment proof', 'I agree to the terms and conditions', 'Please select a competition first.',
+  'Total payment', 'Transfer to BCA account', 'Send GoPay to', 'Pay through',
+  'Personal &amp; Academic Details', 'Class year', "Enter member ${i}'s first name.",
+  'Upload proof that member ${i} follows IPFEST on Instagram.'
+]) {
+  assert(html.includes(copy) || script.includes(copy), `Missing English registration copy: ${copy}`);
+}
 assert.match(css, /\.registration-subsection-grid \{[^\n]*grid-template-columns:1fr/);
 assert.match(css, /\.registration-subsection-grid \{[^\n]*gap:1\.5rem/);
 assert.match(css, /\.registration-subsection \.row \{[^\n]*display:grid[^\n]*grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);

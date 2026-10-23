@@ -44,7 +44,7 @@ body {
 .registration-shell { position:relative; z-index:1; width:calc(100% - 48px); max-width:1320px; margin:2rem auto 4rem; }
 .registration-heading { margin-bottom:1.5rem; }
 .registration-heading h1 { margin:0; color:var(--ivory); font:600 clamp(2rem,5vw,3.25rem)/1.1 "Plus Jakarta Sans SemiBold",sans-serif; }
-.registration-heading p { max-width:68ch; margin:.75rem 0 0; color:rgba(248,245,242,.82); }
+.registration-heading p { max-width:none; margin:.75rem 0 0; color:rgba(248,245,242,.82); }
 .registration-progress { --step-progress:0%; position:relative; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:.25rem; margin:1.5rem 0 2rem; padding:0; list-style:none; }
 .registration-progress::before { position:absolute; z-index:0; top:32px; right:10%; left:10%; height:5px; border-radius:999px; background:linear-gradient(to right,var(--gold) var(--step-progress),rgba(248,245,242,.28) var(--step-progress)); content:""; }
 .registration-progress-step { position:relative; z-index:1; display:flex; min-width:0; flex-direction:column; align-items:center; text-align:center; }

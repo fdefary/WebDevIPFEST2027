@@ -44,27 +44,27 @@ function generateMemberEntry(entry, count) {
       <div class="member-entry">
         <div class="registration-subsection-grid member-details">
           <fieldset class="registration-subsection">
-            <legend>Data Diri &amp; Akademik</legend>
+            <legend>Personal &amp; Academic Details</legend>
         <div class="row my-1">
           <div class="col-md-6">
-            <label for="firstName${i}" class="form-label">First Name: </label>
+            <label for="firstName${i}" class="form-label">First name</label>
             <input type="text" name="firstName${i}" id="firstName${i}" class="form-control" required>
-            <div class="invalid-feedback">Please add your member ${i} first name</div>
+            <div class="invalid-feedback">Enter member ${i}'s first name.</div>
           </div>
           <div class="col-md-6">
-            <label for="lastName${i}" class="form-label">Last Name: </label>
+            <label for="lastName${i}" class="form-label">Last name</label>
             <input type="text" name="lastName${i}" id="lastName${i}" class="form-control" required>
-            <div class="invalid-feedback">Please add your member ${i} last name</div>
+            <div class="invalid-feedback">Enter member ${i}'s last name.</div>
           </div>
         </div>
         <div class="row my-1">
           <div class="col-md-6">
-            <label for="major${i}" class="form-label">Major: </label>
+            <label for="major${i}" class="form-label">Major</label>
             <input type="text" name="major${i}" id="major${i}" class="form-control" required>
-            <div class="invalid-feedback">Please add your member ${i} major</div>
+            <div class="invalid-feedback">Enter member ${i}'s major.</div>
           </div>
           <div class="col-md-6">
-            <label for="batch${i}" class="form-label">Batch: </label>
+            <label for="batch${i}" class="form-label">Class year</label>
             <select name="batch${i}" id="batch${i}" class="form-select" required>
               <option value="2025">2025</option>
               <option value="2024">2024</option>
@@ -72,56 +72,56 @@ function generateMemberEntry(entry, count) {
               <option value="2022">2022</option>
               <option value="2021">2021</option>
             </select>
-            <div class="invalid-feedback">Please add your member ${i} batch</div>
+            <div class="invalid-feedback">Select member ${i}'s class year.</div>
           </div>
         </div>
           </fieldset>
           <fieldset class="registration-subsection">
-            <legend>Identitas &amp; Kontak</legend>
+            <legend>Identity &amp; Contact Information</legend>
         <div class="row my-1">
           <div class="col-md-6">
-            <label for="idCard${i}" class="form-label">ID(NIK/Pasport): </label>
+            <label for="idCard${i}" class="form-label">National ID / Passport number</label>
             <input type="text" name="idCard${i}" id="idCard${i}" class="form-control" required>
-            <div class="invalid-feedback">Please add your member ${i} ID</div>
+            <div class="invalid-feedback">Enter member ${i}'s National ID or passport number.</div>
           </div>
           <div class="col-md-6">
-            <label for="studentId${i}" class="form-label">Student ID: </label>
+            <label for="studentId${i}" class="form-label">Student ID</label>
             <input type="text" name="studentId${i}" id="studentId${i}" class="form-control" required>
-            <div class="invalid-feedback">Please add your member ${i} student ID</div>
+            <div class="invalid-feedback">Enter member ${i}'s student ID.</div>
           </div>
         </div>
         <div class="row my-1">
           <div class="col-md-6">
-            <label for="email${i}" class="form-label">Email: </label>
+            <label for="email${i}" class="form-label">Email address</label>
             <input type="email" name="email${i}" id="email${i}" class="form-control" required>
-            <div class="invalid-feedback">Please provide your member ${i} valid email</div>
+            <div class="invalid-feedback">Enter a valid email address for member ${i}.</div>
           </div>
           <div class="col-md-6">
-            <label for="phoneNo${i}" class="form-label">Phone number: </label>
+            <label for="phoneNo${i}" class="form-label">Phone number</label>
             <input type="tel" name="phoneNo${i}" id="phoneNo${i}" class="form-control" required>
-            <div class="invalid-feedback">Please add your member ${i} phone number</div>
+            <div class="invalid-feedback">Enter member ${i}'s phone number.</div>
           </div>
         </div>
           </fieldset>
           <fieldset class="registration-subsection">
-            <legend>Dokumen Persyaratan</legend>
+            <legend>Required Documents</legend>
         <div class="row my-1">
           <div class="col-md-6">
-            <label for="studentCardPhoto${i}" class="form-label">Student Card Photo: </label>
+            <label for="studentCardPhoto${i}" class="form-label">Student ID card photo</label>
             <input type="file" name="studentCardPhoto${i}" id="studentCardPhoto${i}" class="form-control" required>
-            <div class="invalid-feedback">Please upload your member ${i} student card photo</div>
+            <div class="invalid-feedback">Upload member ${i}'s student ID card photo.</div>
           </div>
           <div class="col-md-6">
-            <label for="twibbon${i}" class="form-label">Proof for Uploading Twibbon: </label>
+            <label for="twibbon${i}" class="form-label">Twibbon proof</label>
             <input type="file" name="twibbon${i}" id="twibbon${i}" class="form-control" required>
-            <div class="invalid-feedback">Please upload your twibbon proof</div>
+            <div class="invalid-feedback">Upload the Twibbon proof for member ${i}.</div>
           </div>
         </div>
         <div class="row my-1">
           <div class="col-md-6">
-            <label for="follow-ig${i}" class="form-label">Proof for Following IPFEST 2026 Instagram: </label>
+            <label for="follow-ig${i}" class="form-label">Proof of following IPFEST on Instagram</label>
             <input type="file" name="follow-ig${i}" id="follow-ig${i}" class="form-control" required>
-            <div class="invalid-feedback">Please upload the proof that you are following IPFEST 2026 Instagram</div>
+            <div class="invalid-feedback">Upload proof that member ${i} follows IPFEST on Instagram.</div>
           </div>
         </div>
           </fieldset>
@@ -165,7 +165,7 @@ if (confirmPass) {
       passwordIsValid = pass.value === confirmPass.value && pass.value.length >= 8;
       const feedback = confirmPass.parentNode.querySelector('.invalid-feedback');
       if (feedback) {
-        feedback.textContent = passwordIsValid ? "" : "Passwords do not match or less than 8 characters";
+          feedback.textContent = passwordIsValid ? "" : "Passwords must match and be at least 8 characters long.";
       }
     }
   });
@@ -186,11 +186,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const steps = [...document.querySelectorAll("[data-registration-step]")];
   const descriptions = [
-    "Pilih kompetisi yang sesuai. Ringkasan dan persyaratan tim akan membantu kamu melanjutkan pendaftaran.",
-    "Isi informasi ketua tim dan siapkan dokumen yang diminta.",
-    "Lengkapi data setiap anggota sesuai jumlah tim.",
-    "Buat akun untuk login dan memantau pendaftaran.",
-    "Pilih metode pembayaran, unggah bukti bila tersedia, lalu kirim pendaftaran."
+    "Choose your competition. Review the overview and team requirements before continuing.",
+    "Enter the team leader's details and prepare the required documents.",
+    "Enter each team member's details based on the team size you selected.",
+    "Create an account to sign in and track your registration.",
+    "Choose a payment method and upload proof to complete your registration."
   ];
   let currentStep = 0;
   const showStep = (index) => {
@@ -204,7 +204,6 @@ document.addEventListener("DOMContentLoaded", () => {
       else item.removeAttribute("aria-current");
     });
     document.querySelector(".registration-progress").style.setProperty("--step-progress", `${(index / (steps.length - 1)) * 100}%`);
-    document.querySelector("#step-count").textContent = `Langkah ${index + 1} dari ${steps.length}`;
     document.querySelector("#step-description").textContent = descriptions[index];
     steps[index]?.querySelector("h2")?.focus({ preventScroll: true });
     steps[index]?.scrollIntoView({
@@ -214,7 +213,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
   const validateStep = () => {
     if (currentStep === 0 && !compeInput.value) {
-      showError("Pilih kompetisi terlebih dahulu.");
+      showError("Please select a competition first.");
       return false;
     }
     return true;
@@ -292,13 +291,13 @@ document.addEventListener("DOMContentLoaded", () => {
 
       switch (payMethod) {
         case "Bank BCA":
-          targetPane.innerHTML = `<div class="payment-total"><span>Total pembayaran</span><strong>${indoPrice}</strong></div><p>Transfer ke rekening BCA <strong>2650508800</strong> atas nama <strong>Mochammad Rafly Ghazany A</strong>.</p>`;
+          targetPane.innerHTML = `<div class="payment-total"><span>Total payment</span><strong>${indoPrice}</strong></div><p>Transfer to BCA account <strong>2650508800</strong> under the name <strong>Mochammad Rafly Ghazany A</strong>.</p>`;
           break;
         case "Gopay":
-          targetPane.innerHTML = `<div class="payment-total"><span>Total pembayaran</span><strong>${indoPrice}</strong></div><p>Kirim GoPay ke nomor <strong>085655226900</strong> atas nama <strong>Rafly Ghazany</strong>.</p>`;
+          targetPane.innerHTML = `<div class="payment-total"><span>Total payment</span><strong>${indoPrice}</strong></div><p>Send GoPay to <strong>085655226900</strong> under the name <strong>Rafly Ghazany</strong>.</p>`;
           break;
         case "Paypal":
-          targetPane.innerHTML = `<div class="payment-total"><span>Total pembayaran</span><strong>${intlPrice}</strong></div><p>Bayar melalui <a href="https://www.paypal.me/RaflyGhazany" target="_blank" rel="noopener noreferrer">paypal.me/RaflyGhazany</a>.</p>`;
+          targetPane.innerHTML = `<div class="payment-total"><span>Total payment</span><strong>${intlPrice}</strong></div><p>Pay through <a href="https://www.paypal.me/RaflyGhazany" target="_blank" rel="noopener noreferrer">paypal.me/RaflyGhazany</a>.</p>`;
           break;
       }
   };
@@ -320,7 +319,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const selectedCompetition = compeInput?.value;
     if (!selectedCompetition) {
-      showError("Please select a competition first");
+      showError("Please select a competition first.");
       return;
     }
 
@@ -329,7 +328,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       if (!passwordIsValid) {
-        throw new Error("Passwords do not match or less than 8 characters");
+        throw new Error("Passwords must match and be at least 8 characters long.");
       }
 
       // Ambil data leader
@@ -422,7 +421,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const mPhoneNo = document.getElementById(`phoneNo${i}`)?.value;
 
         if (!mFirstName || !mLastName || !mEmail || !mMajor || !mBatch || !mIdCard || !mStudentId || !mPhoneNo) {
-          throw new Error(`Member ${i} data is incomplete`);
+        throw new Error(`Please complete all required details for member ${i}.`);
         }
 
         const member = {
@@ -466,7 +465,7 @@ document.addEventListener("DOMContentLoaded", () => {
       alert(error.message);
     } finally {
       submitBtn.disabled = false;
-      submitBtn.innerText = 'Register';
+      submitBtn.innerText = 'Submit Registration';
     }
   }); 
 }); 
