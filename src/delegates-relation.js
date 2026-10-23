@@ -94,7 +94,7 @@ onSnapshot(Teams, (snap) => {
 			first_name: data.leader.firstName || "",
 			last_name: data.leader.lastName || "",
 			major: compeFormat.showMajor ? data.leader.major || "" : "-",
-			gender: "-",
+			sex: data.leader.sex || "-",
 			batch: compeFormat.showBatch ? data.leader.batch || "" : "-",
 			person_id: data.leader.idCard || "",
 			student_id: data.leader.studentId || "",
@@ -106,7 +106,7 @@ onSnapshot(Teams, (snap) => {
 			first_name: m.firstName || "",
 			last_name: m.lastName || "",
 			major: compeFormat.showMajor ? m.major || "" : "-",
-			gender: "-",
+			sex: m.sex || "-",
 			batch: compeFormat.showBatch ? m.batch || "" : "-",
 			person_id: m.idCard || "",
 			student_id: m.studentId || "",
@@ -166,6 +166,7 @@ function createTeamList(rowNo, teamName, univ, compe, payStatus, teamLeader, lea
 
 		<td class="text-secondary">${teamLeader.first_name}</td>
 		<td class="text-secondary">${teamLeader.last_name}</td>
+		<td>${teamLeader.sex}</td>
 		<td>${teamLeader.major}</td>
 		<td>${teamLeader.batch}</td>
 		<td>${teamLeader.person_id}</td>
@@ -183,6 +184,7 @@ function createTeamList(rowNo, teamName, univ, compe, payStatus, teamLeader, lea
 		row.innerHTML = `
 			<td>${member.first_name}</td>
 			<td>${member.last_name}</td>
+			<td>${member.sex}</td>
 			<td>${member.major}</td>
 			<td>${member.batch}</td>
 			<td>${member.person_id}</td>

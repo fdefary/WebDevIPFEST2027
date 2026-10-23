@@ -45,6 +45,21 @@ for (const bank of ['bca', 'gopay', 'paypal']) {
   assert(statSync(path.join(root, 'public/static/images/banks-logo', `${bank}.png`)).isFile(), `Missing ${bank} bank logo`);
 }
 
+const resetPage = readFileSync(path.join(root, 'public/reset-password.html'), 'utf8');
+const resetCss = readFileSync(path.join(root, 'public/static/css/reset-password.css'), 'utf8');
+assert.match(resetPage, /static\/images\/ipfest_2027_logo\.png/);
+assert.match(resetPage, /static\/images\/ipfest_2027_text\.png/);
+assert.match(resetPage, /id="reset-password"/);
+assert.match(resetPage, /id="passwordResetEmail"/);
+assert.match(resetPage, /id="alertContainer"/);
+assert.doesNotMatch(resetPage, /ipfest_2026|IPFEST 2026|DM\+Sans/);
+assert.match(resetCss, /ipfest-background\.jpg/);
+assert.match(resetCss, /\.reset-header\s*\{[^}]*background:\s*#fff;/);
+assert.match(resetCss, /\.reset-panel\s*\{[^}]*background:\s*rgba\(22,\s*33,\s*62/);
+assert.match(resetCss, /\.reset-panel\s*\{[^}]*padding:\s*2rem;/);
+assert.doesNotMatch(resetCss, /\.reset-panel\s*\{[^}]*box-shadow:/);
+assert.match(resetCss, /@media\(max-width:575\.98px\)/);
+
 const notFound = readFileSync(path.join(root, 'public/404.html'), 'utf8');
 assert.match(notFound, /class="error-button error-button-secondary" href="https:\/\/wa\.me\/\+6289518593615">Contact Us/);
 const notFoundCopy = notFound.match(/<p>We're sorry,[\s\S]*?<\/p>/)?.[0] ?? '';
