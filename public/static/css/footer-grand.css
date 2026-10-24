@@ -151,3 +151,11 @@ html body footer.pt-5 a[href*="wa.me"] {
   }
 }
 
+#map-itb {
+  filter: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  backdrop-filter: none !important;
+  background: #e5e3df !important;
+}

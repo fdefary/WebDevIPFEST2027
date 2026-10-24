@@ -1060,20 +1060,26 @@
 		<!-- Sponsors modal end -->
 
 		<!-- Map start -->
-		<div class="container-fluid py-5">
-			<div class="container">
-				<div class="row g-5 align-items-center">
-					<div class="col-12 wow fadeInUp" data-wow-delay="0.1s">
-						<div class="rounded h-100">
-							<iframe class="rounded w-100" 
-							style="height: 500px;" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3961.0020509346946!2d107.60761091053743!3d-6.890356367397105!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e68e65767c9b183%3A0x2478e3dcdce37961!2sInstitut%20Teknologi%20Bandung!5e0!3m2!1sid!2sid!4v1727887337155!5m2!1sid!2sid" 
-							loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-						</div>
-					</div>
+<div class="container-fluid py-5">
+	<div class="container">
+		<div class="row g-5 align-items-center">
+			<div class="col-12">
+				<div class="rounded h-100">
+					<iframe id="map-itb" class="rounded w-100"
+						style="height: 500px; border: 0;"
+						src="https://maps.google.com/maps?q=Institut+Teknologi+Bandung&hl=id&z=16&output=embed"
+						title="Lokasi Institut Teknologi Bandung"
+						allowfullscreen
+						referrerpolicy="no-referrer-when-downgrade"></iframe>
+						<div class="text-center mt-3"> 
+							<a href="https://www.google.com/maps/search/?api=1&query=Institut+Teknologi+Bandung" target="_blank" rel="noopener" class="btn btn-primary">Open In Google Maps</a>
+</div>
 				</div>
 			</div>
 		</div>
-		<!-- Map End -->
+	</div>
+</div>
+<!-- Map End -->
 
 		<!-- Modal -->
 		<div class="modal fade" id="sponsorModal" tabindex="-1" aria-labelledby="sponsorModalLabel" aria-hidden="true">
