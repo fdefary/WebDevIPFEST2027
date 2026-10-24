@@ -1,0 +1,292 @@
+/* ===== Registration page animations: IPFEST 2027 ===== */
+:root {
+  --rg-gold: #E6C72A;
+  --rg-orange: #D97706;
+  --rg-ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes rg-fade-up {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes rg-drop-in {
+  from { opacity: 0; transform: translateY(-20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes rg-pop {
+  from { opacity: 0; transform: scale(.92) translateY(14px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes rg-slide-in {
+  from { opacity: 0; transform: translateX(32px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes rg-shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes rg-pulse-ring {
+  0%   { box-shadow: 0 0 0 0 rgba(230, 199, 42, .55); }
+  70%  { box-shadow: 0 0 0 12px rgba(230, 199, 42, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(230, 199, 42, 0); }
+}
+@keyframes rg-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-4px); }
+}
+@keyframes rg-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+@keyframes rg-sweep {
+  from { left: -75%; }
+  to   { left: 130%; }
+}
+
+/* ---------- Navbar & heading ---------- */
+.registration-navbar {
+  animation: rg-drop-in .7s var(--rg-ease) both;
+}
+.registration-navbar .navbar-brand img:first-child {
+  animation: rg-float 5s ease-in-out 1s infinite;
+}
+.registration-heading h1 {
+  animation: rg-fade-up .8s var(--rg-ease) .1s both;
+  background: linear-gradient(100deg, #F8F5F2 0%, var(--rg-gold) 35%, #F8F5F2 60%, var(--rg-gold) 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation:
+    rg-fade-up .8s var(--rg-ease) .1s both,
+    rg-shimmer 8s linear 1s infinite;
+}
+.registration-heading #step-description {
+  animation: rg-fade-up .8s var(--rg-ease) .2s both;
+}
+
+/* ---------- Progress steps ---------- */
+.registration-progress-step {
+  animation: rg-fade-up .7s var(--rg-ease) both;
+}
+.registration-progress-step:nth-child(1) { animation-delay: .30s; }
+.registration-progress-step:nth-child(2) { animation-delay: .38s; }
+.registration-progress-step:nth-child(3) { animation-delay: .46s; }
+.registration-progress-step:nth-child(4) { animation-delay: .54s; }
+.registration-progress-step:nth-child(5) { animation-delay: .62s; }
+
+.registration-progress-icon,
+.registration-progress-label {
+  transition: transform .4s var(--rg-ease), color .3s ease, background-color .3s ease, border-color .3s ease, box-shadow .3s ease;
+}
+.registration-progress-step.is-current .registration-progress-icon {
+  animation: rg-pulse-ring 2.2s ease-out infinite;
+}
+.registration-progress-step:hover .registration-progress-icon {
+  transform: translateY(-3px) scale(1.08);
+}
+
+/* ---------- Setiap step muncul tiap kali ditampilkan ---------- */
+.registration-step:not([hidden]) {
+  animation: rg-slide-in .6s var(--rg-ease) both;
+}
+.registration-step:not([hidden]) > h2 {
+  animation: rg-fade-up .6s var(--rg-ease) .05s both;
+}
+.registration-step:not([hidden]) > .step-copy {
+  animation: rg-fade-up .6s var(--rg-ease) .12s both;
+}
+
+/* ---------- Kartu kompetisi ---------- */
+.compe-container > [class*="col-"] {
+  animation: rg-pop .6s var(--rg-ease) both;
+}
+.compe-container > [class*="col-"]:nth-child(1) { animation-delay: .15s; }
+.compe-container > [class*="col-"]:nth-child(2) { animation-delay: .22s; }
+.compe-container > [class*="col-"]:nth-child(3) { animation-delay: .29s; }
+.compe-container > [class*="col-"]:nth-child(4) { animation-delay: .36s; }
+.compe-container > [class*="col-"]:nth-child(5) { animation-delay: .43s; }
+.compe-container > [class*="col-"]:nth-child(6) { animation-delay: .50s; }
+.compe-container > [class*="col-"]:nth-child(7) { animation-delay: .57s; }
+.compe-container > [class*="col-"]:nth-child(8) { animation-delay: .64s; }
+.compe-container > [class*="col-"]:nth-child(9) { animation-delay: .71s; }
+
+.card-compe {
+  position: relative;
+  overflow: hidden;
+  transition: transform .4s var(--rg-ease), box-shadow .4s ease, border-color .3s ease;
+}
+.card-compe img {
+  transition: transform .5s var(--rg-ease);
+}
+.card-compe:not(:disabled)::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, .22), transparent);
+  transform: skewX(-20deg);
+}
+.card-compe:not(:disabled):hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, .35), 0 0 24px rgba(230, 199, 42, .22);
+}
+.card-compe:not(:disabled):hover img {
+  transform: scale(1.1) rotate(-2deg);
+}
+.card-compe:not(:disabled):hover::after {
+  animation: rg-sweep .9s var(--rg-ease);
+}
+.card-compe:not(:disabled):active {
+  transform: translateY(-2px) scale(.98);
+}
+/* Kartu terpilih: berdenyut lembut */
+.card-compe[aria-pressed="true"] {
+  animation: rg-pulse-ring 2.4s ease-out infinite;
+}
+.card-compe:disabled {
+  filter: grayscale(.4);
+}
+
+/* ---------- Info box (twibbon & akun) ---------- */
+.twibbon-info,
+.account-info {
+  animation: rg-fade-up .7s var(--rg-ease) .5s both;
+}
+.twibbon-info a {
+  display: inline-block;
+  transition: transform .3s var(--rg-ease), color .3s ease;
+}
+.twibbon-info a:hover {
+  transform: translateX(4px);
+}
+
+/* ---------- Sub-section & field (leader / account) ---------- */
+.registration-subsection {
+  animation: rg-fade-up .7s var(--rg-ease) both;
+}
+.registration-subsection:nth-of-type(1) { animation-delay: .15s; }
+.registration-subsection:nth-of-type(2) { animation-delay: .30s; }
+
+.registration-step .row > [class*="col-md-"] {
+  animation: rg-fade-up .6s var(--rg-ease) both;
+}
+.registration-step .row > [class*="col-md-"]:nth-child(1) { animation-delay: .10s; }
+.registration-step .row > [class*="col-md-"]:nth-child(2) { animation-delay: .16s; }
+.registration-step .row > [class*="col-md-"]:nth-child(3) { animation-delay: .22s; }
+.registration-step .row > [class*="col-md-"]:nth-child(4) { animation-delay: .28s; }
+.registration-step .row > [class*="col-md-"]:nth-child(5) { animation-delay: .34s; }
+.registration-step .row > [class*="col-md-"]:nth-child(6) { animation-delay: .40s; }
+.registration-step .row > [class*="col-md-"]:nth-child(n+7) { animation-delay: .46s; }
+
+/* Input: glow emas saat fokus */
+.registration-step .form-control,
+.registration-step .form-select {
+  transition: border-color .3s ease, box-shadow .3s ease, transform .3s var(--rg-ease);
+}
+.registration-step .form-control:focus,
+.registration-step .form-select:focus {
+  border-color: var(--rg-gold) !important;
+  box-shadow: 0 0 0 .2rem rgba(230, 199, 42, .22), 0 8px 24px rgba(230, 199, 42, .12) !important;
+  transform: translateY(-2px);
+}
+
+/* Error validasi: bergetar sekali */
+.was-validated .registration-step .form-control:invalid,
+.was-validated .registration-step .form-select:invalid {
+  animation: rg-shake .45s ease;
+}
+.was-validated .invalid-feedback {
+  animation: rg-fade-up .35s var(--rg-ease) both;
+}
+.registration-error > * {
+  animation: rg-shake .5s ease, rg-fade-up .4s var(--rg-ease) both;
+}
+
+/* Anggota tim (dibuat lewat JS di #entry) */
+#entry > * {
+  animation: rg-fade-up .6s var(--rg-ease) both;
+}
+#entry > *:nth-child(1) { animation-delay: .05s; }
+#entry > *:nth-child(2) { animation-delay: .15s; }
+#entry > *:nth-child(3) { animation-delay: .25s; }
+#entry > *:nth-child(4) { animation-delay: .35s; }
+
+/* ---------- Metode pembayaran ---------- */
+.payment-method-option {
+  transition: transform .35s var(--rg-ease), box-shadow .3s ease, border-color .3s ease, background-color .3s ease;
+}
+.payment-method-option img {
+  transition: transform .4s var(--rg-ease);
+}
+.payment-method-option:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, .3), 0 0 20px rgba(230, 199, 42, .18);
+}
+.payment-method-option:hover img {
+  transform: scale(1.12);
+}
+.payment-method-option.active {
+  animation: rg-pulse-ring 2.4s ease-out infinite;
+}
+.payment-panel:not([hidden]) {
+  animation: rg-pop .5s var(--rg-ease) both;
+}
+.payment-proof {
+  animation: rg-fade-up .7s var(--rg-ease) .2s both;
+}
+
+/* ---------- Tombol ---------- */
+.step-actions {
+  animation: rg-fade-up .7s var(--rg-ease) .3s both;
+}
+.registration-step .btn {
+  position: relative;
+  overflow: hidden;
+  transition: transform .3s var(--rg-ease), box-shadow .3s ease, background-color .3s ease, color .3s ease;
+}
+.registration-step .btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  pointer-events: none;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, .4), transparent);
+  transform: skewX(-20deg);
+}
+.registration-step .btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 28px rgba(230, 199, 42, .3);
+}
+.registration-step .btn:hover::after {
+  animation: rg-sweep .9s var(--rg-ease);
+}
+.registration-step .btn:active {
+  transform: translateY(0) scale(.98);
+}
+.registration-submit {
+  animation: rg-pulse-ring 2.6s ease-out 1s infinite;
+}
+
+/* Checkbox */
+.form-check-input {
+  transition: transform .25s var(--rg-ease), box-shadow .25s ease;
+}
+.form-check-input:checked {
+  transform: scale(1.15);
+}
+
+/* ---------- Hormati pengaturan "kurangi animasi" ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
