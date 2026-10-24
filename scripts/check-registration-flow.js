@@ -4,6 +4,8 @@ import { readFileSync } from 'node:fs';
 const html = readFileSync('public/register.html', 'utf8');
 const css = readFileSync('public/static/css/register.css', 'utf8');
 const script = readFileSync('src/registration.js', 'utf8');
+const adminHtml = readFileSync('public/dashboard/delegates-relation.html', 'utf8');
+const adminScript = readFileSync('src/delegates-relation.js', 'utf8');
 const validation = readFileSync('public/static/js/validation.js', 'utf8');
 
 const steps = [...html.matchAll(/data-registration-step="([^"]+)"/g)].map((match) => match[1]);
@@ -16,6 +18,18 @@ assert.match(html, /class="navbar registration-navbar"[\s\S]*ipfest_2027_logo\.p
 assert.match(html, /<main class="registration-shell">/);
 assert.match(html, /<html lang="en">/);
 assert.match(html, /<title>IPFEST 2027 Registration<\/title>/);
+assert.match(html, /<label for="sex" class="form-label">Sex<\/label>[\s\S]*?<select name="sex" id="sex" class="form-select" required>[\s\S]*?<option value="Male">Male<\/option>[\s\S]*?<option value="Female">Female<\/option>/);
+assert.match(script, /<label for="sex\$\{i\}" class="form-label">Sex<\/label>[\s\S]*?<select name="sex\$\{i\}" id="sex\$\{i\}" class="form-select" required>[\s\S]*?<option value="Male">Male<\/option>[\s\S]*?<option value="Female">Female<\/option>/);
+assert.match(script, /const sex = document\.getElementById\("sex"\)\?\.value/);
+assert.match(script, /leader:\s*\{[\s\S]*?sex,/);
+assert.match(script, /const mSex = document\.getElementById\(`sex\$\{i\}`\)\?\.value/);
+assert.match(script, /if \([\s\S]*?!mSex[\s\S]*?\)[\s\S]*?throw new Error/);
+assert.match(script, /const member = \{[\s\S]*?sex: mSex,/);
+assert.match(adminHtml, /<th scope="col">Sex<\/th>/);
+assert.match(adminScript, /sex: data\.leader\.sex \|\| "-"/);
+assert.match(adminScript, /sex: m\.sex \|\| "-"/);
+assert.match(adminScript, /<td>\$\{teamLeader\.sex\}<\/td>/);
+assert.match(adminScript, /<td>\$\{member\.sex\}<\/td>/);
 assert.doesNotMatch(html, /id="step-count"/);
 assert.doesNotMatch(script, /#step-count/);
 assert.match(css, /\.registration-heading p \{ max-width:none;/);

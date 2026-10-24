@@ -64,6 +64,15 @@ function generateMemberEntry(entry, count) {
             <div class="invalid-feedback">Enter member ${i}'s major.</div>
           </div>
           <div class="col-md-6">
+            <label for="sex${i}" class="form-label">Sex</label>
+            <select name="sex${i}" id="sex${i}" class="form-select" required>
+              <option value="" selected disabled>Select sex</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+            <div class="invalid-feedback">Select member ${i}'s sex.</div>
+          </div>
+          <div class="col-md-6">
             <label for="batch${i}" class="form-label">Class year</label>
             <select name="batch${i}" id="batch${i}" class="form-select" required>
               <option value="2025">2025</option>
@@ -337,6 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const firstName = document.getElementById("firstName")?.value;
       const lastName = document.getElementById("lastName")?.value;
       const major = document.getElementById("major")?.value;
+      const sex = document.getElementById("sex")?.value;
       const batch = document.getElementById("batch")?.value;
       const teamName = document.getElementById("teamName")?.value;
       const university = document.getElementById("university")?.value;
@@ -349,7 +359,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Validasi dasar
       if (
-        !email || !password || !firstName || !lastName || !major || !batch ||
+        !email || !password || !firstName || !lastName || !major || !sex || !batch ||
         !teamName || !university || !phoneNo || !idCard || !studentId ||
         !studentCardFile || !twibbonFile || !followIgFile
       ) {
@@ -388,6 +398,7 @@ document.addEventListener("DOMContentLoaded", () => {
           lastName,
           email,
           major,
+          sex,
           batch,
           university,
           phoneNo,
@@ -415,12 +426,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const mLastName = document.getElementById(`lastName${i}`)?.value;
         const mEmail = document.getElementById(`email${i}`)?.value;
         const mMajor = document.getElementById(`major${i}`)?.value;
+        const mSex = document.getElementById(`sex${i}`)?.value;
         const mBatch = document.getElementById(`batch${i}`)?.value;
         const mIdCard = document.getElementById(`idCard${i}`)?.value;
         const mStudentId = document.getElementById(`studentId${i}`)?.value;
         const mPhoneNo = document.getElementById(`phoneNo${i}`)?.value;
 
-        if (!mFirstName || !mLastName || !mEmail || !mMajor || !mBatch || !mIdCard || !mStudentId || !mPhoneNo) {
+        if (!mFirstName || !mLastName || !mEmail || !mMajor || !mSex || !mBatch || !mIdCard || !mStudentId || !mPhoneNo) {
         throw new Error(`Please complete all required details for member ${i}.`);
         }
 
@@ -429,6 +441,7 @@ document.addEventListener("DOMContentLoaded", () => {
           lastName: mLastName,
           email: mEmail,
           major: mMajor,
+          sex: mSex,
           batch: mBatch,
           idCard: mIdCard,
           studentId: mStudentId,
