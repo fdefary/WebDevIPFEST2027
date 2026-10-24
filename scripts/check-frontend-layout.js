@@ -60,6 +60,26 @@ assert.match(resetCss, /\.reset-panel\s*\{[^}]*padding:\s*2rem;/);
 assert.doesNotMatch(resetCss, /\.reset-panel\s*\{[^}]*box-shadow:/);
 assert.match(resetCss, /@media\(max-width:575\.98px\)/);
 
+const comingSoon = readFileSync(path.join(root, 'public/coming-soon.html'), 'utf8');
+const merchandise = readFileSync(path.join(root, 'public/merchandise.html'), 'utf8');
+const merchandiseCatalog = readFileSync(path.join(root, 'public/merchandise-catalog.html'), 'utf8');
+assert.match(comingSoon, /static\/images\/ipfest_2027_mascot\.png/);
+assert.match(readFileSync(path.join(root, 'public/static/css/coming-soon.css'), 'utf8'), /\.\.\/images\/ipfest-background\.jpg/);
+assert.doesNotMatch(comingSoon, /Merchandise|<nav\b/i);
+assert.match(merchandise, /class="coming-soon-page"/);
+assert.match(merchandise, /<h1[^>]*>Merchandise is not available yet<\/h1>/);
+assert.match(merchandise, /static\/images\/ipfest_2027_mascot\.png/);
+assert.match(merchandise, /static\/css\/coming-soon\.css/);
+assert.doesNotMatch(merchandise, /location\.replace|http-equiv="refresh"/);
+assert.match(merchandiseCatalog, /id="checkout-form"/);
+assert.match(merchandiseCatalog, /id="cart-badge"/);
+assert.match(merchandiseCatalog, /Order Now/);
+for (const file of ['index.html', 'events/ipconvex.html', 'events/ipexpo.html', 'events/iptraining.html']) {
+  const html = readFileSync(path.join(root, 'public', file), 'utf8');
+  assert.match(html, /href="(?:\.\.\/)?merchandise\.html"/);
+  assert.doesNotMatch(html, /alert\(['"]Merchandise is not available yet['"]\)/);
+}
+
 const notFound = readFileSync(path.join(root, 'public/404.html'), 'utf8');
 assert.match(notFound, /class="error-button error-button-secondary" href="https:\/\/wa\.me\/\+6289518593615">Contact Us/);
 const notFoundCopy = notFound.match(/<p>We're sorry,[\s\S]*?<\/p>/)?.[0] ?? '';
