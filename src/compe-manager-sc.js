@@ -139,6 +139,7 @@ function createTeamList(rowNo, teamName, univ, compe, leader, members, paymentSt
 
         <td>${leader.firstName}</td>
         <td>${leader.lastName}</td>
+        <td>${leader.gender ?? leader.sex ?? "-"}</td>
         <td>${leader.major}</td>
         <td>${leader.batch}</td>
         <td>${leader.idCard}</td>
@@ -154,6 +155,7 @@ function createTeamList(rowNo, teamName, univ, compe, leader, members, paymentSt
         mRow.innerHTML = `
             <td>${m.firstName}</td>
             <td>${m.lastName}</td>
+            <td>${m.gender ?? m.sex ?? "-"}</td>
             <td>${m.major}</td>
             <td>${m.batch}</td>
             <td>${m.idCard}</td>

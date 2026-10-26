@@ -309,7 +309,7 @@ const studentCardCell = (person) => {
 const personCells = (p, fmt = COMPETITION_FORMAT.default) => `
     <td>${esc(p.firstName)}</td>
     <td>${esc(p.lastName)}</td>
-    <td>${esc(p.sex ?? p.gender)}</td>
+    <td>${esc(p.gender ?? p.sex)}</td>
     <td>${fmt.showMajor ? esc(p.major) : '-'}</td>
     <td>${fmt.showBatch ? esc(p.batch) : '-'}</td>
     <td>${esc(p.idCard)}</td>
