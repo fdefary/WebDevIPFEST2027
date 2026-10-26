@@ -159,3 +159,42 @@ html body footer.pt-5 a[href*="wa.me"] {
   backdrop-filter: none !important;
   background: #e5e3df !important;
 }
+
+.footer-list {
+	list-style: none;
+	padding-left: 0;
+}
+
+.footer-list .dropdown-item {
+	padding-left: 0;
+	color: #fff;
+	white-space: normal;   /* hanya wrap kalau layar benar-benar sempit */
+}
+
+.footer-list .dropdown-item:hover {
+	background: transparent;
+	color: #d4af37;        /* sesuaikan dengan warna gold tema */
+}
+
+#site-footer a.compe-anchor:hover,
+#site-footer a.event-anchor:hover,
+footer.pt-5 a.compe-anchor:hover,
+footer.pt-5 a.event-anchor:hover {
+	color: #E6C72A !important;
+	-webkit-text-fill-color: #E6C72A !important;
+}
+
+#site-footer a.compe-anchor,
+#site-footer a.event-anchor,
+footer.pt-5 a.compe-anchor,
+footer.pt-5 a.event-anchor {
+	text-decoration: none !important;
+}
+
+#site-footer a.compe-anchor:hover,
+#site-footer a.event-anchor:hover,
+footer.pt-5 a.compe-anchor:hover,
+footer.pt-5 a.event-anchor:hover {
+	text-decoration: none !important;
+	text-decoration-color: transparent !important;
+}
