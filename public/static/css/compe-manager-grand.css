@@ -1,0 +1,237 @@
+/* ===== Competition Manager: tema Grand IPFEST 2027 ===== */
+:root {
+	--g-navy: #16213E;
+	--g-ivory: #F8F5F2;
+	--g-slate: #6C677D;
+	--g-orange: #D97706;
+	--g-gold: #E6C72A;
+}
+
+body.manager-page {
+	font-family: "Poppins", sans-serif;
+	color: var(--g-ivory);
+}
+body.manager-page h1, body.manager-page h2, body.manager-page h3 {
+	font-family: "Playfair Display", serif;
+}
+
+/* Panel (kartu) */
+.manager-stage .dashboard-panel {
+	background: rgba(22, 33, 62, .82);
+	backdrop-filter: blur(8px);
+	border: 1px solid rgba(230, 199, 42, .35);
+	border-top: 3px solid var(--g-gold);
+	border-radius: 16px;
+	padding: 2rem;
+	color: var(--g-ivory);
+	box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+	animation: panelIn .6s ease both;
+}
+@keyframes panelIn {
+	from { opacity: 0; transform: translateY(24px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+.manager-stage .tab-pane.show .dashboard-panel { animation: panelIn .6s ease both; }
+
+/* Teks heading di dalam panel */
+.manager-stage .text-primary   { color: var(--g-gold) !important; }
+.manager-stage .text-secondary { color: var(--g-ivory) !important; }
+.manager-stage h6,
+.manager-stage .fs-6.text-secondary { color: rgba(248, 245, 242, .85) !important; }
+.manager-stage .display-6,
+.manager-stage .display-5 { font-family: "Playfair Display", serif; }
+
+/* Tab di navbar */
+.event-navbar .nav-tabs .nav-link {
+	color: var(--g-ivory) !important;
+	font-family: "Poppins", sans-serif;
+	border-radius: 999px !important;
+	padding: .5rem 1.25rem;
+	transition: all .3s ease;
+}
+.event-navbar .nav-tabs .nav-link:hover,
+.event-navbar .nav-tabs .nav-link.active {
+	color: var(--g-navy) !important;
+	background: var(--g-gold) !important;
+	transform: translateY(-2px);
+}
+
+/* Tabel */
+.manager-stage .table {
+	--bs-table-bg: transparent;
+	--bs-table-color: var(--g-ivory);
+	color: var(--g-ivory);
+	border-color: rgba(230, 199, 42, .35) !important;
+}
+.manager-stage thead th {
+	background: rgba(230, 199, 42, .15) !important;
+	color: var(--g-gold) !important;
+	font-family: "Playfair Display", serif;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	font-size: 11px;
+	border-bottom: 2px solid var(--g-gold) !important;
+	padding: 15px 10px !important;
+}
+.manager-stage tbody td { color: var(--g-ivory) !important; border-color: rgba(230, 199, 42, .2) !important; }
+.manager-stage tbody tr { transition: background-color .3s ease; }
+.manager-stage tbody tr:hover { background-color: rgba(230, 199, 42, .12) !important; }
+
+/* Input dan form */
+.manager-stage .form-control,
+.manager-stage .form-select {
+	background: rgba(248, 245, 242, .95);
+	border: 1px solid var(--g-slate);
+	color: var(--g-navy);
+}
+.manager-stage .form-control:focus,
+.manager-stage .form-select:focus {
+	border-color: var(--g-gold);
+	box-shadow: 0 0 0 .2rem rgba(230, 199, 42, .25);
+}
+
+/* Tombol (Send, Download, Save to Excel, Log Out) */
+.manager-page .btn-light.border-primary {
+	background: transparent !important;
+	color: var(--g-gold) !important;
+	border: 1px solid var(--g-gold) !important;
+	font-weight: 500;
+	transition: all .3s ease;
+}
+.manager-page .btn-light.border-primary:hover {
+	background: var(--g-gold) !important;
+	color: var(--g-navy) !important;
+	transform: translateY(-3px);
+	box-shadow: 0 10px 22px rgba(230, 199, 42, .35);
+}
+.manager-stage .btn-secondary {
+	background: var(--g-slate);
+	border-color: var(--g-slate);
+}
+.manager-stage .btn-secondary:hover { background: var(--g-orange); border-color: var(--g-orange); }
+
+/* Tombol lihat file (dari blok style lama) */
+.btn-view-file {
+	background: linear-gradient(45deg, var(--g-orange), var(--g-gold));
+	color: var(--g-navy) !important;
+	border: none;
+	font-weight: 700;
+	font-size: 10px;
+	padding: 10px 20px;
+	border-radius: 50px;
+	text-transform: uppercase;
+	letter-spacing: 1.5px;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	text-decoration: none !important;
+	transition: all .3s ease;
+	box-shadow: 0 6px 20px rgba(217, 119, 6, .4);
+}
+.btn-view-file:hover { transform: translateY(-4px) scale(1.06); box-shadow: 0 12px 28px rgba(230, 199, 42, .5); }
+.btn-view-file:active { transform: translateY(-1px) scale(.98); }
+
+/* Pill status dan rank (dipakai script saat render tabel) */
+.select-pill {
+	border-radius: 12px; padding: 4px 12px; font-weight: 700; font-size: .75rem;
+	border: 2px solid transparent; text-transform: uppercase; letter-spacing: .5px;
+	transition: all .3s ease;
+}
+.status-passed  { background: #e8f5e9 !important; color: #1b5e20 !important; border-color: #81c784 !important; }
+.status-failed  { background: #fff1f2 !important; color: #be123c !important; border-color: #fda4af !important; }
+.status-pending { background: rgba(230, 199, 42, .2) !important; color: var(--g-gold) !important; border-color: var(--g-gold) !important; }
+.rank-pill      { background: rgba(248, 245, 242, .15) !important; color: var(--g-ivory) !important; border: 2px solid var(--g-slate) !important; }
+.badge-ipfest   { font-size: 10px; padding: 5px 10px; border-radius: 8px; font-weight: 800; text-transform: uppercase; }
+
+/* Beri ruang di bawah navbar tetap */
+.manager-stage { padding-top: 6rem !important; }
+
+/* ===== Perbaikan keterbacaan tabel ===== */
+
+/* Header: latar navy pekat, teks emas tebal */
+.manager-stage .table thead th,
+.manager-stage .table > thead > tr > th {
+	background-color: #0F1830 !important;
+	background-image: none !important;
+	color: #E6C72A !important;
+	-webkit-text-fill-color: #E6C72A !important;
+	font-family: "Poppins", sans-serif !important;
+	font-weight: 600 !important;
+	font-size: 12px !important;
+	letter-spacing: .8px;
+	text-transform: uppercase;
+	white-space: nowrap;
+	box-shadow: none !important;
+	border-bottom: 2px solid #E6C72A !important;
+	border-color: rgba(230, 199, 42, .5) !important;
+	position: sticky;
+	top: 0;
+	z-index: 2;
+}
+
+/* Isi tabel: teks ivory jelas, baris selang-seling */
+.manager-stage .table tbody td,
+.manager-stage .table > tbody > tr > td {
+	background-color: transparent !important;
+	color: #F8F5F2 !important;
+	-webkit-text-fill-color: #F8F5F2 !important;
+	font-family: "Poppins", sans-serif !important;
+	font-weight: 400 !important;
+	font-size: 14px;
+	box-shadow: none !important;
+	vertical-align: middle;
+	border-color: rgba(248, 245, 242, .18) !important;
+}
+.manager-stage .table tbody tr:nth-child(odd) > td  { background-color: rgba(248, 245, 242, .04) !important; }
+.manager-stage .table tbody tr:nth-child(even) > td { background-color: rgba(248, 245, 242, .09) !important; }
+.manager-stage .table tbody tr:hover > td {
+	background-color: rgba(230, 199, 42, .18) !important;
+}
+
+/* Border tabel */
+.manager-stage .table,
+.manager-stage .table.table-bordered {
+	border-color: rgba(230, 199, 42, .5) !important;
+}
+
+/* Scrollbar gelap, bukan putih */
+.manager-stage .overflow-auto {
+	scrollbar-width: thin;
+	scrollbar-color: #E6C72A #0F1830;
+}
+.manager-stage .overflow-auto::-webkit-scrollbar { height: 10px; width: 10px; }
+.manager-stage .overflow-auto::-webkit-scrollbar-track { background: #0F1830; border-radius: 10px; }
+.manager-stage .overflow-auto::-webkit-scrollbar-thumb { background: #E6C72A; border-radius: 10px; }
+.manager-stage .overflow-auto::-webkit-scrollbar-thumb:hover { background: #D97706; }
+
+/* ===== Input file: teks terbaca ===== */
+.manager-stage input[type="file"],
+.manager-stage input[type="file"].form-control {
+	background-color: #F8F5F2 !important;
+	color: #16213E !important;
+	-webkit-text-fill-color: #16213E !important;
+	font-family: "Poppins", sans-serif !important;
+	font-size: 14px;
+	font-weight: 500;
+	border: 1px solid #E6C72A !important;
+	cursor: pointer;
+}
+
+/* Tombol "Choose File" di dalam input */
+.manager-stage input[type="file"]::file-selector-button {
+	background-color: #16213E !important;
+	color: #E6C72A !important;
+	-webkit-text-fill-color: #E6C72A !important;
+	font-family: "Poppins", sans-serif;
+	font-weight: 600;
+	border: none;
+	border-right: 1px solid #E6C72A;
+	padding: .5rem 1rem;
+	margin-right: 1rem;
+	cursor: pointer;
+	transition: all .3s ease;
+}
+.manager-stage input[type="file"]::file-selector-button:hover {
+	background-color: #E6C72A !important;
+	color: #16213E !important;
+}

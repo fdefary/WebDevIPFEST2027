@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Delegates Relation - IPFEST 2025</title>
+	<title>Delegates Relation - IPFEST 2027</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 	<meta content="" name="keywords">
 	<meta content="" name="description">
-	<link rel="icon" href="../static/images/ipfest_2026_logo.svg">
+	<link rel="icon" href="../static/images/ipfest_2027_logo.png">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Rubik:wght@400;500&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<link href="../static/lib/animate/animate.min.css" rel="stylesheet">
@@ -17,10 +17,22 @@
 	<link href="../static/lib/lightbox/css/lightbox.min.css" rel="stylesheet">
 	<link href="../static/css/bootstrap.min.css" rel="stylesheet">
 	<link href="../static/css/style.css" rel="stylesheet">
+	<link href="../static/css/grand-theme.css" rel="stylesheet">
+	<link href="../static/css/competition-manager.css" rel="stylesheet">
+	<link href="../static/css/dashboard-extra.css" rel="stylesheet">
+	<link href="../static/css/grand-subpage.css" rel="stylesheet">
+	<link href="../static/css/delegates-relation-grand.css" rel="stylesheet">
 </head>
-<body class="dashboard-theme">
+<body class="event-page manager-page delrel-page">
+	<ul class="circles" aria-hidden="true">
+		<li></li><li></li><li></li><li></li><li></li>
+		<li></li><li></li><li></li><li></li><li></li>
+		<li></li><li></li><li></li><li></li><li></li>
+		<li></li><li></li><li></li><li></li><li></li>
+		<li></li><li></li><li></li><li></li><li></li>
+	</ul>
 	<!-- Spinner Start -->
-   <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+   <div id="spinner" class="show position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
       <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
          <span class="sr-only">Loading...</span>
       </div>
@@ -28,11 +40,11 @@
    <!-- Spinner End -->
 
    <!-- Navbar & Hero Start -->
-	<div class="container-fluid p-0">
-		<nav class="navbar navbar-expand-lg fixed-top navbar-light px-4 px-lg-5 py-3 py-lg-0 dashboard-navbar">
+	<div class="container-fluid p-0 event-nav-layer">
+		<nav class="navbar navbar-expand-lg fixed-top navbar-light px-4 px-lg-5 py-3 py-lg-0 event-navbar">
 			<a href="" class="navbar-brand p-0 d-flex align-items-center gap-3">
-				<img src="../static/images/ipfest_2026_logo.svg" alt="IPFEST 2026 Flame" width="69" height="69" class="brand-mark">
-				<img src="../static/images/ipfest_2026_text.svg" alt="IPFEST 2026" width="94" height="53" class="brand-wordmark">
+				<img src="../static/images/ipfest_2027_logo.png" alt="IPFEST 2027 Logo">
+				<img src="../static/images/ipfest_2027_text.png" alt="IPFEST 2027">
 			</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
 				<span class="fa fa-bars"></span>
@@ -41,13 +53,13 @@
 				<div class="navbar-nav ms-auto">
 					<ul class="nav nav-tabs border border-0" id="nav-tab" role="tablist">
 						<li class="nav-item" role="presentation">
-							<button style="background-color: inherit;" class="nav-link active border border-0" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true"><span class="fs-6">Dashboard</span></button>
+							<button class="nav-link active border border-0" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" type="button" role="tab" aria-controls="nav-home" aria-selected="true"><span class="fs-6">Dashboard</span></button>
 						</li>
 						<li class="nav-item" role="presentation">
-							<button style="background-color: inherit;" class="nav-link border border-0" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false"><span class="fs-6">Database</span></button>
+							<button class="nav-link border border-0" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false"><span class="fs-6">Database</span></button>
 						</li>
 						<li class="nav-item" role="presentation">
-							<button style="background-color: inherit;" class="nav-link border border-0" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false"><span class="fs-6">Final Payment</span></button>
+							<button class="nav-link border border-0" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" type="button" role="tab" aria-controls="nav-contact" aria-selected="false"><span class="fs-6">Final Payment</span></button>
 						</li>
 					</ul>
 					<div class="d-flex align-items-center">	
@@ -75,10 +87,10 @@
    <!-- Navbar & Hero End -->
 
 	<!-- Main -->
-	<main class="container-fluid py-5 dashboard-stage">
-		<div class="container d-flex py-5">
+	<main class="container-fluid py-5 manager-stage delrel-stage">
+		<div class="card shadow rounded chart-card">
 			<section class="col-lg-10 col-md-11 col-sm-12 mx-auto">
-				<div class="tab-content" id="nav-tabContent" style="padding: 1rem;">
+				<div class="tab-content" id="nav-tabContent">
 					<div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab" tabindex="0">
 						<div class="dashboard-panel">
 							<div class="row g-3">
@@ -209,7 +221,7 @@
 								<h6>Legend:</h6>
 								<h1 class="fs-6 text-secondary"><i class="bi bi-grip-horizontal text-secondary"></i> <strong>Leader</strong></h1>
 								<div class="w-100 overflow-auto" style="max-height: 70vh;">
-									<table id="db-table" class="table table-hover table-bordered border-primary" style="width:130vw">
+									<table id="db-table" class="table table-hover table-bordered border-primary" style="width:130vw; --bs-table-bg: transparent">
 										<thead class="text-primary">
 											<tr>
 												<th scope="col">No.</th>
@@ -220,7 +232,7 @@
 												<th scope="col">Members</th>
 												<th scope="col">First Name</th>
 												<th scope="col">Last Name</th>
-												<th scope="col">Sex</th>
+												<th scope="col">Gender</th>
 												<th scope="col">Major</th>
 												<th scope="col">Batch</th>
 												<th scope="col">ID</th>
@@ -242,20 +254,27 @@
 					<div class="tab-pane fade" id="nav-contact" role="tabpanel" aria-labelledby="nav-contact-tab" tabindex="0">
 						<div class="dashboard-panel">
 							<div class="d-flex justify-content-center">
-								<form id="treasury-history">
-									<div class="overflow-auto" style="max-height: 70vh; width:60vw">
-										<table class="table">
+								<form id="treasury-history" class="w-100">
+									<div class="overflow-auto w-100" style="max-height: 70vh;">
+										<table class="table" id="final-payment-table">
 											<thead class="text-primary">
 												<tr>
 													<th scope="col">No.</th>
 													<th scope="col">Team Name</th>
 													<th scope="col">University</th>
 													<th scope="col">Competition</th>
-													<th scope="col">Payment Status</th>
+													<th scope="col">Status</th>
+													<th scope="col">Scheme</th>
+													<th scope="col">Hospitality</th>
+													<th scope="col">Payment Proof</th>
+													<th scope="col">Last Update</th>
 												</tr>
 											</thead>
 											<tbody id="treasury-history-list"></tbody>
 										</table>
+									</div>
+									<div class="mt-4">
+										<button type="button" class="btn btn-light border border-primary rounded-pill text-primary py-2 px-4" id="final-payment-excel">Download</button>
 									</div>
 								</form>
 							</div>
@@ -278,7 +297,38 @@
 	<script src="../static/lib/lightbox/js/lightbox.min.js"></script>
 	<script src="../static/js/main.js"></script>
 	<script src="../dist/plugin/chart.min.js"></script>
+	<script>
+		// Warna & font default Chart.js mengikuti tema Grand (harus sebelum bundle membuat chart)
+		if (window.Chart && Chart.defaults) {
+			Chart.defaults.color = 'rgba(248,245,242,.85)';
+			Chart.defaults.borderColor = 'rgba(248,245,242,.12)';
+			Chart.defaults.font.family = "'Poppins', sans-serif";
+		}
+	</script>
 	<script src="../dist/index.bundle.js"></script>
 	<script src="../dist/delegates_relation.bundle.js"></script>
+	<script>
+	// Angka jumlah tim menghitung naik saat diisi oleh bundle
+	document.querySelectorAll('.total-del').forEach(function (el) {
+		new MutationObserver(function () {
+			var target = parseInt(el.textContent, 10);
+			if (isNaN(target) || el.dataset.animating === '1' || el.dataset.final === String(target)) return;
+			el.dataset.final = target;
+			el.dataset.animating = '1';
+			var start = performance.now(), dur = 900;
+			(function step(t) {
+				var p = Math.min((t - start) / dur, 1);
+				el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3)));
+				if (p < 1) requestAnimationFrame(step);
+				else { el.dataset.animating = '0'; el.closest('.card').classList.add('is-loaded'); }
+			})(start);
+		}).observe(el, { childList: true, characterData: true, subtree: true });
+	});
+
+	// Aktifkan tooltip nama kompetisi
+	document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
+		new bootstrap.Tooltip(el, { placement: 'top' });
+	});
+</script>
 </body>
 </html>

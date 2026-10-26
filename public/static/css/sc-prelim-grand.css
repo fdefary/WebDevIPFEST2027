@@ -1,0 +1,443 @@
+/* =====================================================================
+   SC Online Preliminary Round — tema Grand IPFEST 2027
+   Berdiri sendiri (tidak bergantung pada style.css lama).
+   ===================================================================== */
+:root {
+	--sp-navy: #16213E;
+	--sp-navy-deep: #0B1328;
+	--sp-ivory: #F8F5F2;
+	--sp-muted: rgba(248, 245, 242, .62);
+	--sp-gold: #E6C72A;
+	--sp-orange: #D97706;
+	--sp-bronze: #6B4A1F;
+	--sp-red: #f87171;
+	--sp-green: #4ade80;
+}
+
+html, body { min-height: 100%; }
+
+body.scp-page {
+	margin: 0;
+	font-family: "Poppins", sans-serif;
+	color: var(--sp-ivory);
+	background:
+		radial-gradient(1200px 700px at 90% 110%, rgba(217, 119, 6, .32), transparent 60%),
+		radial-gradient(900px 600px at 0% 0%, rgba(230, 199, 42, .08), transparent 60%),
+		linear-gradient(135deg, var(--sp-navy-deep) 0%, var(--sp-navy) 45%, #2a2440 78%, var(--sp-bronze) 135%);
+	background-attachment: fixed;
+	overflow-x: hidden;
+}
+
+/* ---------- Latar animasi ---------- */
+.scp-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.scp-glow { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .4; animation: spDrift 20s ease-in-out infinite alternate; }
+.scp-glow-1 { width: 420px; height: 420px; top: -140px; right: -100px; background: rgba(230, 199, 42, .3); }
+.scp-glow-2 { width: 520px; height: 520px; bottom: -220px; left: -180px; background: rgba(217, 119, 6, .25); animation-duration: 26s; }
+@keyframes spDrift { from { transform: translate(0, 0) scale(1); } to { transform: translate(40px, 30px) scale(1.1); } }
+
+.scp-particles { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; }
+.scp-particles li {
+	position: absolute; bottom: -20px;
+	width: 7px; height: 7px; border-radius: 50%;
+	background: radial-gradient(circle at 35% 35%, #fff4c2, var(--sp-gold) 55%, rgba(217, 119, 6, .6));
+	box-shadow: 0 0 10px rgba(230, 199, 42, .6);
+	opacity: 0;
+	animation: spRise linear infinite;
+}
+.scp-particles li:nth-child(1) { left: 8%;  animation-duration: 18s; }
+.scp-particles li:nth-child(2) { left: 20%; animation-duration: 24s; animation-delay: 4s; width: 4px; height: 4px; }
+.scp-particles li:nth-child(3) { left: 33%; animation-duration: 20s; animation-delay: 8s; }
+.scp-particles li:nth-child(4) { left: 47%; animation-duration: 27s; animation-delay: 2s; width: 5px; height: 5px; }
+.scp-particles li:nth-child(5) { left: 60%; animation-duration: 19s; animation-delay: 11s; width: 9px; height: 9px; }
+.scp-particles li:nth-child(6) { left: 72%; animation-duration: 25s; animation-delay: 6s; width: 4px; height: 4px; }
+.scp-particles li:nth-child(7) { left: 84%; animation-duration: 21s; animation-delay: 13s; }
+.scp-particles li:nth-child(8) { left: 94%; animation-duration: 23s; animation-delay: 9s; width: 5px; height: 5px; }
+@keyframes spRise {
+	0%   { transform: translateY(0); opacity: 0; }
+	10%  { opacity: .8; }
+	90%  { opacity: .6; }
+	100% { transform: translateY(-105vh) translateX(-15px); opacity: 0; }
+}
+
+/* ---------- Navbar ---------- */
+.scp-navbar {
+	position: fixed; top: 0; left: 0; right: 0; z-index: 20;
+	background: linear-gradient(180deg, rgba(11, 19, 40, .88), rgba(22, 33, 62, .6));
+	backdrop-filter: blur(14px) saturate(140%);
+	-webkit-backdrop-filter: blur(14px) saturate(140%);
+	border-bottom: 1px solid rgba(230, 199, 42, .2);
+	animation: spSlideDown .6s cubic-bezier(.2, .8, .2, 1) both;
+}
+.scp-navbar::after {
+	content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+	background: linear-gradient(90deg, transparent, var(--sp-gold), transparent);
+	background-size: 200% 100%;
+	animation: spShimmer 6s linear infinite;
+}
+@keyframes spSlideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes spShimmer { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+.scp-navbar-inner {
+	max-width: 1200px; height: 72px; margin: 0 auto;
+	padding: 0 clamp(1rem, 4vw, 2rem);
+	display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+}
+.scp-brand { display: inline-flex; align-items: center; gap: .6rem; }
+.scp-logo-mark { height: 44px; width: auto; filter: drop-shadow(0 4px 10px rgba(230, 199, 42, .25)); }
+.scp-logo-text { height: 30px; width: auto; }
+.scp-badge {
+	display: inline-flex; align-items: center; gap: .4rem;
+	padding: .35rem .9rem; border-radius: 999px;
+	border: 1px solid rgba(230, 199, 42, .45); background: rgba(230, 199, 42, .1);
+	color: var(--sp-gold);
+	font-size: .76rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap;
+}
+
+/* ---------- Isi halaman ---------- */
+.scp-main { position: relative; z-index: 1; padding: 108px 1rem 4rem; }
+.scp-wrap { max-width: 860px; margin: 0 auto; }
+
+.scp-hero { text-align: center; margin-bottom: 1.75rem; animation: spFadeUp .7s ease both; }
+.scp-eyebrow { display: block; font-family: "Great Vibes", cursive; font-size: 2rem; color: var(--sp-gold); line-height: 1.1; }
+.scp-title { font-family: "Playfair Display", serif; font-weight: 700; font-size: clamp(1.9rem, 4.5vw, 2.7rem); margin: .3rem 0 .7rem; color: var(--sp-ivory); }
+.scp-divider { display: flex; align-items: center; justify-content: center; gap: .7rem; color: var(--sp-gold); font-size: .85rem; }
+.scp-divider span { display: block; height: 1px; width: 0; background: linear-gradient(90deg, transparent, var(--sp-gold), transparent); animation: spLine .9s ease .4s forwards; }
+@keyframes spLine { to { width: 80px; } }
+.scp-note {
+	max-width: 620px; margin: 1.1rem auto 0;
+	padding: .75rem 1rem; border-radius: 12px;
+	background: rgba(230, 199, 42, .08); border: 1px dashed rgba(230, 199, 42, .4);
+	color: rgba(248, 245, 242, .82); font-size: .88rem; line-height: 1.55;
+}
+.scp-note i { color: var(--sp-gold); margin-right: .25rem; }
+.scp-note strong { color: var(--sp-gold); }
+@keyframes spFadeUp { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+
+.scp-panel {
+	position: relative;
+	padding: 1.25rem;
+	border-radius: 20px;
+	background: rgba(15, 24, 48, .7);
+	backdrop-filter: blur(14px);
+	-webkit-backdrop-filter: blur(14px);
+	border: 1px solid rgba(230, 199, 42, .28);
+	box-shadow: 0 30px 70px rgba(0, 0, 0, .4);
+	overflow: hidden;
+	animation: spFadeUp .7s ease .15s both;
+}
+.scp-panel::before {
+	content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+	background: linear-gradient(90deg, var(--sp-orange), var(--sp-gold), var(--sp-orange));
+	background-size: 200% 100%;
+	animation: spShimmer 5s linear infinite;
+}
+
+/* ---------- Accordion (soal) ---------- */
+.scp-page .accordion {
+	--bs-accordion-bg: transparent;
+	--bs-accordion-border-color: transparent;
+	--bs-accordion-btn-focus-box-shadow: none;
+}
+.scp-page .accordion-item {
+	background: rgba(8, 14, 32, .55) !important;
+	border: 1px solid rgba(230, 199, 42, .22) !important;
+	border-radius: 16px !important;
+	margin-bottom: .9rem;
+	overflow: hidden;
+	transition: border-color .3s ease, box-shadow .3s ease;
+	animation: spFadeUp .6s ease both;
+}
+.scp-page .accordion-item:nth-child(1) { animation-delay: .25s; }
+.scp-page .accordion-item:nth-child(2) { animation-delay: .35s; }
+.scp-page .accordion-item:nth-child(3) { animation-delay: .45s; }
+.scp-page .accordion-item:nth-child(4) { animation-delay: .55s; }
+.scp-page .accordion-item:nth-child(n+5) { animation-delay: .6s; }
+.scp-page .accordion-item:last-child { margin-bottom: 0; }
+.scp-page .accordion-item:has(.accordion-collapse.show) {
+	border-color: rgba(230, 199, 42, .7) !important;
+	box-shadow: 0 12px 30px rgba(230, 199, 42, .12);
+}
+
+.scp-page .accordion-button {
+	gap: .9rem;
+	background: transparent !important;
+	color: var(--sp-ivory) !important;
+	box-shadow: none !important;
+	padding-left: 1.25rem; padding-right: 1.25rem;
+	transition: background .25s ease, color .25s ease;
+}
+.scp-page .accordion-button .fs-5 { font-family: "Playfair Display", serif; letter-spacing: .01em; }
+.scp-page .accordion-button:not(.collapsed) { color: var(--sp-gold) !important; background: rgba(230, 199, 42, .07) !important; }
+.scp-page .accordion-button:hover:not(:disabled) { background: rgba(230, 199, 42, .06) !important; }
+/* Panah accordion emas */
+.scp-page .accordion-button::after {
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23E6C72A' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+}
+/* Soal terkunci: ikon gembok, redup */
+.scp-page .accordion-button:disabled { opacity: .55; cursor: not-allowed; }
+.scp-page .accordion-button:disabled::after {
+	background-image: none !important;
+	content: "\F47B";                /* bootstrap-icons: lock-fill */
+	font-family: "bootstrap-icons";
+	color: var(--sp-muted);
+	transform: none !important;
+	width: auto; height: auto; font-size: 1rem;
+}
+
+/* Nomor soal dalam lingkaran */
+.scp-q-num {
+	flex: 0 0 38px; width: 38px; height: 38px;
+	display: grid; place-items: center;
+	border-radius: 50%;
+	font-weight: 700; font-size: .95rem;
+	color: var(--sp-gold);
+	background: rgba(230, 199, 42, .12);
+	border: 1px solid rgba(230, 199, 42, .5);
+	transition: all .3s ease;
+}
+.scp-page .accordion-button:not(.collapsed) .scp-q-num {
+	color: var(--sp-navy);
+	background: linear-gradient(135deg, var(--sp-gold), var(--sp-orange));
+	border-color: transparent;
+	box-shadow: 0 0 0 4px rgba(230, 199, 42, .15);
+}
+
+.scp-page .accordion-body { padding: .5rem 1.25rem 1.25rem; }
+.scp-page .accordion-collapse.show .accordion-body { animation: spFadeUp .45s ease both; }
+
+/* Teks soal */
+.scp-page [class^="question-"] h3,
+.scp-page [class*=" question-"] h3 {
+	color: var(--sp-ivory) !important;
+	font-weight: 400;
+	line-height: 1.7;
+	font-size: 1.06rem !important;
+}
+
+/* ---------- Pilihan jawaban (kartu yang bisa diklik) ---------- */
+.scp-page .answer-q .form-check {
+	position: relative;
+	padding: 0;
+	margin-bottom: .6rem !important;
+}
+.scp-page .answer-q .form-check-input {
+	position: absolute;
+	opacity: 0;
+	pointer-events: none;
+}
+.scp-page .answer-q .form-check-label {
+	width: 100%;
+	display: flex; align-items: center; gap: .9rem;
+	padding: .8rem 1rem;
+	border-radius: 14px;
+	border: 1px solid rgba(248, 245, 242, .14);
+	background: rgba(248, 245, 242, .04);
+	cursor: pointer;
+	transition: border-color .2s ease, background .2s ease, transform .2s ease;
+}
+.scp-page .answer-q .form-check-label .text-black {
+	color: var(--sp-ivory) !important;
+	font-size: 1rem !important;
+}
+.scp-letter {
+	flex: 0 0 34px; width: 34px; height: 34px;
+	display: grid; place-items: center;
+	border-radius: 10px;
+	font-weight: 700; font-size: .9rem;
+	color: var(--sp-gold);
+	background: rgba(230, 199, 42, .1);
+	border: 1px solid rgba(230, 199, 42, .4);
+	transition: all .2s ease;
+}
+.scp-page .answer-q .form-check-label:hover {
+	border-color: rgba(230, 199, 42, .55);
+	background: rgba(230, 199, 42, .07);
+	transform: translateX(4px);
+}
+.scp-page .answer-q .form-check-input:focus-visible + .form-check-label {
+	outline: 2px solid var(--sp-gold);
+	outline-offset: 2px;
+}
+/* Pilihan terpilih */
+.scp-page .answer-q .form-check-input:checked + .form-check-label {
+	border-color: var(--sp-gold);
+	background: linear-gradient(90deg, rgba(230, 199, 42, .2), rgba(230, 199, 42, .05));
+	box-shadow: 0 8px 22px rgba(230, 199, 42, .15);
+}
+.scp-page .answer-q .form-check-input:checked + .form-check-label .scp-letter {
+	color: var(--sp-navy);
+	background: linear-gradient(135deg, var(--sp-gold), var(--sp-orange));
+	border-color: transparent;
+	animation: spPop .3s ease;
+}
+@keyframes spPop { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+/* Pilihan yang dikunci script (setelah submit / waktu habis) */
+.scp-page .answer-q .form-check-input:disabled + .form-check-label { cursor: not-allowed; opacity: .6; transform: none; }
+
+/* ---------- Timer & tombol Submit ---------- */
+.scp-actions { margin-right: 0 !important; padding-top: 1rem !important; border-top: 1px solid rgba(248, 245, 242, .1); margin-top: .6rem; gap: .5rem; flex-wrap: wrap; }
+.scp-page .scp-timer {
+	display: inline-flex; align-items: center; gap: .4rem;
+	margin: 0 1rem 0 0 !important;
+	padding: .45rem .95rem;
+	border-radius: 999px;
+	color: var(--sp-gold) !important;
+	background: rgba(230, 199, 42, .1);
+	border: 1px solid rgba(230, 199, 42, .4);
+	font-variant-numeric: tabular-nums;
+	font-size: .95rem !important;
+	transition: all .3s ease;
+}
+.scp-page .scp-timer.is-warn {
+	color: #fbbf24 !important;
+	background: rgba(251, 191, 36, .14);
+	border-color: rgba(251, 191, 36, .6);
+}
+.scp-page .scp-timer.is-danger {
+	color: #fff !important;
+	background: rgba(220, 38, 38, .8);
+	border-color: var(--sp-red);
+	animation: spPulse 1s ease-in-out infinite;
+}
+@keyframes spPulse {
+	0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, .6); }
+	50%      { box-shadow: 0 0 0 10px rgba(248, 113, 113, 0); }
+}
+
+.scp-page .answer-q button[type="submit"] {
+	position: relative; overflow: hidden;
+	padding: .55rem 1.9rem;
+	border: none !important;
+	border-radius: 999px !important;
+	background: linear-gradient(135deg, var(--sp-gold), var(--sp-orange)) !important;
+	color: var(--sp-navy) !important;
+	font-weight: 700;
+	box-shadow: 0 8px 20px rgba(217, 119, 6, .3);
+	transition: transform .3s ease, box-shadow .3s ease, filter .3s ease;
+}
+.scp-page .answer-q button[type="submit"]::after {
+	content: ""; position: absolute; top: 0; left: -75%;
+	width: 50%; height: 100%;
+	background: linear-gradient(115deg, transparent, rgba(255, 255, 255, .5), transparent);
+	transform: skewX(-20deg);
+	transition: left .7s ease;
+}
+.scp-page .answer-q button[type="submit"]:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 14px 28px rgba(230, 199, 42, .45); }
+.scp-page .answer-q button[type="submit"]:hover:not(:disabled)::after { left: 130%; }
+.scp-page .answer-q button[type="submit"]:focus-visible { outline: 2px solid var(--sp-ivory); outline-offset: 3px; }
+.scp-page .answer-q button[type="submit"]:disabled { filter: grayscale(.7); opacity: .55; cursor: not-allowed; box-shadow: none; }
+
+/* ---------- Mobile ---------- */
+@media (max-width: 576px) {
+	.scp-navbar-inner { height: 62px; }
+	.scp-logo-mark { height: 36px; }
+	.scp-logo-text { height: 24px; }
+	.scp-badge { font-size: .64rem; padding: .3rem .65rem; letter-spacing: .06em; }
+	.scp-main { padding-top: 90px; }
+	.scp-panel { padding: .75rem; border-radius: 16px; }
+	.scp-page .accordion-body { padding: .4rem .85rem 1rem; }
+	.scp-actions { justify-content: space-between !important; }
+	.scp-page .answer-q button[type="submit"] { flex: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after { animation: none !important; transition: none !important; }
+	.scp-divider span { width: 80px; }
+	.scp-particles { display: none; }
+}
+
+/* =====================================================================
+   Status soal (diatur sc_prelim.js) & layar selesai
+   ===================================================================== */
+/* Label status di kanan judul soal (kelas diatur sc_prelim.js) */
+.scp-page .accordion-item.is-answered .accordion-button::before,
+.scp-page .accordion-item.is-saving .accordion-button::before,
+.scp-page .accordion-item.is-failed .accordion-button::before {
+	order: 3;
+	margin-left: auto;
+	margin-right: .75rem;
+	padding: .25rem .75rem;
+	border-radius: 999px;
+	font-family: "Poppins", sans-serif;
+	font-size: .72rem;
+	font-weight: 600;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+}
+.scp-page .accordion-item.is-answered .accordion-button::before { content: "✓ Saved"; color: var(--sp-green); background: rgba(74, 222, 128, .14); border: 1px solid rgba(74, 222, 128, .5); }
+.scp-page .accordion-item.is-saving   .accordion-button::before { content: "Saving…"; color: var(--sp-gold); background: rgba(230, 199, 42, .12); border: 1px solid rgba(230, 199, 42, .5); }
+.scp-page .accordion-item.is-failed   .accordion-button::before { content: "! Not saved"; color: #fff; background: rgba(220, 38, 38, .8); border: 1px solid var(--sp-red); }
+
+.scp-page .accordion-item.is-answered { border-color: rgba(74, 222, 128, .35) !important; }
+.scp-page .accordion-item.is-failed { border-color: var(--sp-red) !important; animation: spShake .45s ease; }
+.scp-page .accordion-item.is-answered .accordion-button:disabled,
+.scp-page .accordion-item.is-saving .accordion-button:disabled,
+.scp-page .accordion-item.is-failed .accordion-button:disabled { opacity: 1; }
+/* Ganti gembok dengan centang untuk soal yang sudah terkirim */
+.scp-page .accordion-item.is-answered .accordion-button:disabled::after { content: "\F26E"; color: var(--sp-green); }
+.scp-page .accordion-item.is-answered .scp-q-num {
+	color: var(--sp-navy);
+	background: var(--sp-green);
+	border-color: transparent;
+}
+/* bg-success dari kode lama tidak dipakai lagi; netralkan bila masih ada */
+.scp-page .accordion-button.bg-success { background: transparent !important; }
+@keyframes spShake {
+	0%, 100% { transform: translateX(0); }
+	25% { transform: translateX(-6px); }
+	75% { transform: translateX(6px); }
+}
+
+.scp-finished {
+	position: relative;
+	max-width: 560px;
+	margin: 0 auto;
+	padding: 2.75rem 2rem 2.25rem;
+	text-align: center;
+	border-radius: 22px;
+	background: rgba(15, 24, 48, .75);
+	backdrop-filter: blur(14px);
+	-webkit-backdrop-filter: blur(14px);
+	border: 1px solid rgba(230, 199, 42, .4);
+	box-shadow: 0 30px 70px rgba(0, 0, 0, .45);
+	animation: spFadeUp .7s cubic-bezier(.2, .8, .2, 1) both;
+	outline: none;
+}
+.scp-finished-icon {
+	width: 86px; height: 86px;
+	margin: 0 auto 1.25rem;
+	display: grid; place-items: center;
+	border-radius: 50%;
+	font-size: 2.6rem;
+	color: var(--sp-navy);
+	background: linear-gradient(135deg, var(--sp-gold), var(--sp-orange));
+	box-shadow: 0 0 0 8px rgba(230, 199, 42, .15);
+	animation: spPopIn .6s cubic-bezier(.2, 1.4, .4, 1) .2s both, spGlow 2.6s ease-in-out 1s infinite;
+}
+@keyframes spPopIn { from { transform: scale(0) rotate(-30deg); } to { transform: scale(1) rotate(0); } }
+@keyframes spGlow {
+	0%, 100% { box-shadow: 0 0 0 8px rgba(230, 199, 42, .15); }
+	50%      { box-shadow: 0 0 0 16px rgba(230, 199, 42, .05); }
+}
+.scp-finished-title { font-family: "Playfair Display", serif; font-weight: 700; font-size: 2rem; color: var(--sp-gold); margin-bottom: .6rem; }
+.scp-finished-text { color: rgba(248, 245, 242, .85); line-height: 1.6; margin-bottom: .5rem; }
+.scp-finished-summary { color: var(--sp-muted); font-size: .85rem; letter-spacing: .08em; text-transform: uppercase; margin-bottom: 1.75rem; }
+.scp-finished-btn {
+	display: inline-flex; align-items: center; gap: .5rem;
+	padding: .65rem 2rem;
+	border-radius: 999px;
+	border: 1px solid var(--sp-gold);
+	background: transparent;
+	color: var(--sp-gold);
+	font-family: "Poppins", sans-serif;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all .3s ease;
+}
+.scp-finished-btn:hover { background: var(--sp-gold); color: var(--sp-navy); transform: translateY(-2px); }
+.scp-finished-btn:focus-visible { outline: 2px solid var(--sp-ivory); outline-offset: 3px; }
+/* Urutan di tombol soal: nomor · judul · status · ikon */
+.scp-page .accordion-button::after { order: 4; }
+.scp-page .accordion-item.is-answered .accordion-button::after,
+.scp-page .accordion-item.is-saving .accordion-button::after,
+.scp-page .accordion-item.is-failed .accordion-button::after { margin-left: 0; }

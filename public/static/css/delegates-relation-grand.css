@@ -1,0 +1,281 @@
+/* ===== Delegates Relation: tema Grand IPFEST 2027 ===== */
+:root {
+	--g-navy: #16213E; --g-navy-deep: #0F1830; --g-ivory: #F8F5F2;
+	--g-slate: #6C677D; --g-orange: #D97706; --g-gold: #E6C72A;
+}
+
+body.delrel-page { font-family: "Poppins", sans-serif; color: var(--g-ivory); }
+body.delrel-page #spinner { background: var(--g-navy) !important; }
+body.delrel-page #spinner .spinner-border { color: var(--g-gold) !important; }
+
+/* ---------- Tab navbar ---------- */
+body.delrel-page .event-navbar .nav-tabs { gap: .4rem; border: none; }
+body.delrel-page .event-navbar .nav-tabs .nav-link {
+	color: var(--g-ivory) !important;
+	background: transparent !important;
+	border-radius: 999px !important;
+	padding: .5rem 1.25rem;
+	transition: all .3s ease;
+}
+body.delrel-page .event-navbar .nav-tabs .nav-link:hover,
+body.delrel-page .event-navbar .nav-tabs .nav-link.active {
+	color: var(--g-navy) !important;
+	background: var(--g-gold) !important;
+	transform: translateY(-2px);
+	box-shadow: 0 8px 18px rgba(230, 199, 42, .3);
+}
+body.delrel-page #logout-btn {
+	background: transparent !important;
+	color: var(--g-gold) !important;
+	border: 1px solid var(--g-gold) !important;
+	transition: all .3s ease;
+}
+body.delrel-page #logout-btn:hover {
+	background: var(--g-gold) !important;
+	color: var(--g-navy) !important;
+	transform: translateY(-2px);
+}
+
+/* ---------- Panel utama ---------- */
+.delrel-stage { padding-top: 6rem !important; }
+.delrel-stage .dashboard-panel {
+	background: rgba(22, 33, 62, .85) !important;
+	background-image: none !important;
+	backdrop-filter: blur(8px);
+	border: 1px solid rgba(230, 199, 42, .35);
+	border-top: 3px solid var(--g-gold);
+	border-radius: 18px;
+	padding: 2rem;
+	color: var(--g-ivory);
+	box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+}
+.delrel-stage .tab-pane.active .dashboard-panel { animation: drPanelIn .6s ease both; }
+@keyframes drPanelIn {
+	from { opacity: 0; transform: translateY(26px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Kartu kompetisi ---------- */
+.delrel-stage #nav-home .card:not(.chart-card) {
+	position: relative;
+	overflow: hidden;
+	background: rgba(15, 24, 48, .85) !important;
+	background-image: none !important;
+	border: 1px solid rgba(230, 199, 42, .35) !important;
+	border-radius: 16px;
+	color: var(--g-ivory);
+	box-shadow: 0 10px 28px rgba(0, 0, 0, .3) !important;
+	transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+	opacity: 0;
+	animation: drCardIn .6s ease forwards;
+}
+@keyframes drCardIn {
+	from { opacity: 0; transform: translateY(24px) scale(.97); }
+	to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+/* Muncul berurutan */
+.delrel-stage #nav-home .row > [class*="col-"]:nth-child(1) .card { animation-delay: .05s; }
+.delrel-stage #nav-home .row > [class*="col-"]:nth-child(2) .card { animation-delay: .12s; }
+.delrel-stage #nav-home .row > [class*="col-"]:nth-child(3) .card { animation-delay: .19s; }
+.delrel-stage #nav-home .row > [class*="col-"]:nth-child(4) .card { animation-delay: .26s; }
+.delrel-stage #nav-home .row > [class*="col-"]:nth-child(5) .card { animation-delay: .33s; }
+.delrel-stage #nav-home .row > [class*="col-"]:nth-child(6) .card { animation-delay: .40s; }
+.delrel-stage #nav-home .row > [class*="col-"]:nth-child(7) .card { animation-delay: .47s; }
+.delrel-stage #nav-home .row > [class*="col-"]:nth-child(8) .card { animation-delay: .54s; }
+.delrel-stage #nav-home .row > [class*="col-"]:nth-child(9) .card { animation-delay: .61s; }
+
+/* Kilau emas melintas saat hover */
+.delrel-stage #nav-home .card:not(.chart-card)::before {
+	content: "";
+	position: absolute;
+	top: 0; left: -120%;
+	width: 60%; height: 100%;
+	background: linear-gradient(115deg, transparent, rgba(230, 199, 42, .18), transparent);
+	transition: left .7s ease;
+	pointer-events: none;
+}
+.delrel-stage #nav-home .card:not(.chart-card):hover::before { left: 140%; }
+.delrel-stage #nav-home .card:not(.chart-card):hover {
+	transform: translateY(-6px);
+	border-color: var(--g-gold) !important;
+	box-shadow: 0 16px 36px rgba(230, 199, 42, .22) !important;
+}
+
+/* Ikon dalam lingkaran emas */
+.delrel-stage #nav-home .card .fa-users {
+	color: var(--g-gold) !important;
+	width: 56px; height: 56px;
+	line-height: 56px;
+	border-radius: 50%;
+	background: rgba(230, 199, 42, .12);
+	border: 1px solid rgba(230, 199, 42, .45);
+	transition: transform .35s ease, background .35s ease;
+}
+.delrel-stage #nav-home .card:hover .fa-users {
+	transform: scale(1.1) rotate(-6deg);
+	background: rgba(230, 199, 42, .22);
+}
+
+/* Singkatan kompetisi dan angka */
+.delrel-stage #nav-home .card p.lead {
+	color: rgba(248, 245, 242, .75) !important;
+	letter-spacing: .18em;
+	font-size: .9rem;
+	font-weight: 500;
+}
+.delrel-stage #nav-home .card .card-title {
+	color: var(--g-ivory) !important;
+	font-family: "Playfair Display", serif;
+}
+.delrel-stage #nav-home .card .total-del {
+	color: var(--g-gold);
+	font-size: 2.4rem;
+	font-weight: 700;
+	margin-right: .25rem;
+}
+/* Denyut kecil saat angka selesai dihitung */
+.delrel-stage #nav-home .card.is-loaded .total-del { animation: drPop .45s ease; display: inline-block; }
+@keyframes drPop {
+	0% { transform: scale(1); } 50% { transform: scale(1.18); } 100% { transform: scale(1); }
+}
+
+/* ---------- Kartu grafik ---------- */
+.delrel-stage .chart-card {
+	background: rgba(15, 24, 48, .85) !important;
+	border: 1px solid rgba(230, 199, 42, .35) !important;
+	border-radius: 16px !important;
+	box-shadow: 0 10px 28px rgba(0, 0, 0, .3) !important;
+	animation: drCardIn .7s ease .7s both;
+}
+.delrel-stage #total-teams-registered {
+	color: var(--g-gold) !important;
+	font-family: "Playfair Display", serif;
+}
+
+/* ---------- Teks umum ---------- */
+.delrel-stage .text-primary { color: var(--g-gold) !important; }
+.delrel-stage .text-secondary,
+.delrel-stage h6 { color: var(--g-ivory) !important; }
+
+/* ---------- Tabel Database & Final Payment ---------- */
+.delrel-stage .table {
+	--bs-table-bg: transparent;
+	--bs-table-color: var(--g-ivory);
+	color: var(--g-ivory);
+	border-color: rgba(230, 199, 42, .45) !important;
+	margin-bottom: 0;
+}
+.delrel-stage .table thead th {
+	background-color: var(--g-navy-deep) !important;
+	color: var(--g-gold) !important;
+	-webkit-text-fill-color: var(--g-gold) !important;
+	font-weight: 600;
+	font-size: 12px;
+	letter-spacing: .8px;
+	text-transform: uppercase;
+	white-space: nowrap;
+	border-bottom: 2px solid var(--g-gold) !important;
+	box-shadow: none !important;
+	position: sticky;
+	top: 0;
+	z-index: 2;
+}
+.delrel-stage .table tbody td {
+	background-color: transparent !important;
+	color: var(--g-ivory) !important;
+	-webkit-text-fill-color: var(--g-ivory) !important;
+	font-size: 14px;
+	vertical-align: middle;
+	box-shadow: none !important;
+	border-color: rgba(248, 245, 242, .16) !important;
+}
+.delrel-stage .table tbody tr:nth-child(even) > td { background-color: rgba(248, 245, 242, .06) !important; }
+.delrel-stage .table tbody tr { transition: background-color .25s ease; }
+.delrel-stage .table tbody tr:hover > td { background-color: rgba(230, 199, 42, .16) !important; }
+.delrel-stage .table a,
+.delrel-stage .table .link-info {
+	color: var(--g-gold) !important;
+	-webkit-text-fill-color: var(--g-gold) !important;
+	text-underline-offset: 3px;
+}
+.delrel-stage .table select,
+.delrel-stage .table .form-select {
+	background-color: var(--g-ivory) !important;
+	color: var(--g-navy) !important;
+	-webkit-text-fill-color: var(--g-navy) !important;
+	border: 1px solid rgba(230, 199, 42, .6) !important;
+	font-weight: 600;
+}
+
+/* Scrollbar */
+.delrel-stage .overflow-auto { scrollbar-width: thin; scrollbar-color: var(--g-gold) var(--g-navy-deep); }
+.delrel-stage .overflow-auto::-webkit-scrollbar { width: 10px; height: 10px; }
+.delrel-stage .overflow-auto::-webkit-scrollbar-track { background: var(--g-navy-deep); border-radius: 10px; }
+.delrel-stage .overflow-auto::-webkit-scrollbar-thumb { background: var(--g-gold); border-radius: 10px; }
+
+/* Tombol Download */
+.delrel-stage #excel-convert {
+	background: transparent !important;
+	color: var(--g-gold) !important;
+	border: 1px solid var(--g-gold) !important;
+	font-weight: 600;
+	transition: all .3s ease;
+}
+.delrel-stage #excel-convert:hover {
+	background: var(--g-gold) !important;
+	color: var(--g-navy) !important;
+	transform: translateY(-3px);
+	box-shadow: 0 10px 22px rgba(230, 199, 42, .35);
+}
+
+/* Tooltip */
+body.delrel-page .tooltip-inner {
+	background: var(--g-navy-deep);
+	color: var(--g-gold);
+	border: 1px solid rgba(230, 199, 42, .5);
+	font-family: "Poppins", sans-serif;
+}
+
+/* Hormati pengguna yang mematikan animasi */
+@media (prefers-reduced-motion: reduce) {
+	.delrel-stage * { animation: none !important; transition: none !important; }
+	.delrel-stage #nav-home .card { opacity: 1 !important; }
+}
+
+/* ===== Tombol Download: paksa outline emas ===== */
+html body.delrel-page .delrel-stage button#excel-convert.btn,
+html body.delrel-page .delrel-stage button#final-payment-excel.btn {
+	background: transparent !important;
+	background-color: transparent !important;
+	background-image: none !important;
+	color: #E6C72A !important;
+	-webkit-text-fill-color: #E6C72A !important;
+	border: 1px solid #E6C72A !important;
+	box-shadow: none !important;
+	font-weight: 600;
+	transition: all .3s ease;
+}
+html body.delrel-page .delrel-stage button#excel-convert.btn:hover,
+html body.delrel-page .delrel-stage button#final-payment-excel.btn:hover,
+html body.delrel-page .delrel-stage button#excel-convert.btn:focus,
+html body.delrel-page .delrel-stage button#final-payment-excel.btn:focus {
+	background: #E6C72A !important;
+	background-color: #E6C72A !important;
+	color: #16213E !important;
+	-webkit-text-fill-color: #16213E !important;
+	border-color: #E6C72A !important;
+	transform: translateY(-3px);
+	box-shadow: 0 10px 22px rgba(230, 199, 42, .35) !important;
+}
+
+.delrel-stage .del-breakdown {
+	display: flex;
+	justify-content: center;
+	gap: .9rem;
+	margin: .4rem 0 0;
+	font-size: .8rem;
+	font-weight: 600;
+	letter-spacing: .03em;
+}
+.delrel-stage .del-ok   { color: #4ade80; }
+.delrel-stage .del-wait { color: #fbbf24; }

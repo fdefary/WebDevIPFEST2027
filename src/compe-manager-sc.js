@@ -21,8 +21,8 @@ const managerCompetition = document.querySelector("#manager-competition");
 
 const compeManagerEmail = {
     "smart competition": {
-        email: "sc.ipfest2026@gmail.com",
-        name: "Daniel Matthew Christian Sagala",
+        email: "sc.ipfest2027@gmail.com",
+        name: "Mujib",
         label: "Smart Competition",
         firestoreValue: "smart competition"
     }

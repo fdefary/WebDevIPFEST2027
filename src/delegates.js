@@ -1,4 +1,4 @@
-import { doc, getDoc, updateDoc, serverTimestamp,collection, getDocs, setDoc,where,query } from 'firebase/firestore'
+import { doc, getDoc, updateDoc, serverTimestamp, collection, getDocs, where, query } from 'firebase/firestore'
 
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 
@@ -6,7 +6,48 @@ import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase
 
 import { DB, AUTH, STORAGE } from './index.js'
 
-import { showProgressUI, setToastAlert } from './shared/alert.js'
+import { showProgressUI } from './shared/alert.js'
+
+// =====================================================================
+//   IPFEST 2027 TIMELINE — samakan dengan src/compe-manager.js
+//   TODO: sesuaikan dengan timeline resmi IPFEST 2027
+// =====================================================================
+const TIMELINE = {
+    // Case & guidebook preliminary terbuka + submission dibuka
+    // (= PRELIM_CASE_RELEASE di compe-manager.js)
+    prelimOpen:     { date: new Date('2026-12-05T00:00:00+07:00'), label: '5 December 2026, 00.00 WIB' }, // 5 Desember 2026 00.00 WIB
+    // Lewat dari ini, submission preliminary ditandai "LATE"
+    prelimDeadline: { date: new Date('2027-01-05T00:00:00+07:00'), label: '5 January 2027, 00.00 WIB' }, // 5 Januari 2027 00.00 WIB
+    // Leaderboard preliminary bisa dilihat peserta
+    leaderboardOpen:{ date: new Date('2027-01-20T18:00:00+07:00'), label: 'January 20, 2027 at 6:00 PM (Jakarta Time, GMT+7)' }, //20 Januari 2027 18.00 WIB
+    // Kartu & tab Final muncul di dashboard
+    finalStageOpen: { date: new Date('2027-01-20T18:00:00+07:00') }, // 20 Januari 2027 18.00 WIB
+    // Lewat dari ini, submission final ditandai "LATE"
+    finalDeadline:  { date: new Date('2027-02-27T00:00:00+07:00') } //27 Februari 2027
+}
+
+// Escape supaya data dari Firestore tidak dirender sebagai HTML
+const esc = (value) => String(value ?? '')
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+
+// Hanya izinkan link http/https
+const safeUrl = (value) => {
+    try {
+        const url = new URL(String(value))
+        return (url.protocol === 'http:' || url.protocol === 'https:') ? url.href : null
+    } catch {
+        return null
+    }
+}
+
+// Tim dianggap sudah submit preliminary hanya kalau status === true.
+// Catatan: compe manager juga menulis sub_preliminary.final/rank/score,
+// jadi keberadaan objek sub_preliminary BUKAN tanda tim sudah submit.
+const hasSubmittedPrelim = (prelim) => prelim?.status === true
 
 
 // =========================
@@ -80,7 +121,7 @@ async function fetchUserData() {
 
         // 1. UPDATE UI (Dengan Safety Check)
         // TEAM LEADER
-        setText("Team-Leader", `${data.leader.firstName} ${data.leader.lastName}`);
+        setText("Team-Leader", [data.leader?.firstName, data.leader?.lastName].filter(Boolean).join(" ") || "-");
 
         // TEAM NAME
         setText("Team-Name", data.teamName || "-");
@@ -123,13 +164,13 @@ async function fetchUserData() {
         let paymentStatusText = data.payment_status === "verified" ? "Verified" : "Pending";
         setText("Payment-Status", paymentStatusText || "Not Submitted");
 
-        // APPLY LOCK
-        const prelimStatus = data.sub_preliminary === undefined ? undefined : data.sub_preliminary;
-        if (typeof applySubmissionLock === 'function') applySubmissionLock(prelimStatus);
+        // APPLY LOCK — hanya terkunci kalau tim benar-benar sudah submit
+        const prelimStatus = data.sub_preliminary;
+        if (typeof applySubmissionLock === 'function') applySubmissionLock(hasSubmittedPrelim(prelimStatus));
 
         // PRELIM DATA
         let prelim_overdue = null;
-        if (prelimStatus && prelimStatus.overdue !== undefined) {
+        if (hasSubmittedPrelim(prelimStatus) && prelimStatus.overdue !== undefined) {
             prelim_overdue = prelimStatus.overdue === "yes" ? "Overdue" : "On Time";
         }
         const prelimSubmittedAt = prelimStatus && prelimStatus.submittedAt ? prelimStatus.submittedAt : null;
@@ -162,7 +203,7 @@ async function fetchUserData() {
             userCompetition: data.competition || null,
             paymentStatus: data.payment_status || null,
             teamName: data.teamName || null,
-            prelimstats: prelimStatus || null,
+            prelimstats: hasSubmittedPrelim(prelimStatus) ? prelimStatus : null,
             prelim_overdue: prelim_overdue,
             prelimSubmittedAt: prelimSubmittedAt,
             prelimFileURL: prelimFileURL,
@@ -210,163 +251,6 @@ const WAGroup = {
 	"well design": "https://chat.whatsapp.com/L96OCbDm3sq7CvvbhNyz7U?mode=wwt",
 	"hackaton": "https://chat.whatsapp.com/BxMDdoC9aWG0MKx8cWZTqz?mode=wwt"
 };
-
-// =========================
-// FETCH USER DATA
-// =========================
-// async function fetchUserData() {
-// 	if (!currentUserID) return;
-
-// 	try {
-// 		const docRef = doc(DB, "Team", currentUserID);
-// 		const snap = await getDoc(docRef);
-
-// 		if (!snap.exists()) {
-// 			console.error("Team data not found");
-// 			return;
-// 		}
-
-// 		const data = snap.data();
-
-// 		// TEAM LEADER
-// 		document.getElementById("Team-Leader").textContent =
-// 			`${data.leader.firstName} ${data.leader.lastName}`;
-
-// 		// TEAM NAME
-// 		document.getElementById("Team-Name").textContent =
-// 			data.teamName || "-";
-
-// 		// =========================
-// 		// COMPETITION (FULL NAME)
-// 		// =========================
-// 		const compKey = (data.competition || "").toLowerCase();
-// 		document.getElementById("Competition-Name").textContent =
-// 			CompetitionFullName[compKey] || data.competition || "-";
-
-// 		// =========================
-// 		// WA GROUP (DISABLED IF NOT VERIFIED)
-// 		// =========================
-// 		const waEl = document.getElementById("WhatsApp-Group");
-// 		const waLink = WAGroup[compKey] || "#";
-
-// 		if (data.payment_status?.toLowerCase() === "verified") {
-// 			// PAYMENT VERIFIED → LINK AKTIF
-// 			waEl.href = waLink;
-// 			waEl.textContent = "Join";
-// 			waEl.style.pointerEvents = "auto";
-// 			waEl.style.opacity = "1";
-// 		} else {
-// 			// PAYMENT NOT VERIFIED → LINK DISABLED
-// 			waEl.href = "javascript:void(0)";
-// 			waEl.textContent = "Your payment has not been verified";
-// 			waEl.style.pointerEvents = "none";  // Disable clicking
-// 			waEl.style.opacity = "0.5";         // Make it look disabled
-// 		}
-// 		// =========================
-// 		// MEMBERS LIST (FULL NAMES)
-// 		// =========================
-// 		const members = data.members || [];
-
-// 		if (members.length > 0) {
-// 			const names = members.map(m => `${m.firstName} ${m.lastName}`);
-// 			document.getElementById("Team-Member").textContent = names.join(", ");
-// 		} else {
-// 			document.getElementById("Team-Member").textContent = "-";
-// 		}
-
-// 		// PAYMENT STATUS
-// 		let paymentStatusText = data.payment_status === "verified" ? "Verified" : "Pending";
-// 		document.getElementById("Payment-Status").textContent =
-// 			paymentStatusText || "Not Submitted";
-        
-//      // applySubmissionLock expects `undefined` when not submitted
-//         const prelimStatus = data.sub_preliminary === undefined ? undefined : data.sub_preliminary;
-//         applySubmissionLock(prelimStatus);
-
-//         let prelim_overdue = null;
-//         if (prelimStatus && prelimStatus.overdue !== undefined) {
-//             prelim_overdue = prelimStatus.overdue === "yes" ? "Overdue" : "On Time";
-//         }
-
-//         const prelimSubmittedAt = prelimStatus && prelimStatus.submittedAt ? prelimStatus.submittedAt : null;
-//         const prelimFileURL = prelimStatus && prelimStatus.fileURL ? prelimStatus.fileURL : null;
-
-// 		const prelimRank = prelimStatus.rank ?? "-";
-// 		document.getElementById("Preliminary-Rank").textContent = prelimRank;
-
-//         const finalstatus = prelimStatus.final ?? "-";
-
-//         const finalData = data.final_reg || {};
-// 		const finalPaymentStatus = finalData.paymentStatus || null;
-
-//         let finalStatusText = "Not Paid"; // default jika null
-// 		if (finalPaymentStatus === "pending") finalStatusText = "Pending";
-// 		else if (finalPaymentStatus === "down_payment_verified") finalStatusText = "Down Payment Verified";
-// 		else if (finalPaymentStatus === "verified") {
-//             finalStatusText = "Verified"; 
-//         }
-
-// 		document.getElementById("Final-Payment-Status").textContent = finalStatusText;
-
-//         const finalsub =data.sub_final || {};
-//         const finalsubstatus = finalsub.status || null;
-//         const finalsubfileURL = finalsub.fileURL || null;
-//         const finalsubsubmittedAt = finalsub.submittedAt || null;
-//         const finalsubmissionoverdue = finalsub.overdue || null;
-
-//         return {
-//             userCompetition: data.competition || null,
-//             paymentStatus: data.payment_status || null,
-//             teamName: data.teamName || null,
-//             prelimstats : prelimStatus || null,
-//             prelim_overdue: prelim_overdue,
-//             prelimSubmittedAt: prelimSubmittedAt,
-//             prelimFileURL: prelimFileURL,
-//             finalPaymentStatus : finalPaymentStatus || null,
-//             finalstatus : finalstatus?? null,
-//             finalsubstatus : finalsubstatus?? null,
-//             finalsubfileURL : finalsubfileURL?? null,
-//             finalsubsubmittedAt : finalsubsubmittedAt?? null,
-//             finalsubmissionoverdue : finalsubmissionoverdue?? null
-//         };
-
-
-
-// 	} catch (err) {
-// 		console.error("Failed to fetch data:", err);
-// 	}
-// }
-
-// Write Final Payment Status
-// function writePaymentStatus(status) {
-// 	delegatePaymentStatus.innerHTML = ''
-
-// 	if (status) {
-// 		delegatePaymentStatus.innerHTML = `
-// 			<div class="alert alert-success alert-dismissible fade show" role="alert">
-// 				<h4 class="alert-heading">Confirmed</h4>
-// 				<p>Your team final payment has been confirmed! <i class="bi bi-emoji-smile"></i></p>
-// 				<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-// 				<hr>
-//   				<p class="mb-0">Make sure your liaison officer has invited you to the finalist group.</p>
-// 			</div>
-// 		`
-// 	} else {
-// 		delegatePaymentStatus.innerHTML = `
-// 			<div class="alert alert-warning" role="alert">
-// 				<h4 class="alert-heading">Unconfirmed</h4>
-// 				<p>Your team final payment has not been confirmed <i class="bi bi-emoji-frown"></i></p>
-// 				<hr>
-//   				<p class="mb-0">If within 24 hours the status has not changed, please contact us</p>
-// 			</div>
-// 		`
-// 	}
-// }
-
-// function decomposeDelName(firstname, lastname) {
-// 	return `${firstname} ${lastname}`
-// }
-
 
 // =====================================
 // ELEMENTS
@@ -505,10 +389,10 @@ function initDomBindings() {
                     return;
                 }
 
-                // Enforce .zip only
-                const isZip = file.name && file.name.toLowerCase().endsWith('.zip');
-                if (!isZip) {
-                    alert('Please upload a .zip file only.');
+                // Hanya .zip / .rar (sama dengan accept di HTML)
+                const lowerName = (file.name || '').toLowerCase();
+                if (!lowerName.endsWith('.zip') && !lowerName.endsWith('.rar')) {
+                    alert('Please upload a .zip or .rar file only.');
                     return;
                 }
 
@@ -564,7 +448,7 @@ function initDomBindings() {
                     try {
                         const url = await getDownloadURL(uploadTask.snapshot.ref);
                         // simple overdue check (can be customized per competition)
-                        const overdue = Date.now() > new Date('Feb 5, 2026 00:00:00').getTime() ? 'yes' : 'no';
+                        const overdue = Date.now() > TIMELINE.finalDeadline.date.getTime() ? 'yes' : 'no';
                         await updateDoc(teamRef, {
                             sub_final: {
                                 fileURL: url,
@@ -649,7 +533,7 @@ function initDomBindings() {
             e.preventDefault();
 
             if (!isSubmissionOpen()) {
-                alert("⚠️ Submission will open on 30 November 2025\nPlease wait until then!");
+                alert(`⚠️ Submission will open on ${TIMELINE.prelimOpen.label}\nPlease wait until then!`);
                 return;
             }
 
@@ -677,13 +561,12 @@ function initDomBindings() {
                 const snap = await uploadBytes(uploadRef, file);
                 const downloadURL = await getDownloadURL(snap.ref);
 
+                // Tulis per field supaya final/rank/score dari compe manager tidak terhapus
                 await updateDoc(doc(DB, "Team", currentUserID), {
-                    sub_preliminary: {
-                        fileURL: downloadURL,
-                        submittedAt: serverTimestamp(),
-                        status: true,
-                        overdue: overdueStatus(),
-                    }
+                    "sub_preliminary.fileURL": downloadURL,
+                    "sub_preliminary.submittedAt": serverTimestamp(),
+                    "sub_preliminary.status": true,
+                    "sub_preliminary.overdue": overdueStatus()
                 });
 
                 alert("✅ You're all set — submission complete!\n🔥 Keep up the fire!");
@@ -713,7 +596,7 @@ if (document.readyState === "loading") {
 // DEADLINE CHECK
 // =====================================
 function overdueStatus() {
-    const deadline = new Date("Dec 22, 2025 00:00:00").getTime();
+    const deadline = TIMELINE.prelimDeadline.date.getTime();
     if (Date.now() > deadline) {
         return "yes"
     } else {
@@ -725,7 +608,7 @@ function overdueStatus() {
 // SUBMISSION OPENING DATE
 // =====================================
 function isSubmissionOpen() {
-    const openDate = new Date("Nov 30, 2025 00:00:00").getTime();
+    const openDate = TIMELINE.prelimOpen.date.getTime();
     return Date.now() >= openDate;
 }
 
@@ -790,10 +673,12 @@ export async function loadPrelimCase(currentUserID) {
 
                 delCasePrelimLink.addEventListener("click", (e) => {
                     e.preventDefault();
-                    alert("⚠️ The Preliminary Case is not yet accessible. It will be available for download on 30 November 2025");
+                    alert(`⚠️ The Preliminary Case is not yet accessible. It will be available for download on ${TIMELINE.prelimOpen.label}`);
                 });
             }
 
+            // Link final juga dikunci, supaya href="" di HTML tidak me-reload halaman
+            setCaseLink(document.getElementById("del-case-final-download"), null, "⚠️ Final case is not available yet for your competition.");
             return; // stop di sini
         }
 
@@ -827,67 +712,47 @@ export async function loadPrelimCase(currentUserID) {
             }
         });
 
-        // Tidak ditemukan case
-        if (!matchedCase) {
-            console.log("❌ No matched competition name in Information");
+        // Link preliminary dan final dicek TERPISAH:
+        // compe manager bisa mengunggah case final walau link preliminary belum ada.
+        const prelimUrl = safeUrl(matchedCase?.prelim_case_link)
+        const finalUrl = safeUrl(
+            matchedCase?.final?.case_link ||
+            matchedCase?.final_case_link ||
+            matchedCase?.final?.final_case_link
+        )
 
-            // Pastikan elemen ada
-            if (delCasePrelimLink) {
-                // Hindari navigasi
-                delCasePrelimLink.href = "javascript:void(0)";
-                // Gunakan event listener yang jelas
-                delCasePrelimLink.addEventListener("click", function (e) {
-                    e.preventDefault();
-                    alert("⚠️ Case is not available yet for your competition.");
-                });
-
-                // Tampilkan sebagai disabled/gray
-                delCasePrelimLink.style.color = "gray";
-                delCasePrelimLink.style.pointerEvents = "auto"; // biarkan klik supaya handler berjalan
-                delCasePrelimLink.innerText = "Case Not Available";
-            } else {
-                console.warn("#del-case-prelim-download element not found");
-            }
-
-            // KELUAR supaya kode di bawah yang memakai matchedCase tidak dieksekusi
-            return;
-        } else {
-            // Set link jika cocok
-            delCasePrelimLink.href = matchedCase.prelim_case_link;
-            delCasePrelimLink.innerText = "Download Case";
-            delCasePrelimLink.style.pointerEvents = "auto";
-            delCasePrelimLink.style.color = "#0dcaf0";
-
-            console.log("📎 Case link assigned:", matchedCase.prelim_case_link);
-
-            // --- FINAL CASE LINK ---
-            try {
-                const delCaseFinalLink = document.getElementById("del-case-final-download");
-                if (delCaseFinalLink) {
-                    // try multiple shapes for stored final link
-                    const finalCaseUrl = matchedCase.final_case_link || (matchedCase.final && (matchedCase.final.case_link || matchedCase.final.final_case_link)) || null;
-                    if (finalCaseUrl) {
-                        delCaseFinalLink.href = finalCaseUrl;
-                        delCaseFinalLink.innerText = "Download Case";
-                        delCaseFinalLink.style.pointerEvents = "auto";
-                        delCaseFinalLink.style.color = "#0dcaf0";
-                    } else {
-                        delCaseFinalLink.href = "javascript:void(0)";
-                        delCaseFinalLink.innerText = "Case Not Available";
-                        delCaseFinalLink.style.color = "gray";
-                        delCaseFinalLink.addEventListener("click", (e) => {
-                            e.preventDefault();
-                            alert("⚠️ Final case is not available yet for your competition.");
-                        });
-                    }
-                }
-            } catch (err) {
-                console.error("Error assigning final case link:", err);
-            }
-        }
+        setCaseLink(delCasePrelimLink, prelimUrl, "⚠️ Case is not available yet for your competition.")
+        setCaseLink(document.getElementById("del-case-final-download"), finalUrl, "⚠️ Final case is not available yet for your competition.")
 	} catch (err) {
 		console.error("Error in loadPrelimCase:", err);	
 	}
+}
+
+// Pasang link case: aktif kalau URL valid, kalau tidak tampil abu-abu + alert
+function setCaseLink(anchor, url, unavailableMsg) {
+    if (!anchor) return
+    // Ganti node supaya listener lama (dari pemanggilan sebelumnya) tidak menumpuk
+    const fresh = anchor.cloneNode(true)
+    anchor.replaceWith(fresh)
+    if (anchor === delCasePrelimLink) delCasePrelimLink = fresh
+
+    if (url) {
+        fresh.href = url
+        fresh.target = "_blank"
+        fresh.rel = "noopener"
+        fresh.innerText = "Download Case"
+        fresh.style.color = ""
+        fresh.style.pointerEvents = "auto"
+    } else {
+        fresh.href = "javascript:void(0)"
+        fresh.removeAttribute("target")
+        fresh.innerText = "Case Not Available"
+        fresh.style.color = "gray"
+        fresh.addEventListener("click", (e) => {
+            e.preventDefault()
+            alert(unavailableMsg)
+        })
+    }
 }
 
 // =====================================
@@ -978,11 +843,12 @@ function setupGuidebook(userCompetition) {
 // SUBMISSION LOCKING
 // =====================================
 
-function applySubmissionLock(submissionData) {
-    const downloadCaseRow = document.querySelector(".row.my-2");
+function applySubmissionLock(isSubmitted) {
+    const downloadCaseRow = document.getElementById("del-case-prelim-download")?.closest(".row");
     const formRow = document.querySelector("#preliminary-form")?.closest(".row");
+    if (!prelimSubmitBtn) return;
 
-    if (submissionData !== undefined) {
+    if (isSubmitted) {
         prelimSubmitBtn.disabled = true;
         prelimSubmitBtn.innerText = "Already Submitted";
 
@@ -1015,30 +881,33 @@ function setupEditSubmission(prelimstats) {
 }
 
 // Edit submission button handler
-document.addEventListener("DOMContentLoaded", () => {
+function bindEditSubmission() {
+    const editBtn = document.getElementById("del-edit-submission");
+    const confirmBtn = document.getElementById("confirmEditBtn");
+    const modalEl = document.getElementById("editConfirmModal");
+    if (!editBtn || !confirmBtn || !modalEl) return;
 
-    editFileBtnPrem.addEventListener("click", () => {
-        const editModal = new bootstrap.Modal(document.getElementById("editConfirmModal"));
-        editModal.show();
+    editBtn.addEventListener("click", () => {
+        bootstrap.Modal.getOrCreateInstance(modalEl).show();
     });
 
-    document.getElementById("confirmEditBtn").addEventListener("click", () => {
+    confirmBtn.addEventListener("click", () => {
         unlockSubmissionForm();
-
-        document.getElementById("del-edit-submission").style.display = "none";
-
-        const modalInstance = bootstrap.Modal.getInstance(
-            document.getElementById("editConfirmModal")
-        );
-        modalInstance.hide();
+        editBtn.style.display = "none";
+        bootstrap.Modal.getInstance(modalEl)?.hide();
     });
+}
 
-});
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", bindEditSubmission);
+} else {
+    bindEditSubmission();
+}
 
 function unlockSubmissionForm() {
 
-    applySubmissionLock(undefined);
-    const downloadCaseRow = document.querySelector(".row.my-2");
+    applySubmissionLock(false);
+    const downloadCaseRow = document.getElementById("del-case-prelim-download")?.closest(".row");
     const formRow = document.querySelector("#preliminary-form")?.closest(".row");
 
     // Show everything again
@@ -1079,8 +948,9 @@ function submissionSummary (PrelimOverdue, PrelimSubmittedAt, PrelimFileURL) {
     if (delSubmissionStatus) delSubmissionStatus.textContent = PrelimOverdue || "No submission yet";
 
     if (delFileURL) {
-        if (PrelimFileURL) {
-            delFileURL.innerHTML = `<a href="${PrelimFileURL}" target="_blank" class="text-primary text-decoration-underline">Open File</a>`;
+        const prelimLink = safeUrl(PrelimFileURL);
+        if (prelimLink) {
+            delFileURL.innerHTML = `<a href="${esc(prelimLink)}" target="_blank" rel="noopener" class="text-primary text-decoration-underline">Open File</a>`;
         } else {
             delFileURL.textContent = "No file uploaded";
         }
@@ -1112,10 +982,7 @@ async function setupFinalRoundLink(finalStatusRaw, currentUserID, finalPaymentSt
         LeaderboardDisplay.replaceWith(LeaderboardDisplay.cloneNode(true));
         LeaderboardDisplay = document.getElementById("Preliminary-Leaderboard");
 
-        const openTimeUTC = Date.UTC(2026, 0, 3, 11, 0, 0); 
-        const nowUTC = Date.now();
-
-        const isOpen = nowUTC >= openTimeUTC;
+        const isOpen = Date.now() >= TIMELINE.leaderboardOpen.date.getTime();
 
         // ===== SET TAMPILAN =====
         LeaderboardDisplay.textContent = "View";
@@ -1129,7 +996,7 @@ async function setupFinalRoundLink(finalStatusRaw, currentUserID, finalPaymentSt
             LeaderboardDisplay.addEventListener("click", (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                alert("Leaderboard can only be accessed starting January 3, 2026 at 6:00 PM (Jakarta Time, GMT+7) ");
+                alert(`Leaderboard can only be accessed starting ${TIMELINE.leaderboardOpen.label}`);
             });
 
         } else {
@@ -1352,17 +1219,17 @@ function renderLeaderboardRow(tbody, team, displayNo) {
     }
 
     // Styling Score agar rapi (2 desimal)
-    const formattedScore = parseFloat(team.score).toFixed(2);
+    const formattedScore = Number.isFinite(Number(team.score)) ? Number(team.score).toFixed(2) : "-";
 
     row.innerHTML = `
         <td class="text-center fw-bold text-secondary">${displayNo}</td>
         
         <td>
             <div style="font-weight:700; color:#4c1d95; font-size:14px;">
-                ${team.teamName || "No Name"}
+                ${esc(team.teamName || "No Name")}
             </div>
             <div style="font-size:11px; color:#64748b;">
-                ${team.university}
+                ${esc(team.university)}
             </div>
         </td>
 
@@ -1410,7 +1277,7 @@ function generateEncouragementModal(teamName) {
                     <span id="encourage-icon">✨</span>
                 </div>
 
-                <h3 id="encourage-title">Dear ${teamName},</h3>
+                <h3 id="encourage-title">Dear ${esc(teamName)},</h3>
                 
                 <p id="encourage-message">
                     Thank you for participating. Although you did not proceed to the final round, 
@@ -1451,8 +1318,8 @@ function generateFinalModal(teamData) {
     if (wrapper.innerHTML.trim() !== "") return;
 
     // Leader info
-    const leaderfirstname = teamData.leader.firstName;
-    const leaderlastname = teamData.leader.lastName;
+    const leaderfirstname = teamData.leader?.firstName ?? "";
+    const leaderlastname = teamData.leader?.lastName ?? "";
 
     // Generate form member
     // Generate form member
@@ -1465,7 +1332,7 @@ function generateFinalModal(teamData) {
                         <div class="payment-icon-user me-3">👤</div>
                         <div>
                             <div class="role-label-small">Member</div> <h5 class="member-name-large mb-0" id="member-name-${i}">
-                                ${member.firstName} ${member.lastName}
+                                ${esc(member.firstName)} ${esc(member.lastName)}
                             </h5>
                         </div>
                     </div>
@@ -1524,7 +1391,7 @@ function generateFinalModal(teamData) {
                                 <div>
                                     <div class="role-label-small" style="color: #ff512f;">Team Leader</div>
                                     <h5 class="member-name-large mb-0">
-                                        ${leaderfirstname + " " + leaderlastname}
+                                        ${esc(leaderfirstname)} ${esc(leaderlastname)}
                                     </h5>
                                 </div>
                             </div>
@@ -2151,8 +2018,9 @@ function checkSubmissionStatus(finalsubstatus,finalsubfileURL,finalsubsubmittedA
 
         const fileURL = document.getElementById('final-file-url');
         if (fileURL) {
-            if (finalsubfileURL) {
-                fileURL.innerHTML = `<a href="${finalsubfileURL}" target="_blank" class="text-primary text-decoration-underline" id="final-file-url">Open File</a>`;
+            const finalLink = safeUrl(finalsubfileURL);
+            if (finalLink) {
+                fileURL.innerHTML = `<a href="${esc(finalLink)}" target="_blank" rel="noopener" class="text-primary text-decoration-underline">Open File</a>`;
             } else {
                 fileURL.textContent = "No file uploaded";
             }
@@ -2165,3 +2033,19 @@ function checkSubmissionStatus(finalsubstatus,finalsubfileURL,finalsubsubmittedA
 }
 
 
+// =====================================
+// FINAL STAGE VISIBILITY
+// =====================================
+// Kartu Leaderboard/Final Registration/Final Payment dan tab Final
+// baru muncul mulai TIMELINE.finalStageOpen.
+function applyFinalStageVisibility() {
+    const isOpen = Date.now() >= TIMELINE.finalStageOpen.date.getTime();
+    document.getElementById("final-cards-wrapper")?.classList.toggle("d-none", !isOpen);
+    document.getElementById("nav-contact-tab")?.classList.toggle("d-none", !isOpen);
+}
+
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", applyFinalStageVisibility);
+} else {
+    applyFinalStageVisibility();
+}

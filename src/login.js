@@ -42,19 +42,19 @@ window.addEventListener("DOMContentLoaded", () => {
 
       // ==== OFFICIAL ACCOUNTS ====
       const officialAccounts = [
-        "officialdelegates.ipfest2026@gmail.com",
-        "treasury.ipfest2026@gmail.com",
+        "officialdelegates.ipfest2027@gmail.com",
+        "treasury.ipfest2027@gmail.com",
         "entrepreneurship.ipfest2026@gmail.com",
         "event@ipfest2026.com",
-        "podc.ipfest2026@gmail.com",
-        "mic.ipfest2026@gmail.com",
-        "ppc.ipfest2026@gmail.com",
-        "ordc.ipfest2026@gmail.com",
-        "bcc.ipfest2026@gmail.com",
-        "gdpc.ipfest2026@gmail.com",
-        "wdc.ipfest2026@gmail.com",
-        "hc.ipfest2026@gmail.com",
-        "sc.ipfest2026@gmail.com",
+        "podc.ipfest2027@gmail.com",
+        "mic.ipfest2027@gmail.com",
+        "ppc.ipfest2027@gmail.com",
+        "ordc.ipfest2027@gmail.com",
+        "bcc.ipfest2027@gmail.com",
+        "gdpc.ipfest2027@gmail.com",
+        "wdc.ipfest2027@gmail.com",
+        "hc.ipfest2027@gmail.com",
+        "sc.ipfest2027@gmail.com",
       ];
 
       // ==== RESEND EMAIL VERIFICATION IF USER IS NOT VERIFIED ====
@@ -90,19 +90,19 @@ window.addEventListener("DOMContentLoaded", () => {
       // ==== OFFICIAL ACCOUNT ROUTE ====
       // =============================
       const redirectMap = {
-        "officialdelegates.ipfest2026@gmail.com": "./dashboard/delegates-relation.html",
-        "treasury.ipfest2026@gmail.com": "./dashboard/treasury.html",
+        "officialdelegates.ipfest2027@gmail.com": "./dashboard/delegates-relation.html",
+        "treasury.ipfest2027@gmail.com": "./dashboard/treasury.html",
         "entrepreneurship.ipfest2026@gmail.com": "./dashboard/merchandise.html",
         "event@ipfest2026.com": "./dashboard/event.html",
-        "podc.ipfest2026@gmail.com": "./dashboard/compe-manager.html",
-        "mic.ipfest2026@gmail.com": "./dashboard/compe-manager.html",
-        "ppc.ipfest2026@gmail.com": "./dashboard/compe-manager.html",
-        "ordc.ipfest2026@gmail.com": "./dashboard/compe-manager.html",
-        "bcc.ipfest2026@gmail.com": "./dashboard/compe-manager.html",
-        "gdpc.ipfest2026@gmail.com": "./dashboard/compe-manager.html",
-        "wdc.ipfest2026@gmail.com": "./dashboard/compe-manager.html",
-        "hc.ipfest2026@gmail.com": "./dashboard/compe-manager.html",
-        "sc.ipfest2026@gmail.com": "./dashboard/smart-competition/manager.html",
+        "podc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
+        "mic.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
+        "ppc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
+        "ordc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
+        "bcc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
+        "gdpc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
+        "wdc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
+        "hc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
+        "sc.ipfest2027@gmail.com": "./dashboard/smart-competition/manager.html",
       };
 
       // Jika email official → tidak disentuh logic delegates

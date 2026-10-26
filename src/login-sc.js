@@ -1,71 +1,126 @@
-import { signInWithEmailAndPassword } from 'firebase/auth'
-
-import { collection, getDocs, setDoc, doc } from 'firebase/firestore'
+import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
+import { getDoc, setDoc, doc } from 'firebase/firestore'
 
 import { AUTH, DB } from './index.js'
-
 import { failedLogin } from './shared/alert.js'
 
-// DB for SC Delegates
-const SC_DB = collection(DB, 'SC_Selection')
-const SC_ANS = collection(DB, 'SC_Del_Answer')
+// =====================================================================
+//   CONFIG
+// =====================================================================
+// Halaman tujuan kalau peserta membuka login SC langsung
+// (tidak datang dari halaman tes, sehingga tidak ada `currentURL` tersimpan).
+// Relatif terhadap folder login SC. Isi '' untuk hanya menampilkan pesan "login berhasil".
+const DEFAULT_REDIRECT = 'sesi-1.html'
 
-getDocs(SC_DB).then((snap) => {
-	let users = snap.docs
+// Halaman error umum (relatif terhadap folder login SC; 400.html ada di root)
+const ERROR_PAGE = '../../400.html'
 
-	users.forEach(user => {
-		let data = user.data()
+// =====================================================================
+//   HELPERS
+// =====================================================================
 
-		setDoc(doc(DB, 'SC_Del_Answer', user.id), {
-			university: data.university,
-			team: data.team
-		})
-	})
-})
-
-// Check if user is valid as SC delegate
-async function validateSC(uid) {
-	const snap = await getDocs(SC_DB)
-	let userDocs = snap.docs
-
-	for (let doc of userDocs) {
-		if (uid === doc.id) {
-			return true
-		}
-	}
-	return false
+// Peserta SC yang sah = punya dokumen SC_Selection/{uid}
+// (dulu: membaca SELURUH koleksi lalu mencari satu per satu)
+async function getSCDelegate(uid) {
+    const snap = await getDoc(doc(DB, 'SC_Selection', uid))
+    return snap.exists() ? snap.data() : null
 }
 
-const loginForm = document.querySelector("#login-user")
-loginForm.addEventListener('submit', async (e) => {
-	e.preventDefault()
+// Siapkan dokumen jawaban HANYA untuk peserta yang sedang login.
+// merge: true → jawaban yang sudah ada tidak tertimpa.
+async function ensureAnswerDoc(uid, delegate) {
+    await setDoc(doc(DB, 'SC_Del_Answer', uid), {
+        university: delegate.university ?? null,
+        team: delegate.team ?? null
+    }, { merge: true })
+}
 
-	const userEmail = loginForm.email.value
-	const userPassword = loginForm.password.value
+// Hanya izinkan kembali ke halaman di situs yang sama (cegah redirect ke situs lain)
+function safeReturnURL(raw) {
+    if (!raw) return null
+    try {
+        const url = new URL(raw, window.location.href)
+        return url.origin === window.location.origin ? url.href : null
+    } catch {
+        return null
+    }
+}
 
-	try {
-		const credential = await signInWithEmailAndPassword(AUTH, userEmail, userPassword)
-		const user = credential.user
+function setBusy(form, busy) {
+    const btn = form.querySelector('button[type="submit"]')
+    if (!btn) return
+    if (busy) {
+        btn.dataset.label = btn.textContent
+        btn.textContent = 'Signing in...'
+        btn.disabled = true
+    } else {
+        btn.textContent = btn.dataset.label || 'Sign in'
+        btn.disabled = false
+    }
+}
 
-		if (user && user.email) {
-			const savedURL = localStorage.getItem('currentURL')
-			localStorage.removeItem('currentURL')
+// =====================================================================
+//   LOGIN
+// =====================================================================
+const loginForm = document.querySelector('#login-user')
 
-			if (await validateSC(user.uid)) { // a valid sc delegate
-				window.location.href = savedURL
-			} else {
-				failedLogin()
-				console.log("Not a SC delegate")
-			}
-		}
-	} catch (err) {
-		const errorCode = err.code
+loginForm?.addEventListener('submit', async (e) => {
+    e.preventDefault()
 
-		if (errorCode === 'auth/wrong-password' || errorCode === 'auth/invalid-email' || errorCode === 'auth/invalid-credential') {
-			loginForm.reset()
-			failedLogin()
-		} else {
-			window.location.href = '400.html'
-		}
-	}
-});
+    const userEmail = loginForm.email.value.trim()
+    const userPassword = loginForm.password.value
+    if (!userEmail || !userPassword) {
+        failedLogin()
+        return
+    }
+
+    setBusy(loginForm, true)
+    try {
+        const { user } = await signInWithEmailAndPassword(AUTH, userEmail, userPassword)
+
+        const delegate = await getSCDelegate(user.uid)
+        if (!delegate) {
+            // Akun valid tapi bukan peserta SC → jangan biarkan tetap login
+            console.log('Not a SC delegate')
+            await signOut(AUTH)
+            loginForm.reset()
+            failedLogin()
+            return
+        }
+
+        await ensureAnswerDoc(user.uid, delegate)
+
+        const savedURL = safeReturnURL(localStorage.getItem('currentURL'))
+        localStorage.removeItem('currentURL')
+
+        const target = savedURL || DEFAULT_REDIRECT
+        if (target) {
+            window.location.href = target
+        } else {
+            alert('✅ Login successful. Please open the Smart Competition test link again.')
+        }
+    } catch (err) {
+        const code = err.code
+        const credentialErrors = [
+            'auth/wrong-password',
+            'auth/invalid-email',
+            'auth/invalid-credential',
+            'auth/user-not-found',
+            'auth/missing-password'
+        ]
+
+        if (credentialErrors.includes(code)) {
+            loginForm.reset()
+            failedLogin()
+        } else if (code === 'auth/too-many-requests') {
+            alert('Too many login attempts. Please wait a moment and try again.')
+        } else if (code === 'auth/network-request-failed') {
+            alert('Network error. Please check your connection and try again.')
+        } else {
+            console.error('Login error', err)
+            window.location.href = ERROR_PAGE
+        }
+    } finally {
+        setBusy(loginForm, false)
+    }
+})

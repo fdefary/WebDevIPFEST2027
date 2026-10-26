@@ -1,0 +1,364 @@
+/* ===== Dashboard Delegates: tema Grand IPFEST 2027 ===== */
+:root {
+	--g-navy: #16213E; --g-navy-deep: #0F1830; --g-ivory: #F8F5F2;
+	--g-slate: #6C677D; --g-orange: #D97706; --g-gold: #E6C72A;
+}
+
+/* Tab navbar */
+body.delegates-page #master-nav .nav-link.btn {
+	color: var(--g-ivory) !important;
+	background: transparent !important;
+	font-family: "Poppins", sans-serif;
+	font-weight: 500;
+	border-radius: 999px !important;
+	padding: .5rem 1.25rem;
+	transition: all .3s ease;
+}
+body.delegates-page #master-nav .nav-link.btn:hover,
+body.delegates-page #master-nav .nav-link.btn.active {
+	color: var(--g-navy) !important;
+	background: var(--g-gold) !important;
+	transform: translateY(-2px);
+}
+
+/* Panel Home (class-nya "dashboard-panels") */
+.delegates-stage .dashboard-panels {
+	background: rgba(22, 33, 62, .82);
+	backdrop-filter: blur(8px);
+	border: 1px solid rgba(230, 199, 42, .35);
+	border-top: 3px solid var(--g-gold);
+	border-radius: 16px;
+	padding: 2rem;
+	color: var(--g-ivory);
+	box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+	animation: panelIn .6s ease both;
+}
+
+/* Kartu info tim */
+.delegates-stage .card {
+	background: rgba(15, 24, 48, .8);
+	color: var(--g-ivory);
+	border: 1px solid rgba(230, 199, 42, .35);
+	border-radius: 16px;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, .3) !important;
+	transition: transform .35s ease, border-color .35s ease, box-shadow .35s ease;
+	animation: cardIn .6s ease both;
+}
+.delegates-stage .card:hover {
+	transform: translateY(-6px);
+	border-color: var(--g-gold);
+	box-shadow: 0 16px 36px rgba(230, 199, 42, .22) !important;
+}
+@keyframes cardIn {
+	from { opacity: 0; transform: translateY(22px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+.delegates-stage #del-team-members > div:nth-child(1) .card { animation-delay: .05s; }
+.delegates-stage #del-team-members > div:nth-child(2) .card { animation-delay: .12s; }
+.delegates-stage #del-team-members > div:nth-child(3) .card { animation-delay: .19s; }
+.delegates-stage #del-team-members > div:nth-child(4) .card { animation-delay: .26s; }
+.delegates-stage #del-team-members > div:nth-child(5) .card { animation-delay: .33s; }
+.delegates-stage #del-team-members > div:nth-child(6) .card { animation-delay: .40s; }
+
+.delegates-stage .card svg { color: var(--g-gold); transition: transform .35s ease; }
+.delegates-stage .card:hover svg { transform: scale(1.1) rotate(-3deg); }
+.delegates-stage .card p.lead {
+	color: rgba(248, 245, 242, .7) !important;
+	font-family: "Poppins", sans-serif;
+	font-size: .85rem;
+	letter-spacing: .12em;
+	text-transform: uppercase;
+}
+.delegates-stage .card .card-title,
+.delegates-stage .card .card-title span {
+	color: var(--g-ivory) !important;
+	font-family: "Playfair Display", serif;
+	word-break: break-word;
+}
+.delegates-stage .card .card-title a,
+.delegates-stage .card .card-title a.text-primary {
+	color: var(--g-gold) !important;
+	text-decoration: none;
+	cursor: pointer;
+}
+.delegates-stage .card .card-title a:hover { color: var(--g-ivory) !important; }
+
+/* Heading dan teks dalam panel */
+.delegates-stage .text-black,
+.delegates-stage h3.display-6 {
+	color: var(--g-gold) !important;
+	-webkit-text-fill-color: var(--g-gold) !important;
+	font-family: "Playfair Display", serif;
+}
+.delegates-stage .text-muted { color: rgba(248, 245, 242, .65) !important; }
+.delegates-stage .text-success { color: #4ade80 !important; }
+.delegates-stage .text-info,
+.delegates-stage a.text-info {
+	color: var(--g-gold) !important;
+	-webkit-text-fill-color: var(--g-gold) !important;
+	text-underline-offset: 4px;
+}
+.delegates-stage .text-info:hover { color: var(--g-ivory) !important; }
+.delegates-stage .fs-5, .delegates-stage .fs-6, .delegates-stage .form-label { color: var(--g-ivory); }
+.delegates-stage .link-secondary {
+	color: var(--g-gold) !important;
+	-webkit-text-fill-color: var(--g-gold) !important;
+}
+
+/* Alert reminder */
+.delegates-stage .alert-warning {
+	background: rgba(230, 199, 42, .12);
+	border: 1px solid rgba(230, 199, 42, .5);
+	border-left: 4px solid var(--g-gold);
+	color: var(--g-ivory);
+	border-radius: 12px;
+}
+.delegates-stage .alert-warning .alert-heading,
+.delegates-stage .alert-warning h4,
+.delegates-stage .alert-warning p,
+.delegates-stage .alert-warning div { color: var(--g-ivory) !important; }
+.delegates-stage .alert-warning hr { border-color: rgba(230, 199, 42, .5); opacity: 1; }
+.delegates-stage .alert .btn-close { filter: invert(1) brightness(200%); }
+
+/* Form: checkbox, tombol hapus file, validasi */
+.delegates-stage .form-check-input { border-color: var(--g-gold); background-color: transparent; }
+.delegates-stage .form-check-input:checked { background-color: var(--g-gold); border-color: var(--g-gold); }
+.delegates-stage .form-check-label { color: var(--g-ivory); }
+.delegates-stage .invalid-feedback { color: #fca5a5; }
+.delegates-stage .btn-secondary {
+	background-color: var(--g-orange) !important;
+	border-color: var(--g-orange) !important;
+	color: #FFFFFF !important;
+	font-weight: 600;
+}
+.delegates-stage .btn-secondary:hover { background-color: #B45F04 !important; border-color: #B45F04 !important; }
+.delegates-stage .btn-muted {
+	color: var(--g-ivory);
+	border: 1px solid rgba(248, 245, 242, .4);
+	border-radius: 999px;
+}
+.delegates-stage .btn-muted:hover { color: var(--g-navy); background: var(--g-gold); }
+
+/* Progress upload */
+.delegates-stage .progress { background: rgba(248, 245, 242, .15); border-radius: 999px; }
+.delegates-stage .progress-bar { background-color: var(--g-gold); color: var(--g-navy); font-weight: 600; }
+.delegates-stage .loading-svg circle { fill: var(--g-gold); }
+
+/* Overlay loading */
+body.delegates-page .overlay { background: var(--g-navy) !important; }
+body.delegates-page .overlay .spinner-grow { color: var(--g-gold) !important; }
+
+/* Modal Bootstrap (di luar <main>) */
+body.delegates-page .modal-content {
+	background: var(--g-navy);
+	color: var(--g-ivory);
+	border: 1px solid rgba(230, 199, 42, .5);
+	border-radius: 16px;
+}
+body.delegates-page .modal-header,
+body.delegates-page .modal-footer { border-color: rgba(230, 199, 42, .3); }
+body.delegates-page .modal-title { color: var(--g-gold); font-family: "Playfair Display", serif; }
+body.delegates-page .modal .btn-close { filter: invert(1) brightness(200%); }
+body.delegates-page .modal .btn-primary {
+	background: var(--g-gold); border-color: var(--g-gold); color: var(--g-navy); font-weight: 600;
+}
+body.delegates-page .modal .btn-primary:hover { background: var(--g-orange); border-color: var(--g-orange); color: #FFFFFF; }
+body.delegates-page .modal .btn-danger { background: var(--g-orange); border-color: var(--g-orange); color: #FFFFFF; }
+
+/* Toast */
+body.delegates-page .toast { background: var(--g-navy); color: var(--g-ivory); border: 1px solid rgba(230, 199, 42, .5); }
+body.delegates-page .toast-header { background: var(--g-navy-deep); border-bottom: 1px solid rgba(230, 199, 42, .3); }
+body.delegates-page .toast-header strong,
+body.delegates-page .toast-header .text-black { color: var(--g-gold) !important; }
+body.delegates-page .toast .btn-close { filter: invert(1) brightness(200%); }
+
+/* Modal leaderboard custom (gaya dasarnya ada di delegates.css; tampil/sembunyi tidak diubah) */
+body.delegates-page .custom-modal-box {
+	background: var(--g-navy) !important;
+	color: var(--g-ivory) !important;
+	border: 1px solid rgba(230, 199, 42, .5) !important;
+	border-radius: 16px !important;
+}
+body.delegates-page .custom-modal-header {
+	background: var(--g-navy-deep) !important;
+	color: var(--g-gold) !important;
+	border-bottom: 2px solid var(--g-gold) !important;
+}
+body.delegates-page .custom-close-btn { color: var(--g-gold) !important; }
+body.delegates-page .custom-table th {
+	background: var(--g-navy-deep) !important;
+	color: var(--g-gold) !important;
+	font-family: "Poppins", sans-serif;
+	letter-spacing: .8px;
+}
+body.delegates-page .custom-table td {
+	color: var(--g-ivory) !important;
+	border-color: rgba(248, 245, 242, .18) !important;
+	background: transparent !important;
+}
+body.delegates-page .custom-table tbody tr:nth-child(even) td { background: rgba(248, 245, 242, .06) !important; }
+body.delegates-page .custom-table tbody tr:hover td { background: rgba(230, 199, 42, .15) !important; }
+
+/* ===== Override kartu: hapus gradasi ungu, jadi navy + garis emas ===== */
+html body.delegates-page .delegates-stage .card,
+html body.delegates-page .delegates-stage .dashboard-panels .card {
+	background: rgba(15, 24, 48, .85) !important;
+	background-image: none !important;
+	border: 1px solid rgba(230, 199, 42, .4) !important;
+	border-radius: 16px !important;
+	box-shadow: 0 10px 30px rgba(0, 0, 0, .3) !important;
+	backdrop-filter: none !important;
+	color: #F8F5F2 !important;
+}
+
+/* Matikan lapisan kilau/gradasi tambahan di kartu */
+html body.delegates-page .delegates-stage .card::before,
+html body.delegates-page .delegates-stage .card::after {
+	display: none !important;
+	background: none !important;
+}
+
+html body.delegates-page .delegates-stage .card:hover {
+	background: rgba(22, 33, 62, .95) !important;
+	background-image: none !important;
+	border-color: #E6C72A !important;
+	box-shadow: 0 16px 36px rgba(230, 199, 42, .22) !important;
+	transform: translateY(-6px);
+}
+
+/* Ikon: emas, tanpa glow putih */
+html body.delegates-page .delegates-stage .card svg {
+	color: #E6C72A !important;
+	fill: currentColor;
+	filter: none !important;
+	opacity: 1 !important;
+}
+
+/* Teks kartu: tanpa text-shadow lama */
+html body.delegates-page .delegates-stage .card p.lead,
+html body.delegates-page .delegates-stage .card .card-title,
+html body.delegates-page .delegates-stage .card .card-title span {
+	text-shadow: none !important;
+}
+html body.delegates-page .delegates-stage .card .card-title,
+html body.delegates-page .delegates-stage .card .card-title span {
+	color: #F8F5F2 !important;
+	-webkit-text-fill-color: #F8F5F2 !important;
+}
+
+/* Link WhatsApp / Final Registration: bukan lagi tombol pill putih */
+html body.delegates-page .delegates-stage .card .card-title a {
+	display: inline-block;
+	background: transparent !important;
+	background-image: none !important;
+	box-shadow: none !important;
+	border: none !important;
+	border-radius: 0 !important;
+	padding: 0 !important;
+	color: #E6C72A !important;
+	-webkit-text-fill-color: #E6C72A !important;
+	text-decoration: underline;
+	text-underline-offset: 4px;
+}
+html body.delegates-page .delegates-stage .card .card-title a:hover {
+	color: #F8F5F2 !important;
+	-webkit-text-fill-color: #F8F5F2 !important;
+}
+/* Sembunyikan link yang masih kosong (sebelum data dimuat) */
+html body.delegates-page .delegates-stage .card .card-title a:empty {
+	display: none !important;
+}
+
+/* ===== Panel Preliminary / Final / My Team: hapus gradasi ungu ===== */
+html body.delegates-page .delegates-stage .dashboard-panel,
+html body.delegates-page .delegates-stage .dashboard-panels {
+	background: rgba(22, 33, 62, .88) !important;
+	background-image: none !important;
+	border: 1px solid rgba(230, 199, 42, .35) !important;
+	border-top: 3px solid #E6C72A !important;
+	border-radius: 16px !important;
+	box-shadow: 0 20px 50px rgba(0, 0, 0, .35) !important;
+	color: #F8F5F2 !important;
+}
+html body.delegates-page .delegates-stage .dashboard-panel::before,
+html body.delegates-page .delegates-stage .dashboard-panel::after,
+html body.delegates-page .delegates-stage .dashboard-panels::before,
+html body.delegates-page .delegates-stage .dashboard-panels::after {
+	display: none !important;
+	background: none !important;
+}
+html body.delegates-page .delegates-stage .dashboard-panel *,
+html body.delegates-page .delegates-stage .dashboard-panels * {
+	text-shadow: none !important;
+}
+
+/* Judul */
+html body.delegates-page .delegates-stage .dashboard-panel h1,
+html body.delegates-page .delegates-stage .dashboard-panel h3 {
+	color: #E6C72A !important;
+	-webkit-text-fill-color: #E6C72A !important;
+	font-family: "Playfair Display", serif;
+}
+
+/* Teks Summary */
+html body.delegates-page .delegates-stage .dashboard-panel p,
+html body.delegates-page .delegates-stage .dashboard-panel .fs-5,
+html body.delegates-page .delegates-stage .dashboard-panel .fs-6 {
+	color: #F8F5F2 !important;
+	-webkit-text-fill-color: #F8F5F2 !important;
+	font-family: "Poppins", sans-serif;
+}
+
+/* Tombol Submit, Edit My Submission, dan sejenisnya: outline emas */
+html body.delegates-page .delegates-stage .dashboard-panel .btn.btn-light,
+html body.delegates-page .delegates-stage .dashboard-panels .btn.btn-light {
+	background: transparent !important;
+	background-image: none !important;
+	color: #E6C72A !important;
+	-webkit-text-fill-color: #E6C72A !important;
+	border: 1px solid #E6C72A !important;
+	box-shadow: none !important;
+	font-weight: 600;
+	transition: all .3s ease;
+}
+html body.delegates-page .delegates-stage .dashboard-panel .btn.btn-light:hover:not(:disabled) {
+	background: #E6C72A !important;
+	color: #16213E !important;
+	-webkit-text-fill-color: #16213E !important;
+	transform: translateY(-3px);
+	box-shadow: 0 10px 22px rgba(230, 199, 42, .35) !important;
+}
+
+/* Checkbox "I have read the Guide Book" */
+html body.delegates-page .delegates-stage .form-check-input {
+	background-color: #F8F5F2 !important;
+	border: 2px solid #E6C72A !important;
+	width: 1.15em;
+	height: 1.15em;
+}
+html body.delegates-page .delegates-stage .form-check-input:checked {
+	background-color: #E6C72A !important;
+	border-color: #E6C72A !important;
+}
+html body.delegates-page .delegates-stage .form-check-input:checked[type="checkbox"] {
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%2316213E' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e") !important;
+}
+html body.delegates-page .delegates-stage .form-check-input:focus {
+	box-shadow: 0 0 0 .2rem rgba(230, 199, 42, .3) !important;
+}
+
+/* Kotak Reminder: lebih bersih di atas navy */
+html body.delegates-page .delegates-stage .dashboard-panel .alert-warning {
+	background: rgba(230, 199, 42, .1) !important;
+	background-image: none !important;
+	border: 1px solid rgba(230, 199, 42, .5) !important;
+	border-left: 4px solid #E6C72A !important;
+}
+html body.delegates-page .delegates-stage .dashboard-panel .alert-warning h4 {
+	color: #E6C72A !important;
+	-webkit-text-fill-color: #E6C72A !important;
+	font-family: "Playfair Display", serif;
+}
+
+/* Jarak Summary dari tombol Submit */
+html body.delegates-page .delegates-stage #del-submission-summary { margin-top: 2rem; }

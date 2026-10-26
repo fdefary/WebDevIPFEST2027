@@ -1,0 +1,366 @@
+/* =====================================================================
+   Login Smart Competition — tema Grand IPFEST 2027
+   Berdiri sendiri (tidak bergantung pada login.css / style.css lama).
+   ===================================================================== */
+:root {
+	--lg-navy: #16213E;
+	--lg-navy-deep: #0B1328;
+	--lg-ivory: #F8F5F2;
+	--lg-muted: rgba(248, 245, 242, .62);
+	--lg-gold: #E6C72A;
+	--lg-orange: #D97706;
+	--lg-bronze: #6B4A1F;
+	--lg-red: #fca5a5;
+}
+
+* { box-sizing: border-box; }
+
+html, body { min-height: 100%; }
+
+body.lg-page {
+	margin: 0;
+	font-family: "Poppins", sans-serif;
+	color: var(--lg-ivory);
+	background:
+		radial-gradient(1200px 700px at 85% 110%, rgba(217, 119, 6, .35), transparent 60%),
+		radial-gradient(900px 600px at 0% 0%, rgba(230, 199, 42, .10), transparent 60%),
+		linear-gradient(135deg, var(--lg-navy-deep) 0%, var(--lg-navy) 45%, #2a2440 75%, var(--lg-bronze) 130%);
+	background-attachment: fixed;
+	overflow-x: hidden;
+}
+
+/* ---------- Latar animasi ---------- */
+.lg-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+
+.lg-glow {
+	position: absolute;
+	border-radius: 50%;
+	filter: blur(80px);
+	opacity: .45;
+	animation: lgDrift 18s ease-in-out infinite alternate;
+}
+.lg-glow-1 { width: 420px; height: 420px; top: -120px; right: -80px; background: rgba(230, 199, 42, .35); }
+.lg-glow-2 { width: 520px; height: 520px; bottom: -200px; left: -160px; background: rgba(217, 119, 6, .28); animation-duration: 24s; }
+@keyframes lgDrift {
+	from { transform: translate(0, 0) scale(1); }
+	to   { transform: translate(40px, 30px) scale(1.12); }
+}
+
+.lg-particles { list-style: none; margin: 0; padding: 0; position: absolute; inset: 0; }
+.lg-particles li {
+	position: absolute;
+	bottom: -20px;
+	width: 8px; height: 8px;
+	border-radius: 50%;
+	background: radial-gradient(circle at 35% 35%, #fff4c2, var(--lg-gold) 55%, rgba(217, 119, 6, .6));
+	box-shadow: 0 0 12px rgba(230, 199, 42, .7);
+	opacity: 0;
+	animation: lgRise linear infinite;
+}
+.lg-particles li:nth-child(1)  { left: 6%;  animation-duration: 16s; animation-delay: 0s;  }
+.lg-particles li:nth-child(2)  { left: 14%; animation-duration: 22s; animation-delay: 3s;  width: 5px; height: 5px; }
+.lg-particles li:nth-child(3)  { left: 23%; animation-duration: 19s; animation-delay: 6s;  }
+.lg-particles li:nth-child(4)  { left: 34%; animation-duration: 25s; animation-delay: 1s;  width: 4px; height: 4px; }
+.lg-particles li:nth-child(5)  { left: 45%; animation-duration: 18s; animation-delay: 8s;  width: 10px; height: 10px; }
+.lg-particles li:nth-child(6)  { left: 56%; animation-duration: 23s; animation-delay: 4s;  width: 5px; height: 5px; }
+.lg-particles li:nth-child(7)  { left: 65%; animation-duration: 17s; animation-delay: 10s; }
+.lg-particles li:nth-child(8)  { left: 74%; animation-duration: 26s; animation-delay: 2s;  width: 4px; height: 4px; }
+.lg-particles li:nth-child(9)  { left: 82%; animation-duration: 20s; animation-delay: 7s;  width: 9px; height: 9px; }
+.lg-particles li:nth-child(10) { left: 90%; animation-duration: 24s; animation-delay: 5s;  width: 5px; height: 5px; }
+.lg-particles li:nth-child(11) { left: 96%; animation-duration: 21s; animation-delay: 12s; }
+.lg-particles li:nth-child(12) { left: 50%; animation-duration: 28s; animation-delay: 14s; width: 6px; height: 6px; }
+@keyframes lgRise {
+	0%   { transform: translateY(0) translateX(0); opacity: 0; }
+	10%  { opacity: .9; }
+	50%  { transform: translateY(-50vh) translateX(20px); }
+	90%  { opacity: .7; }
+	100% { transform: translateY(-105vh) translateX(-15px); opacity: 0; }
+}
+
+/* ---------- Navbar ---------- */
+.lg-navbar {
+	position: fixed;
+	top: 0; left: 0; right: 0;
+	z-index: 20;
+	background: linear-gradient(180deg, rgba(11, 19, 40, .85), rgba(22, 33, 62, .55));
+	backdrop-filter: blur(14px) saturate(140%);
+	-webkit-backdrop-filter: blur(14px) saturate(140%);
+	border-bottom: 1px solid rgba(230, 199, 42, .2);
+	animation: lgSlideDown .6s cubic-bezier(.2, .8, .2, 1) both;
+	transition: background .3s ease, box-shadow .3s ease;
+}
+.lg-navbar::after {
+	content: "";
+	position: absolute; left: 0; right: 0; bottom: -1px; height: 1px;
+	background: linear-gradient(90deg, transparent, var(--lg-gold), transparent);
+	background-size: 200% 100%;
+	animation: lgShimmer 6s linear infinite;
+}
+.lg-navbar.is-scrolled { background: rgba(11, 19, 40, .96); box-shadow: 0 10px 30px rgba(0, 0, 0, .4); }
+@keyframes lgSlideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes lgShimmer   { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+.lg-navbar-inner {
+	max-width: 1200px;
+	height: 74px;
+	margin: 0 auto;
+	padding: 0 clamp(1rem, 4vw, 2rem);
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 1rem;
+}
+.lg-brand { display: inline-flex; align-items: center; gap: .6rem; text-decoration: none; }
+.lg-logo-mark { height: 46px; width: auto; filter: drop-shadow(0 4px 10px rgba(230, 199, 42, .25)); transition: transform .4s ease, filter .4s ease; }
+.lg-logo-text { height: 32px; width: auto; }
+.lg-brand:hover .lg-logo-mark { transform: rotate(-8deg) scale(1.06); filter: drop-shadow(0 6px 16px rgba(230, 199, 42, .45)); }
+
+.lg-badge {
+	display: inline-flex; align-items: center; gap: .4rem;
+	padding: .35rem .9rem;
+	border-radius: 999px;
+	border: 1px solid rgba(230, 199, 42, .45);
+	background: rgba(230, 199, 42, .1);
+	color: var(--lg-gold);
+	font-size: .78rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+	white-space: nowrap;
+}
+
+/* ---------- Kartu login ---------- */
+.lg-main {
+	position: relative;
+	z-index: 1;
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	padding: 110px 1rem 3rem;
+}
+
+.lg-card {
+	position: relative;
+	width: 100%;
+	max-width: 460px;
+	padding: 2.5rem 2.25rem 2rem;
+	border-radius: 22px;
+	background: rgba(15, 24, 48, .72);
+	backdrop-filter: blur(16px);
+	-webkit-backdrop-filter: blur(16px);
+	border: 1px solid rgba(230, 199, 42, .3);
+	box-shadow: 0 30px 70px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .05);
+	animation: lgCardIn .8s cubic-bezier(.2, .8, .2, 1) .15s both;
+	overflow: hidden;
+}
+/* Garis emas di atas kartu */
+.lg-card::before {
+	content: "";
+	position: absolute; top: 0; left: 0; right: 0; height: 3px;
+	background: linear-gradient(90deg, var(--lg-orange), var(--lg-gold), var(--lg-orange));
+	background-size: 200% 100%;
+	animation: lgShimmer 5s linear infinite;
+}
+@keyframes lgCardIn {
+	from { opacity: 0; transform: translateY(30px) scale(.97); }
+	to   { opacity: 1; transform: none; }
+}
+
+.lg-card-head { text-align: center; margin-bottom: 1.75rem; }
+.lg-eyebrow { display: block; font-family: "Great Vibes", cursive; font-size: 2rem; color: var(--lg-gold); line-height: 1.1; }
+.lg-title {
+	font-family: "Playfair Display", serif;
+	font-weight: 700;
+	font-size: clamp(1.45rem, 4vw, 1.8rem);
+	color: var(--lg-ivory);
+	margin: .35rem 0 .8rem;
+}
+.lg-divider { display: flex; align-items: center; justify-content: center; gap: .7rem; color: var(--lg-gold); font-size: .85rem; }
+.lg-divider span {
+	display: block; height: 1px; width: 0;
+	background: linear-gradient(90deg, transparent, var(--lg-gold), transparent);
+	animation: lgLine .9s ease .5s forwards;
+}
+@keyframes lgLine { to { width: 70px; } }
+
+/* ---------- Form ---------- */
+.lg-field { margin-bottom: 1.15rem; animation: lgFieldIn .6s ease both; }
+.lg-field:nth-of-type(1) { animation-delay: .35s; }
+.lg-field:nth-of-type(2) { animation-delay: .45s; }
+@keyframes lgFieldIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+
+.lg-label {
+	display: block;
+	margin-bottom: .45rem;
+	font-size: .82rem;
+	font-weight: 500;
+	letter-spacing: .04em;
+	color: rgba(248, 245, 242, .85);
+}
+
+.lg-input-wrap { position: relative; }
+.lg-input-icon {
+	position: absolute; left: 1rem; top: 50%; transform: translateY(-50%);
+	color: rgba(230, 199, 42, .75);
+	font-size: 1.05rem;
+	pointer-events: none;
+	transition: color .25s ease;
+}
+
+.lg-page .lg-input.form-control {
+	height: 52px;
+	padding: 0 3rem 0 2.8rem;
+	border-radius: 14px;
+	background-color: rgba(8, 14, 32, .85) !important;
+	color: var(--lg-ivory) !important;
+	-webkit-text-fill-color: var(--lg-ivory) !important;
+	border: 1px solid rgba(230, 199, 42, .4) !important;
+	font-weight: 500;
+	caret-color: var(--lg-gold);
+	box-shadow: none !important;
+	transition: border-color .25s ease, box-shadow .25s ease, background-color .25s ease;
+}
+.lg-page .lg-input.form-control::placeholder { color: rgba(248, 245, 242, .35) !important; -webkit-text-fill-color: rgba(248, 245, 242, .35) !important; }
+.lg-page .lg-input.form-control:hover { border-color: rgba(230, 199, 42, .7) !important; }
+.lg-page .lg-input.form-control:focus {
+	background-color: rgba(22, 33, 62, .95) !important;
+	border-color: var(--lg-gold) !important;
+	box-shadow: 0 0 0 .25rem rgba(230, 199, 42, .2) !important;
+}
+.lg-input-wrap:focus-within .lg-input-icon { color: var(--lg-gold); }
+
+/* Autofill browser tidak putih/kuning */
+.lg-page .lg-input.form-control:-webkit-autofill,
+.lg-page .lg-input.form-control:-webkit-autofill:hover,
+.lg-page .lg-input.form-control:-webkit-autofill:focus {
+	-webkit-text-fill-color: var(--lg-ivory) !important;
+	-webkit-box-shadow: 0 0 0 1000px #0E1730 inset !important;
+	caret-color: var(--lg-gold);
+	transition: background-color 9999s ease-in-out 0s;
+}
+
+.lg-toggle-pass {
+	position: absolute; right: .55rem; top: 50%; transform: translateY(-50%);
+	width: 38px; height: 38px;
+	display: grid; place-items: center;
+	border: none; border-radius: 10px;
+	background: transparent;
+	color: var(--lg-muted);
+	font-size: 1.05rem;
+	cursor: pointer;
+	transition: color .2s ease, background .2s ease;
+}
+.lg-toggle-pass:hover { color: var(--lg-gold); background: rgba(230, 199, 42, .1); }
+.lg-toggle-pass:focus-visible { outline: 2px solid var(--lg-gold); outline-offset: 2px; }
+
+.lg-caps { display: inline-flex; gap: .35rem; margin-top: .45rem; color: #fbbf24; font-size: .78rem; }
+
+.lg-row-end { display: flex; justify-content: flex-end; margin: -.2rem 0 1.6rem; animation: lgFieldIn .6s ease .55s both; }
+.lg-link {
+	color: var(--lg-gold);
+	font-size: .86rem;
+	font-weight: 500;
+	text-decoration: none;
+	background-image: linear-gradient(var(--lg-gold), var(--lg-gold));
+	background-size: 0 1px;
+	background-repeat: no-repeat;
+	background-position: 0 100%;
+	transition: background-size .3s ease, color .3s ease;
+}
+.lg-link:hover { color: var(--lg-ivory); background-size: 100% 1px; }
+
+/* ---------- Tombol masuk ---------- */
+.lg-submit {
+	position: relative;
+	overflow: hidden;
+	width: 100%;
+	height: 52px;
+	display: inline-flex; align-items: center; justify-content: center; gap: .35rem;
+	border: none;
+	border-radius: 999px;
+	background: linear-gradient(135deg, var(--lg-gold), var(--lg-orange));
+	color: var(--lg-navy);
+	font-family: "Poppins", sans-serif;
+	font-weight: 700;
+	font-size: 1rem;
+	letter-spacing: .05em;
+	cursor: pointer;
+	box-shadow: 0 12px 28px rgba(217, 119, 6, .35);
+	animation: lgFieldIn .6s ease .65s both;
+	transition: transform .3s ease, box-shadow .3s ease, filter .3s ease;
+}
+.lg-submit i { font-size: 1.4rem; transition: transform .3s ease; }
+.lg-submit::after {
+	content: "";
+	position: absolute; top: 0; left: -75%;
+	width: 50%; height: 100%;
+	background: linear-gradient(115deg, transparent, rgba(255, 255, 255, .5), transparent);
+	transform: skewX(-20deg);
+	transition: left .7s ease;
+}
+.lg-submit:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 18px 36px rgba(230, 199, 42, .45); }
+.lg-submit:hover:not(:disabled) i { transform: translateX(4px); }
+.lg-submit:hover:not(:disabled)::after { left: 130%; }
+.lg-submit:active:not(:disabled) { transform: translateY(-1px); }
+.lg-submit:focus-visible { outline: 2px solid var(--lg-ivory); outline-offset: 3px; }
+.lg-submit:disabled { filter: grayscale(.6); opacity: .65; cursor: not-allowed; }
+
+.lg-foot {
+	margin: 1.6rem 0 0;
+	text-align: center;
+	font-size: .75rem;
+	letter-spacing: .14em;
+	text-transform: uppercase;
+	color: rgba(248, 245, 242, .4);
+}
+
+/* ---------- Alert dari login_sc.bundle.js ---------- */
+.lg-page #alertContainer .alert,
+.lg-page #failLoginAlert .alert {
+	border-radius: 12px;
+	border: 1px solid rgba(252, 165, 165, .5);
+	background: rgba(239, 68, 68, .14);
+	color: var(--lg-red);
+	font-size: .9rem;
+	animation: lgShake .45s ease;
+}
+.lg-page #alertContainer .alert-success,
+.lg-page #failLoginAlert .alert-success {
+	border-color: rgba(74, 222, 128, .5);
+	background: rgba(34, 197, 94, .14);
+	color: #86efac;
+	animation: lgFieldIn .4s ease;
+}
+.lg-page #alertContainer .alert-warning,
+.lg-page #failLoginAlert .alert-warning,
+.lg-page #alertContainer .alert-info,
+.lg-page #failLoginAlert .alert-info {
+	border-color: rgba(230, 199, 42, .5);
+	background: rgba(230, 199, 42, .12);
+	color: var(--lg-gold);
+}
+.lg-page .alert .btn-close { filter: invert(1) brightness(200%); }
+@keyframes lgShake {
+	0%, 100% { transform: translateX(0); }
+	20% { transform: translateX(-6px); }
+	40% { transform: translateX(6px); }
+	60% { transform: translateX(-4px); }
+	80% { transform: translateX(4px); }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 576px) {
+	.lg-navbar-inner { height: 62px; }
+	.lg-logo-mark { height: 38px; }
+	.lg-logo-text { height: 26px; }
+	.lg-badge { font-size: .68rem; padding: .3rem .7rem; }
+	.lg-main { padding-top: 92px; }
+	.lg-card { padding: 2rem 1.35rem 1.6rem; border-radius: 18px; }
+}
+@media (max-width: 380px) {
+	.lg-badge span, .lg-badge { letter-spacing: .06em; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*, *::before, *::after { animation: none !important; transition: none !important; }
+	.lg-divider span { width: 70px; }
+	.lg-particles { display: none; }
+}

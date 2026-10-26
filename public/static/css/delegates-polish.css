@@ -1,0 +1,338 @@
+/* =====================================================================
+   Dashboard Delegates — navbar Grand + kolom/dropdown/tombol gelap
+   Muat PALING AKHIR (setelah delegates-grand.css).
+   ===================================================================== */
+:root {
+	--dp-navy: #16213E;
+	--dp-navy-deep: #0B1328;
+	--dp-ivory: #F8F5F2;
+	--dp-muted: rgba(248, 245, 242, .6);
+	--dp-gold: #E6C72A;
+	--dp-orange: #D97706;
+	--dp-red: #fca5a5;
+}
+
+/* =====================================================================
+   NAVBAR
+   ===================================================================== */
+html body.delegates-page #master-nav {
+	background: linear-gradient(180deg, rgba(11, 19, 40, .9), rgba(22, 33, 62, .72)) !important;
+	backdrop-filter: blur(14px) saturate(140%);
+	-webkit-backdrop-filter: blur(14px) saturate(140%);
+	border-bottom: 1px solid rgba(230, 199, 42, .22) !important;
+	box-shadow: 0 8px 30px rgba(0, 0, 0, .28) !important;
+	min-height: 78px;
+	padding-top: .6rem !important;
+	padding-bottom: .6rem !important;
+	animation: dpSlideDown .6s cubic-bezier(.2, .8, .2, 1) both;
+	transition: min-height .3s ease, background .3s ease, box-shadow .3s ease;
+}
+/* Garis emas berkilau di tepi bawah */
+html body.delegates-page #master-nav::after {
+	content: "";
+	position: absolute;
+	left: 0; right: 0; bottom: -1px;
+	height: 1px;
+	background: linear-gradient(90deg, transparent, var(--dp-gold), transparent);
+	background-size: 200% 100%;
+	animation: dpShimmer 6s linear infinite;
+	pointer-events: none;
+}
+@keyframes dpSlideDown { from { transform: translateY(-100%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes dpShimmer   { from { background-position: 200% 0; } to { background-position: -200% 0; } }
+
+/* Menyusut saat di-scroll (kelas ditambah script kecil di HTML) */
+html body.delegates-page #master-nav.is-scrolled {
+	min-height: 64px;
+	background: rgba(11, 19, 40, .96) !important;
+	box-shadow: 0 10px 34px rgba(0, 0, 0, .45) !important;
+}
+
+/* Logo lebih besar & jelas */
+html body.delegates-page #master-nav .navbar-brand { gap: .6rem; text-decoration: none; }
+html body.delegates-page #master-nav .navbar-brand img {
+	width: auto !important;
+	transition: height .3s ease, transform .4s ease, filter .4s ease;
+}
+html body.delegates-page #master-nav .navbar-brand img:first-child {
+	height: 46px !important;
+	filter: drop-shadow(0 4px 10px rgba(230, 199, 42, .25));
+}
+html body.delegates-page #master-nav .navbar-brand img:last-child { height: 32px !important; }
+html body.delegates-page #master-nav .navbar-brand:hover img:first-child {
+	transform: rotate(-8deg) scale(1.06);
+	filter: drop-shadow(0 6px 16px rgba(230, 199, 42, .45));
+}
+html body.delegates-page #master-nav.is-scrolled .navbar-brand img:first-child { height: 38px !important; }
+html body.delegates-page #master-nav.is-scrolled .navbar-brand img:last-child  { height: 26px !important; }
+
+/* Tab: pill dengan garis emas kecil di bawah tab aktif */
+html body.delegates-page #master-nav .navbar-nav { gap: .35rem; align-items: center; }
+html body.delegates-page #master-nav .nav-link.btn {
+	position: relative;
+	color: var(--dp-ivory) !important;
+	background: transparent !important;
+	border-radius: 999px !important;
+	padding: .5rem 1.2rem !important;
+	font-weight: 500;
+	letter-spacing: .02em;
+	box-shadow: none !important;
+	transition: color .3s ease, background .3s ease, transform .3s ease;
+}
+html body.delegates-page #master-nav .nav-link.btn:hover {
+	color: var(--dp-gold) !important;
+	background: rgba(230, 199, 42, .1) !important;
+}
+html body.delegates-page #master-nav .nav-link.btn.active {
+	color: var(--dp-navy) !important;
+	background: linear-gradient(135deg, var(--dp-gold), #f0d75a) !important;
+	box-shadow: 0 6px 16px rgba(230, 199, 42, .3) !important;
+	font-weight: 600;
+}
+/* hilangkan garis/aksen lama di bawah tab */
+html body.delegates-page #master-nav .nav-link.btn::before,
+html body.delegates-page #master-nav .nav-link.btn::after { display: none !important; }
+
+/* Tombol Log Out */
+html body.delegates-page #logout-btn {
+	background: transparent !important;
+	color: var(--dp-gold) !important;
+	-webkit-text-fill-color: var(--dp-gold) !important;
+	border: 1px solid var(--dp-gold) !important;
+	font-weight: 600;
+	transition: all .3s ease;
+}
+html body.delegates-page #logout-btn:hover {
+	background: var(--dp-gold) !important;
+	color: var(--dp-navy) !important;
+	-webkit-text-fill-color: var(--dp-navy) !important;
+	transform: translateY(-2px);
+}
+
+/* Menu HP */
+@media (max-width: 991.98px) {
+	html body.delegates-page #master-nav .navbar-collapse {
+		margin-top: .75rem;
+		padding: 1rem;
+		border-radius: 16px;
+		background: rgba(11, 19, 40, .96);
+		border: 1px solid rgba(230, 199, 42, .25);
+	}
+	html body.delegates-page #master-nav .navbar-nav { align-items: stretch; }
+	html body.delegates-page #master-nav .navbar-toggler { border-color: rgba(230, 199, 42, .5); }
+}
+
+/* Spinner awal tidak putih */
+html body.delegates-page #spinner.bg-white { background: var(--dp-navy) !important; }
+html body.delegates-page #spinner .spinner-border { color: var(--dp-gold) !important; }
+
+/* =====================================================================
+   INPUT, DROPDOWN, FILE — di halaman & di modal pembayaran final
+   ===================================================================== */
+html body.delegates-page .delegates-stage .form-control,
+html body.delegates-page .delegates-stage .form-select,
+html body.delegates-page .modal .form-control,
+html body.delegates-page .modal .form-select {
+	background-color: rgba(8, 14, 32, .9) !important;
+	color: var(--dp-ivory) !important;
+	-webkit-text-fill-color: var(--dp-ivory) !important;
+	border: 1px solid rgba(230, 199, 42, .5) !important;
+	border-radius: 12px;
+	font-weight: 500;
+	opacity: 1 !important;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04) !important;
+	transition: border-color .25s ease, box-shadow .25s ease, background-color .25s ease;
+}
+html body.delegates-page .delegates-stage .form-control:hover,
+html body.delegates-page .delegates-stage .form-select:hover:not(:disabled),
+html body.delegates-page .modal .form-control:hover,
+html body.delegates-page .modal .form-select:hover:not(:disabled) {
+	background-color: rgba(22, 33, 62, .95) !important;
+	border-color: var(--dp-gold) !important;
+}
+html body.delegates-page .delegates-stage .form-control:focus,
+html body.delegates-page .delegates-stage .form-select:focus,
+html body.delegates-page .modal .form-control:focus,
+html body.delegates-page .modal .form-select:focus {
+	background-color: rgba(22, 33, 62, .95) !important;
+	border-color: var(--dp-gold) !important;
+	box-shadow: 0 0 0 .22rem rgba(230, 199, 42, .25) !important;
+}
+
+/* Dropdown: panah emas + daftar pilihan gelap */
+html body.delegates-page .delegates-stage .form-select,
+html body.delegates-page .modal .form-select {
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23E6C72A' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+	background-repeat: no-repeat !important;
+	background-position: right .9rem center !important;
+	background-size: 13px 9px !important;
+	padding-right: 2.4rem;
+	cursor: pointer;
+	color-scheme: dark;
+}
+html body.delegates-page .form-select option {
+	background-color: var(--dp-navy-deep);
+	color: var(--dp-ivory);
+}
+html body.delegates-page .form-select option:checked {
+	background-color: var(--dp-gold);
+	color: var(--dp-navy);
+}
+html body.delegates-page .form-select:disabled,
+html body.delegates-page .form-control:disabled {
+	background-color: rgba(108, 103, 125, .22) !important;
+	color: var(--dp-muted) !important;
+	-webkit-text-fill-color: var(--dp-muted) !important;
+	border-style: dashed !important;
+	cursor: not-allowed;
+}
+
+/* Input file: "No file chosen" ivory di latar gelap, tombol emas transparan */
+html body.delegates-page input[type="file"].form-control {
+	padding: 0 !important;
+	line-height: 42px;
+	min-height: 44px;
+	overflow: hidden;
+	cursor: pointer;
+	color: var(--dp-muted) !important;
+	-webkit-text-fill-color: var(--dp-muted) !important;
+}
+html body.delegates-page input[type="file"]::file-selector-button {
+	height: 100%;
+	padding: 0 1.1rem;
+	margin-right: .9rem;
+	border: none;
+	border-right: 1px solid rgba(230, 199, 42, .5);
+	background: rgba(230, 199, 42, .14);
+	color: var(--dp-gold);
+	-webkit-text-fill-color: var(--dp-gold);
+	font-weight: 600;
+	cursor: pointer;
+	transition: background .25s ease, color .25s ease;
+}
+html body.delegates-page input[type="file"]::file-selector-button:hover {
+	background: var(--dp-gold);
+	color: var(--dp-navy);
+	-webkit-text-fill-color: var(--dp-navy);
+}
+
+/* Tombol "Delete File" di samping input: outline, menyatu dengan input */
+html body.delegates-page .delegates-stage .input-group > .btn-secondary {
+	background: rgba(8, 14, 32, .9) !important;
+	color: var(--dp-red) !important;
+	-webkit-text-fill-color: var(--dp-red) !important;
+	border: 1px solid rgba(230, 199, 42, .5) !important;
+	border-left: none !important;
+	font-weight: 600;
+	transition: all .25s ease;
+}
+html body.delegates-page .delegates-stage .input-group > .btn-secondary:hover {
+	background: #dc2626 !important;
+	color: #fff !important;
+	-webkit-text-fill-color: #fff !important;
+	border-color: #dc2626 !important;
+}
+
+/* =====================================================================
+   TOMBOL Submit / Edit My Submission (sebelumnya pill putih)
+   ===================================================================== */
+html body.delegates-page #prelim-submit-btn,
+html body.delegates-page #final-submit-btn,
+html body.delegates-page #final-model-submit-btn,
+html body.delegates-page #final-ppt-submit-btn {
+	position: relative;
+	overflow: hidden;
+	background: linear-gradient(135deg, var(--dp-gold), var(--dp-orange)) !important;
+	color: var(--dp-navy) !important;
+	-webkit-text-fill-color: var(--dp-navy) !important;
+	border: none !important;
+	font-weight: 700;
+	letter-spacing: .04em;
+	padding: .6rem 2rem !important;
+	box-shadow: 0 8px 20px rgba(217, 119, 6, .3) !important;
+	transition: transform .3s ease, box-shadow .3s ease, opacity .3s ease;
+}
+html body.delegates-page #prelim-submit-btn:hover:not(:disabled),
+html body.delegates-page #final-submit-btn:hover:not(:disabled) {
+	transform: translateY(-3px);
+	box-shadow: 0 14px 28px rgba(230, 199, 42, .45) !important;
+}
+html body.delegates-page #prelim-submit-btn:disabled,
+html body.delegates-page #final-submit-btn:disabled {
+	background: rgba(108, 103, 125, .35) !important;
+	color: var(--dp-muted) !important;
+	-webkit-text-fill-color: var(--dp-muted) !important;
+	box-shadow: none !important;
+}
+
+html body.delegates-page #del-edit-submission {
+	background: transparent !important;
+	color: var(--dp-gold) !important;
+	-webkit-text-fill-color: var(--dp-gold) !important;
+	border: 1px solid var(--dp-gold) !important;
+	font-weight: 600;
+	box-shadow: none !important;
+	transition: all .3s ease;
+}
+html body.delegates-page #del-edit-submission:hover {
+	background: var(--dp-gold) !important;
+	color: var(--dp-navy) !important;
+	-webkit-text-fill-color: var(--dp-navy) !important;
+	transform: translateY(-2px);
+}
+
+/* Link Download Case & Guide Book */
+html body.delegates-page #del-case-prelim-download,
+html body.delegates-page #del-case-final-download {
+	display: inline-flex;
+	width: auto;
+	align-items: center;
+	gap: .4rem;
+	color: var(--dp-gold) !important;
+	-webkit-text-fill-color: var(--dp-gold) !important;
+	font-weight: 600;
+	text-underline-offset: 5px;
+}
+html body.delegates-page #del-case-prelim-download::before,
+html body.delegates-page #del-case-final-download::before {
+	content: "\F30A";                     /* bootstrap-icons: download */
+	font-family: "bootstrap-icons";
+	text-decoration: none;
+	display: inline-block;
+}
+html body.delegates-page #competition-guide-book,
+html body.delegates-page #final-competition-guide-book {
+	color: var(--dp-gold) !important;
+	-webkit-text-fill-color: var(--dp-gold) !important;
+	font-weight: 600;
+}
+
+/* Isi Summary yang dibuat script */
+html body.delegates-page #file-time-sub,
+html body.delegates-page #final-file-time-sub,
+html body.delegates-page #file-url,
+html body.delegates-page #final-file-url { color: var(--dp-ivory) !important; }
+
+/* =====================================================================
+   KARTU MY TEAM — sembunyikan pill kosong sebelum data dimuat
+   ===================================================================== */
+html body.delegates-page #WhatsApp-Group:empty,
+html body.delegates-page #Final-Round-Registration:empty,
+html body.delegates-page #Preliminary-Leaderboard:empty { display: none !important; }
+
+/* Teks status di kartu (Verified / Pending / dll.) */
+html body.delegates-page #Payment-Status,
+html body.delegates-page #Final-Payment-Status {
+	color: var(--dp-gold) !important;
+	-webkit-text-fill-color: var(--dp-gold) !important;
+	font-family: "Playfair Display", serif;
+}
+
+/* =====================================================================
+   Aksesibilitas
+   ===================================================================== */
+@media (prefers-reduced-motion: reduce) {
+	html body.delegates-page #master-nav,
+	html body.delegates-page #master-nav::after,
+	html body.delegates-page #master-nav * { animation: none !important; transition: none !important; }
+}

@@ -2,14 +2,12 @@
 <html lang="en">
 <head>
 	<meta charset="utf-8">
-	<title>Delegates - IPFEST 2025</title>
+	<title>Delegates - IPFEST 2027</title>
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
-	<meta content="" name="keywords">
-	<meta content="" name="description">
-	<link rel="icon" href="../static/images/ipfest_2026_logo.svg">
+	<link rel="icon" href="../static/images/ipfest_2027_logo.png">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700&family=Rubik:wght@400;500&display=swap" rel="stylesheet"> 
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
 	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 	<link href="../static/lib/animate/animate.min.css" rel="stylesheet">
@@ -18,8 +16,21 @@
 	<link href="../static/css/bootstrap.min.css" rel="stylesheet">
 	<link href="../static/css/style.css" rel="stylesheet">
 	<link href="../static/css/delegates.css" rel="stylesheet">
+	<link href="../static/css/grand-theme.css" rel="stylesheet">
+	<link href="../static/css/grand-subpage.css" rel="stylesheet">
+	<link href="../static/css/compe-manager-grand.css" rel="stylesheet">
+	<link href="../static/css/delegates-grand.css" rel="stylesheet">
+	<link href="../static/css/delegates-grand.css" rel="stylesheet">
+	<link href="../static/css/delegates-polish.css" rel="stylesheet">
 </head>
-<body class="dashboard-theme">
+<body class="event-page manager-page delegates-page">
+	<ul class="circles" aria-hidden="true">
+		<li></li><li></li><li></li><li></li><li></li>
+		<li></li><li></li><li></li><li></li><li></li>
+		<li></li><li></li><li></li><li></li><li></li>
+		<li></li><li></li><li></li><li></li><li></li>
+		<li></li><li></li><li></li><li></li><li></li>
+	</ul>
 	<!-- Spinner Start -->
    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
       <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -39,121 +50,63 @@
    <!-- Navbar & Hero Start -->
 	<div class="container-fluid p-0">
 		
-		<nav id="master-nav" class="navbar navbar-expand-lg" 
-			style="background-color: #261642 !important; 
-					background: #261642 !important; 
-					position: fixed !important; 
-					top: 0; left: 0; right: 0; z-index: 99999; 
-					border-bottom: 1px solid rgba(255,255,255,0.1); 
-					box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3) !important;">
-			
-			<div class="container-fluid px-4 px-lg-5">
-				<a href="#" class="navbar-brand p-0 d-flex align-items-center gap-2">
-					<img src="../static/images/ipfest_2026_logo.svg" alt="Logo" class="brand-logo" style="filter: none !important; opacity: 1 !important;">
-					<img src="../static/images/ipfest_2026_text.svg" alt="Text" class="brand-text" style="filter: none !important; opacity: 1 !important;">
-				</a>
-				<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" 
-						style="border: 1px solid rgba(255,255,255,0.5) !important;">
-					<span class="fa fa-bars" style="color: #ffffff !important;"></span>
-				</button>
+		<div class="container-fluid p-0 event-nav-layer">
+	<nav id="master-nav" class="navbar event-navbar navbar-expand-lg navbar-dark bg-transparent fixed-top px-4 px-lg-5 py-3 py-lg-0">
+		<a href="#" class="navbar-brand p-0 d-flex align-items-center">
+			<img src="../static/images/ipfest_2027_logo.png" alt="IPFEST 2027 logo">
+			<img src="../static/images/ipfest_2027_text.png" alt="IPFEST 2027">
+		</a>
+		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+			<span class="fa fa-bars text-white"></span>
+		</button>
 
-				<div class="collapse navbar-collapse py-1" id="navbarCollapse">
-					<div class="navbar-nav ms-auto">
-						
-						<div class="nav-item">
-							<button class="nav-link btn border-0" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home" 
-									style="color: #ffffff !important; background: transparent !important; font-weight: 500;">
-								My Team
-							</button>
-						</div>
-
-						<div class="nav-item">
-							<button class="nav-link btn border-0" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" 
-									style="color: #ffffff !important; background: transparent !important; font-weight: 500;">
-								Preliminary
-							</button>
-						</div>
-
-						<div class="nav-item">
-							<button class="nav-link btn border-0" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact" 
-									style="color: #ffffff !important; background: transparent !important; font-weight: 500;">
-								Final
-							</button>
-						</div>
-
-					</div>
-
-					<div class="d-flex align-items-center ms-lg-4 mt-3 mt-lg-0"> 
-						<button class="btn rounded-pill py-2 px-4" id="logout-btn" 
-								style="background: rgba(255,255,255,0.1) !important; color: #ffffff !important; border: 1px solid rgba(255,255,255,0.5) !important;">
-							Log Out
-						</button>
-					</div>
+		<div class="collapse navbar-collapse py-1" id="navbarCollapse">
+			<div class="navbar-nav ms-auto">
+				<div class="nav-item">
+					<button class="nav-link btn border-0 active" id="nav-home-tab" data-bs-toggle="tab" data-bs-target="#nav-home">My Team</button>
+				</div>
+				<div class="nav-item">
+					<button class="nav-link btn border-0" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile">Preliminary</button>
+				</div>
+				<div class="nav-item">
+					<button class="nav-link btn border-0" id="nav-contact-tab" data-bs-toggle="tab" data-bs-target="#nav-contact">Final</button>
 				</div>
 			</div>
-		</nav>
-	</div>
+			<div class="d-flex align-items-center ms-lg-4 mt-3 mt-lg-0">
+				<button class="btn btn-light border border-primary rounded-pill text-primary py-2 px-4" id="logout-btn">Log Out</button>
+			</div>
+		</div>
+	</nav>
+</div>
 
-	<script>
-		(function() {
-			var nav = document.getElementById('master-nav');
-			var collapseDiv = document.getElementById('navbarCollapse');
+<script>
+	(function () {
+		var tabButtons = document.querySelectorAll('#master-nav button[data-bs-toggle="tab"]');
+		tabButtons.forEach(function (btn) {
+			btn.addEventListener('click', function (e) {
+				e.preventDefault();
+				tabButtons.forEach(function (b) { b.classList.remove('active'); });
+				this.classList.add('active');
 
-			function forceDarkNavbar() {
-				if(!nav) return;
-				
-				nav.classList.remove('bg-white', 'navbar-light', 'sticky-top', 'shadow-sm', 'shadow');
-				nav.classList.add('navbar-dark');
-				nav.style.backgroundColor = '#261642'; 
-				nav.style.backgroundImage = 'none';
-
-				if(window.innerWidth > 992 && collapseDiv) {
-					collapseDiv.style.backgroundColor = 'transparent';
-				} else if (collapseDiv) {
-					collapseDiv.style.backgroundColor = '#261642';
-				}
-			}
-
-			forceDarkNavbar();
-			window.addEventListener('scroll', forceDarkNavbar);
-			window.addEventListener('resize', forceDarkNavbar); 
-			setInterval(forceDarkNavbar, 500);
-
-			// --- FUNGSI TAB ---
-			var tabButtons = document.querySelectorAll('#master-nav button[data-bs-toggle="tab"]');
-			tabButtons.forEach(function(btn) {
-				btn.addEventListener('click', function(e) {
-					e.preventDefault();
-					tabButtons.forEach(b => {
-						b.classList.remove('active');
-						b.style.borderBottom = 'none';
-						b.style.fontWeight = '500';
-					});
-					this.classList.add('active');
-					this.style.borderBottom = '2px solid white';
-					this.style.fontWeight = 'bold';
-
-					var allPanes = document.querySelectorAll('.tab-pane');
-					allPanes.forEach(pane => {
-						pane.classList.remove('show', 'active');
-						pane.style.display = 'none'; 
-					});
-
-					var targetId = this.getAttribute('data-bs-target');
-					var targetPane = document.querySelector(targetId);
-					if(targetPane) {
-						targetPane.classList.add('show', 'active');
-						targetPane.style.display = 'block'; 
-						window.scrollTo({top: 0, behavior: 'smooth'});
-					}
+				document.querySelectorAll('.tab-pane').forEach(function (pane) {
+					pane.classList.remove('show', 'active');
+					pane.style.display = 'none';
 				});
+
+				var targetPane = document.querySelector(this.getAttribute('data-bs-target'));
+				if (targetPane) {
+					targetPane.classList.add('show', 'active');
+					targetPane.style.display = 'block';
+					window.scrollTo({ top: 0, behavior: 'smooth' });
+				}
 			});
-		})();
-	</script>
+		});
+	})();
+</script>
    <!-- Navbar & Hero End -->
 
 	<!-- Main -->
-	<main class="container-fluid py-5 dashboard-stage">
+	<main class="container-fluid py-5 dashboard-stage manager-stage delegates-stage">
 		<div class="container d-flex py-5">
 			<section class="col-lg-10 col-md-11 col-sm-12 mx-auto">
 				<div class="tab-content" id="nav-tabContent" style="padding: 1rem;">
@@ -908,6 +861,15 @@
 				modal.style.display = 'none';
 			}
 		};
+
+		// Navbar menyusut & lebih pekat saat di-scroll
+		(function () {
+			var nav = document.getElementById('master-nav');
+			if (!nav) return;
+			var onScroll = function () { nav.classList.toggle('is-scrolled', window.scrollY > 12); };
+			window.addEventListener('scroll', onScroll, { passive: true });
+			onScroll();
+		})();
 
 
 	</script>
