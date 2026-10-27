@@ -22,6 +22,84 @@ service cloud.firestore {
         );
     }
 
+    function treasury() {
+      return signedIn()
+        && request.auth.token.get('email_verified', false) == true
+        && request.auth.token.get('email', '') == 'treasury.ipfest2027@gmail.com';
+    }
+
+    function delegatesRelation() {
+      return signedIn()
+        && request.auth.token.get('email_verified', false) == true
+        && request.auth.token.get('email', '') == 'officialdelegates.ipfest2027@gmail.com';
+    }
+
+    function eventStaff() {
+      return signedIn()
+        && request.auth.token.get('email_verified', false) == true
+        && request.auth.token.get('email', '') == 'event@ipfest25.com';
+    }
+
+    function merchManager() {
+      return signedIn()
+        && request.auth.token.get('email_verified', false) == true
+        && request.auth.token.get('email', '') == 'entrepreneurship.ipfest2026@gmail.com';
+    }
+
+    function participantFor(competition) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/Team/$(request.auth.uid))
+        && get(/databases/$(database)/documents/Team/$(request.auth.uid)).data.competition == competition;
+    }
+
+    function validAttendanceIdentity(email) {
+      return request.resource.data.email == email
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 254
+        && request.resource.data.major is string
+        && request.resource.data.major.size() <= 120
+        && request.resource.data.university is string
+        && request.resource.data.university.size() <= 160
+        && request.resource.data.batch is string
+        && request.resource.data.batch.size() <= 20;
+    }
+
+    function validCareerTalkCreate(email) {
+      return request.resource.data.keys().hasOnly([
+          'name', 'email', 'major', 'university', 'nim', 'batch', 'checkin', 'checkout'
+        ])
+        && validAttendanceIdentity(email)
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.nim is string
+        && request.resource.data.nim.size() <= 40
+        && request.resource.data.checkin == request.time
+        && request.resource.data.checkout == null;
+    }
+
+    function validGrandIPCONVEXCreate(email) {
+      return request.resource.data.keys().hasOnly([
+          'name', 'full_name', 'email', 'major', 'university', 'nim', 'student_number', 'batch', 'checkin', 'checkout'
+        ])
+        && validAttendanceIdentity(email)
+        && ((request.resource.data.name is string
+            && request.resource.data.name.size() <= 120
+            && request.resource.data.nim is string
+            && request.resource.data.nim.size() <= 40)
+          || (request.resource.data.full_name is string
+            && request.resource.data.full_name.size() <= 120
+            && request.resource.data.student_number is string
+            && request.resource.data.student_number.size() <= 40))
+        && request.resource.data.checkin == request.time
+        && request.resource.data.checkout == null;
+    }
+
+    function validAttendanceCheckout() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['checkout'])
+        && resource.data.checkout == null
+        && request.resource.data.checkout == request.time;
+    }
+
     function validOwnerCreate() {
       return request.resource.data.keys().hasAll([
           'competition', 'teamName', 'leader', 'members', 'status', 'payment_status'
@@ -70,15 +148,95 @@ service cloud.firestore {
           || (newPrelim.score is number && newPrelim.score >= 0 && newPrelim.score <= 250));
     }
 
+    function validTreasuryUpdate() {
+      let changed = request.resource.data.diff(resource.data).affectedKeys();
+      let oldFinal = resource.data.get('final_reg', {});
+      let newFinal = request.resource.data.get('final_reg', {});
+      let changedFinal = newFinal.diff(oldFinal).affectedKeys();
+      return changed.hasOnly([
+          'payment_status', 'payment_verified_at', 'payment_verified_by', 'final_reg'
+        ])
+        && (!changed.hasAny(['payment_status', 'payment_verified_at', 'payment_verified_by'])
+          || (request.resource.data.payment_status in ['pending_verification', 'verified']
+            && request.resource.data.payment_verified_at == request.time
+            && request.resource.data.payment_verified_by == request.auth.token.email))
+        && changedFinal.hasOnly(['paymentStatus', 'verifiedAt', 'verifiedBy'])
+        && (!changed.hasAny(['final_reg']) || (newFinal is map
+          && newFinal.paymentStatus in ['pending', 'down_payment_verified', 'verified']
+          && newFinal.verifiedAt == request.time
+          && newFinal.verifiedBy == request.auth.token.email));
+    }
+
     match /Team/{teamId} {
       allow get: if signedIn()
-        && (request.auth.uid == teamId || managerFor(resource.data.competition));
-      allow list: if signedIn() && managerFor(resource.data.competition);
+        && (request.auth.uid == teamId || treasury() || delegatesRelation() || managerFor(resource.data.competition));
+      allow list: if treasury() || delegatesRelation() || (signedIn() && managerFor(resource.data.competition));
       allow create: if signedIn() && request.auth.uid == teamId && validOwnerCreate();
       allow update: if signedIn() && (
         (request.auth.uid == teamId && validOwnerUpdate())
+        || (treasury() && validTreasuryUpdate())
         || (managerFor(resource.data.competition) && validManagerUpdate())
       );
+    }
+
+    match /SC_Selection/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+    }
+
+    match /SC_Del_Answer/{uid} {
+      function selection() {
+        return get(/databases/$(database)/documents/SC_Selection/$(uid)).data;
+      }
+      function validQuestion(question) {
+        return question is map
+          && question.keys().hasOnly(['answer', 'startedAt', 'submittedAt'])
+          && (!question.keys().hasAny(['answer']) || question.answer in ['0', 'A', 'B', 'C', 'D', 'E'])
+          && (!question.keys().hasAny(['startedAt']) || question.startedAt is number)
+          && (!question.keys().hasAny(['submittedAt']) || question.submittedAt == request.time);
+      }
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn() && request.auth.uid == uid
+        && exists(/databases/$(database)/documents/SC_Selection/$(uid))
+        && request.resource.data.keys().hasOnly(['university', 'team', 'question1', 'question2'])
+        && request.resource.data.get('university', null) == selection().get('university', null)
+        && request.resource.data.get('team', null) == selection().get('team', null)
+        && (!request.resource.data.keys().hasAny(['question1']) || validQuestion(request.resource.data.question1))
+        && (!request.resource.data.keys().hasAny(['question2']) || validQuestion(request.resource.data.question2));
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['question1', 'question2'])
+        && (!request.resource.data.keys().hasAny(['question1']) || validQuestion(request.resource.data.question1))
+        && (!request.resource.data.keys().hasAny(['question2']) || validQuestion(request.resource.data.question2));
+    }
+
+    match /Information/{infoId} {
+      allow get, list: if managerFor(resource.data.competition_name)
+        || participantFor(resource.data.competition_name);
+      allow update: if managerFor(resource.data.competition_name)
+        && request.resource.data.competition_name == resource.data.competition_name
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'prelim_case_link', 'sent_on', 'final'
+        ])
+        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['final'])
+          || request.resource.data.final.diff(resource.data.get('final', {})).affectedKeys().hasOnly(['case_link', 'sent_on']));
+    }
+
+    match /Career_Talk/{email} {
+      allow get, list: if eventStaff();
+      allow create: if validCareerTalkCreate(email);
+      allow update: if validAttendanceCheckout();
+    }
+
+    match /Grand_IPCONVEX/{email} {
+      allow get, list: if eventStaff();
+      allow create: if validGrandIPCONVEXCreate(email);
+      allow update: if validAttendanceCheckout();
+    }
+
+    match /Merch/{orderId} {
+      allow get, list: if merchManager();
+      allow update: if merchManager()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status in ['pending', 'verified', 'rejected'];
     }
   }
 }

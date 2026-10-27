@@ -1,8 +1,9 @@
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { onSnapshot, collection, query, where, updateDoc, doc, serverTimestamp } from 'firebase/firestore'
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import { ref, uploadBytes } from 'firebase/storage'
 
 import { DB, AUTH, STORAGE } from './index.js'
+import { privateStorageLink } from './shared/private-download.js'
 
 // =====================================================================
 //   IPFEST 2027 CONFIG
@@ -71,16 +72,6 @@ const esc = (value) => {
         .replace(/'/g, '&#39;')
 }
 
-// Hanya izinkan link http/https
-const safeUrl = (value) => {
-    try {
-        const url = new URL(String(value))
-        return (url.protocol === 'http:' || url.protocol === 'https:') ? url.href : null
-    } catch {
-        return null
-    }
-}
-
 const toDate = (ts) => {
     if (!ts) return null
     const dt = typeof ts.toDate === 'function' ? ts.toDate() : new Date(ts)
@@ -93,9 +84,9 @@ const dateCell = (date) => date
     : '-'
 
 const fileCell = (url) => {
-    const safe = safeUrl(url)
+    const safe = privateStorageLink(url, 'VIEW FILE', 'btn-view-file')
     return safe
-        ? `<a href="${esc(safe)}" target="_blank" rel="noopener" class="btn-view-file"><i class="bi bi-cloud-arrow-down-fill"></i> VIEW FILE</a>`
+        ? safe
         : `<span class="badge-ipfest cm-badge-empty">NO FILE</span>`
 }
 
@@ -483,7 +474,7 @@ function setupCaseUpload(form, { release, label, buildUpdate }) {
         try {
             const fileRef = ref(ref(caseStorage, manager.competition), `${Date.now()}_${file.name}`)
             const snap = await uploadBytes(fileRef, file)
-            const url = await getDownloadURL(snap.ref)
+            const url = snap.ref.fullPath
             await updateDoc(doc(DB, 'Information', infoDocId), buildUpdate(url))
             input.value = ''
             alert(`✅ ${label} berhasil dikirim.`)

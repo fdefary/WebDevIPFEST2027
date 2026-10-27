@@ -7,7 +7,7 @@ import {
   doc,
   setDoc,
 } from 'firebase/firestore';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytes } from 'firebase/storage';
 
 // Import Firebase SDK initialization
 import { AUTH, STORAGE, DB } from './index.js';
@@ -147,7 +147,7 @@ async function uploadFile(file, path) {
   if (!file) return null;
   const fileRef = ref(STORAGE, path);
   await uploadBytes(fileRef, file);
-  return await getDownloadURL(fileRef);
+  return fileRef.fullPath;
 }
 
 // Fungsi tampilkan error

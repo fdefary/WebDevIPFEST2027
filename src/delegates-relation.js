@@ -2,6 +2,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { onSnapshot, collection } from 'firebase/firestore'
 
 import { DB, AUTH } from './index.js'
+import { privateStorageLink } from './shared/private-download.js'
 
 // ===============================
 //   IPFEST 2027 CONFIG
@@ -77,16 +78,6 @@ const esc = (value) => {
         .replace(/'/g, '&#39;')
 }
 
-// Hanya izinkan link http/https (mencegah href "javascript:...")
-const safeUrl = (value) => {
-    try {
-        const url = new URL(String(value))
-        return (url.protocol === 'http:' || url.protocol === 'https:') ? url.href : null
-    } catch {
-        return null
-    }
-}
-
 // Status apa adanya (Verified / Rejected / Pending ...), bukan sekadar Verified-atau-Pending
 const statusInfo = (raw) => {
     const v = String(raw ?? '').trim().toLowerCase()
@@ -159,16 +150,13 @@ let unsubscribeTeams = null
 // ===============================
 onAuthStateChanged(AUTH, (user) => {
     if (!user || !DELEGATES_RELATION_EMAILS.includes((user.email || '').trim().toLowerCase())) {
-        if (unsubscribeTeams) { unsubscribeTeams(); unsubscribeTeams = null }
         window.location.href = '../login.html'
         return
     }
 
-    // Listener baru dipasang setelah auth lolos, jadi snapshot pertama tidak terlewat
     if (!unsubscribeTeams) {
         showTableMessage(delRelList, 16, 'Loading data...')
         showTableMessage(treasuryList, PAYMENT_COLS, 'Loading data...')
-
         unsubscribeTeams = onSnapshot(collection(DB, 'Team'), (snap) => {
             const teams = sortTeams(snap.docs.map(d => ({ id: d.id, ...d.data() })))
             renderDashboard(teams)
@@ -177,7 +165,7 @@ onAuthStateChanged(AUTH, (user) => {
         }, (err) => {
             console.error('Cannot read Team collection', err)
             const msg = err.code === 'permission-denied'
-                ? 'Akun ini tidak punya izin membaca data tim (cek Firestore Security Rules).'
+                ? 'Akun ini tidak punya izin membaca data tim.'
                 : 'Gagal memuat data tim. Coba muat ulang halaman.'
             showTableMessage(delRelList, 16, msg)
             showTableMessage(treasuryList, PAYMENT_COLS, msg)
@@ -299,9 +287,7 @@ function renderChart(counts) {
 const studentCardOf = (person) => person.studentCardUrl ?? person.studentCardURL ?? null
 
 const studentCardCell = (person) => {
-    const url = safeUrl(studentCardOf(person))
-    if (!url) return '-'
-    return `<a href="${esc(url)}" target="_blank" rel="noopener" class="link-info link-offset-2">View</a>`
+    return privateStorageLink(studentCardOf(person), 'View', 'link-info link-offset-2') || '-'
 }
 
 // Urutan kolom orang mengikuti thead:
@@ -389,10 +375,7 @@ const proofLinks = (finalReg, field) => {
     ]
     const links = people
         .map(p => {
-            const url = safeUrl(p.data?.[field])
-            return url
-                ? `<a href="${esc(url)}" target="_blank" rel="noopener" class="link-info">${p.label}</a>`
-                : null
+            return privateStorageLink(p.data?.[field], p.label, 'link-info') || null
         })
         .filter(Boolean)
     return links.length ? links.join(' · ') : '-'

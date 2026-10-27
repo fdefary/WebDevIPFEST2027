@@ -1,4 +1,4 @@
-import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore'
+import { doc, serverTimestamp, updateDoc } from 'firebase/firestore'
 
 import { DB } from './index.js'
 
@@ -28,47 +28,18 @@ attendanceForm.addEventListener('submit', async (e) => {
 
 	const docRef = doc(DB, 'Career_Talk', email)
 
-	const checkTimeDifference = (t1, t2) => {
-		const date1 = t1.toDate()
-		const date2 = t2.toDate()
-
-		const twoHalfHrMS = 2.5 * 60 * 60 * 1000
-		const diffMilliseconds = Math.abs(date2 - date1)
-
-		return diffMilliseconds >= twoHalfHrMS
-	}
-
 	try {
-		const snap = await getDoc(docRef)
-
-		if (!snap.exists()) {
-			setToastAlert('danger', 'You have not checked in yet!')
-			throw new Error('User has not checked in')
-		}
-
-		if (snap.data().checkout !== null) {
-			setToastAlert('danger', 'You have already checked out')
-			throw new Error('User has already checked out')
-		}
-
-		if (email === snap.id) {
-			await updateDoc(docRef, {
-				checkout: serverTimestamp()
-			})
-		}
-
-		const updatedSnap = await getDoc(docRef)
-		const data = updatedSnap.data()
-
-		await updateDoc(docRef, {
-			send_certificate: checkTimeDifference(data.checkin, data.checkout)
-		})
+		await updateDoc(docRef, { checkout: serverTimestamp() })
 
 		attendanceForm.reset()
 		window.location.href = 'post-attendance.html'
 	} catch (error) {
-		setToastAlert('danger', 'Something went wrong, please contact us!')
-		console.error('Error updating document:', error)
+		if (error.code === 'permission-denied') {
+			setToastAlert('danger', 'No check-in record exists, or you have already checked out.')
+		} else {
+			setToastAlert('danger', 'Something went wrong, please contact us!')
+			console.error('Error updating document:', error)
+		}
 	} finally {
 		formBtn.innerText = 'Submit'
 		formBtn.disabled = false

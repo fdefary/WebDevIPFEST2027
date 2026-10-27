@@ -1,4 +1,4 @@
-import { doc, getDoc, serverTimestamp, setDoc } from 'firebase/firestore'
+import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 
 import { DB } from './index.js'
 
@@ -29,13 +29,7 @@ attendanceForm.addEventListener('submit', async (e) => {
 	const docRef = doc(DB, 'Career_Talk', email)
 
 	try {
-		const snap = await getDoc(docRef)
-
-		if (snap.exists()) {
-			setToastAlert('warning', 'You have already checked in!')
-			throw new Error('User has already checked in')
-		} else {
-			await setDoc(docRef, {
+		await setDoc(docRef, {
 				name: fullName,
 				email: email,
 				major: major,
@@ -44,13 +38,14 @@ attendanceForm.addEventListener('submit', async (e) => {
 				batch: batch,
 				checkin: serverTimestamp(),
 				checkout: null
-			})
+		})
 			
-			attendanceForm.reset()
-			window.location.href = 'post-attendance.html'
-		}
+		attendanceForm.reset()
+		window.location.href = 'post-attendance.html'
 	} catch (error) {
-		if (error.message !== 'User has already checked in') {
+		if (error.code === 'permission-denied') {
+			setToastAlert('warning', 'You have already checked in or the attendance details are invalid!')
+		} else {
 			setToastAlert('danger', 'Something went wrong, please contact us!')
 			console.error('Error updating document:', error)
 		}

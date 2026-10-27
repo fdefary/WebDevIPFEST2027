@@ -1,24 +1,11 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, query, onSnapshot, getDocs, doc, updateDoc, orderBy } from "firebase/firestore";
 import { DB, AUTH } from "./index.js";
+import { privateStorageLink } from "./shared/private-download.js";
 
 const escapeHTML = (value) => String(value ?? "-").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[char]));
-
-const safeHttpUrl = (value) => {
-    try {
-        const url = new URL(String(value));
-        return url.protocol === "http:" || url.protocol === "https:" ? url.href : null;
-    } catch {
-        return null;
-    }
-};
-
-const safeFileLink = (value, label, className) => {
-    const url = safeHttpUrl(value);
-    return url ? `<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer" class="${className}">${label}</a>` : "";
-};
 
 // =========================
 // AUTH CHECK (ENTREPRENEURSHIP)
@@ -148,9 +135,9 @@ async function loadMerchTable() {
                     <td>
                         <div class="btn-file-container">
                             ${data.files?.identityCardUrl ? 
-                                safeFileLink(data.files.identityCardUrl, "View ID", "btn-view-custom btn-view-id") : ""}
+                                privateStorageLink(data.files.identityCardUrl, "View ID", "btn-view-custom btn-view-id") : ""}
                             ${data.files?.paymentProofUrl ? 
-                                safeFileLink(data.files.paymentProofUrl, "View Proof", "btn-view-custom btn-view-proof") : ""}
+                                privateStorageLink(data.files.paymentProofUrl, "View Proof", "btn-view-custom btn-view-proof") : ""}
                         </div>
                     </td>
                     <td>

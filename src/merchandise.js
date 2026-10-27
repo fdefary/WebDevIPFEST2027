@@ -1,5 +1,5 @@
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { DB } from "./index.js"; 
 
 // 1. Inisialisasi Global
@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const uploadToMerch = async (file, subfolder) => {
                     const storageRef = ref(storage, `Merch/${subfolder}/${timestamp}_${file.name}`);
                     const snapshot = await uploadBytes(storageRef, file);
-                    return await getDownloadURL(snapshot.ref);
+                    return snapshot.ref.fullPath;
                 };
 
                 const [idUrl, payUrl] = await Promise.all([

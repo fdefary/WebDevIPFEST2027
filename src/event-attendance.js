@@ -21,6 +21,8 @@ onAuthStateChanged(AUTH, (user) => {
 const CareerTalk = collection(DB, 'Career_Talk')
 const CareerTalkTable = document.getElementById('ct-list')
 
+const dateLabel = (value) => value?.toDate ? value.toDate().toLocaleString() : 'No data'
+
 onSnapshot(CareerTalk, (snap) => {
 	let personList = snap.docs
 
@@ -28,8 +30,8 @@ onSnapshot(CareerTalk, (snap) => {
 	personList.forEach((person, index) => {
 		let data = person.data()
 
-		let checkin = data.checkin === null ? 'No data' : data.checkin.toDate().toLocaleString()
-		let checkout = data.checkout === null ? 'No data' : data.checkout.toDate().toLocaleString()
+		let checkin = dateLabel(data.checkin)
+		let checkout = dateLabel(data.checkout)
 
 		createPersonList(
 			CareerTalkTable,
@@ -57,17 +59,17 @@ onSnapshot(GrandIPCONVEX, (snap) => {
 	personList.forEach((person, index) => {
 		let data = person.data()
 
-		let checkin = data.checkin === null ? 'No data' : data.checkin.toDate().toLocaleString()
-		let checkout = data.checkout === null ? 'No data' : data.checkout.toDate().toLocaleString()
+		let checkin = dateLabel(data.checkin)
+		let checkout = dateLabel(data.checkout)
 
 		createPersonList(
 			GITable,
 			index+1,
-			data.name, 
+			data.full_name ?? data.name,
 			data.university, 
 			data.major,
 			data.batch,
-			data.nim,
+			data.student_number ?? data.nim,
 			data.email,
 			checkin,
 			checkout
@@ -76,18 +78,12 @@ onSnapshot(GrandIPCONVEX, (snap) => {
 })
 
 function createPersonList(table, rowNo, name, univ, major, batch, nim, email, checkin, checkout) {
-	let rowContainer = document.createElement('tr')
-	rowContainer.innerHTML = `
-		<td>${rowNo}</td>
-		<td>${name}</td>
-		<td>${univ}</td>
-		<td>${major}</td>
-		<td>${batch}</td>
-		<td>${nim}</td>
-		<td>${email}</td>
-		<td>${checkin}</td>
-		<td>${checkout}</td>
-	`
+	const rowContainer = document.createElement('tr')
+	for (const value of [rowNo, name, univ, major, batch, nim, email, checkin, checkout]) {
+		const cell = document.createElement('td')
+		cell.textContent = String(value ?? '-')
+		rowContainer.append(cell)
+	}
 	table.append(rowContainer)
 }
 

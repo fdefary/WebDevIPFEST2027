@@ -7,7 +7,7 @@ import {
 	getDocs
 } from 'firebase/firestore'
 
-import { ref, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
+import { ref, uploadBytesResumable } from 'firebase/storage'
 
 import { DB, AUTH, STORAGE } from './index.js'
 
