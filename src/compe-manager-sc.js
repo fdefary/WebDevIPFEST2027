@@ -2,16 +2,17 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 
 import {
 	collection, doc, onSnapshot,
-	query, updateDoc, where, deleteField,
-	serverTimestamp,
+	query, where,
 	getDocs
 } from 'firebase/firestore'
 
 import { ref, uploadBytesResumable } from 'firebase/storage'
+import { httpsCallable } from 'firebase/functions'
 
-import { DB, AUTH, STORAGE } from './index.js'
+import { DB, AUTH, STORAGE, FUNCTIONS } from './index.js'
 
 import { setToastAlert } from './shared/alert.js'
+import { getRoleClaims } from './shared/role-claims.js'
 
 // =========================
 // Manager Mapping
@@ -21,7 +22,6 @@ const managerCompetition = document.querySelector("#manager-competition");
 
 const compeManagerEmail = {
     "smart competition": {
-        email: "sc.ipfest2027@gmail.com",
         name: "Mujib",
         label: "Smart Competition",
         firestoreValue: "smart competition"
@@ -37,12 +37,13 @@ const escapeHTML = (value) => String(value ?? "-").replace(/[&<>"']/g, (char) =>
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[char]));
 
-onAuthStateChanged(AUTH, (user) => {
+onAuthStateChanged(AUTH, async (user) => {
     if (!user) return (window.location.href = "../../login.html");
 
-    // cari manager berdasarkan email
-    const manager = Object.values(compeManagerEmail)
-        .find(m => m.email === user.email);
+    const claims = await getRoleClaims(user)
+    const manager = claims.role === 'competition_manager' && claims.competition === 'smart competition'
+        ? Object.values(compeManagerEmail).find((m) => m.firestoreValue === claims.competition)
+        : null
 
     if (!manager) {
         window.location.href = "../../login.html";
@@ -238,9 +239,7 @@ function createPrelimSelectionRow(tableElement, teamId, rowNo, teamData, totalTe
         
         try {
             // Update Firestore
-            await updateDoc(doc(DB, "Team", teamId), { 
-                "sub_preliminary.final": newStatus 
-            });
+            await httpsCallable(FUNCTIONS, 'updateCompetitionResult')({ teamId, field: 'final', value: newStatus });
             // Update visual class tanpa reload
             e.target.className = `form-select form-select-sm text-center fw-bold ${
                 newStatus === true ? "btn-success text-white" : 
@@ -278,9 +277,7 @@ function createPrelimSelectionRow(tableElement, teamId, rowNo, teamData, totalTe
         const newRank = val === 0 ? null : val;
 
         try {
-            await updateDoc(doc(DB, "Team", teamId), { 
-                "sub_preliminary.rank": newRank 
-            });
+            await httpsCallable(FUNCTIONS, 'updateCompetitionResult')({ teamId, field: 'rank', value: newRank });
         } catch (err) {
             console.error("Error updating rank:", err);
         }
@@ -313,7 +310,7 @@ function createPrelimSelectionRow(tableElement, teamId, rowNo, teamData, totalTe
 
         // Jika dikosongkan manual, set null ke database
         if (val === "") {
-            await updateDoc(doc(DB, "Team", teamId), { "sub_preliminary.score": null });
+            await httpsCallable(FUNCTIONS, 'updateCompetitionResult')({ teamId, field: 'score', value: null });
             return;
         }
 
@@ -330,9 +327,7 @@ function createPrelimSelectionRow(tableElement, teamId, rowNo, teamData, totalTe
         e.target.value = floatVal.toFixed(2);
 
         try {
-            await updateDoc(doc(DB, "Team", teamId), { 
-                "sub_preliminary.score": floatVal 
-            });
+            await httpsCallable(FUNCTIONS, 'updateCompetitionResult')({ teamId, field: 'score', value: floatVal });
         } catch (err) {
             console.error("Error updating score:", err);
         }

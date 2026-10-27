@@ -8,42 +8,28 @@ service cloud.firestore {
 
     function managerFor(competition) {
       return signedIn()
-        && request.auth.token.get('email_verified', false) == true
-        && (
-          (competition == 'business case' && request.auth.token.get('email', '') == 'bcc.ipfest2027@gmail.com')
-          || (competition == 'geothermal development plan' && request.auth.token.get('email', '') == 'gdpc.ipfest2027@gmail.com')
-          || (competition == 'mud inovation' && request.auth.token.get('email', '') == 'mic.ipfest2027@gmail.com')
-          || (competition == 'oil rig design' && request.auth.token.get('email', '') == 'ordc.ipfest2027@gmail.com')
-          || (competition == 'plan of development' && request.auth.token.get('email', '') == 'podc.ipfest2027@gmail.com')
-          || (competition == 'paper and poster' && request.auth.token.get('email', '') == 'ppc.ipfest2027@gmail.com')
-          || (competition == 'smart competition' && request.auth.token.get('email', '') == 'sc.ipfest2027@gmail.com')
-          || (competition == 'well design' && request.auth.token.get('email', '') == 'wdc.ipfest2027@gmail.com')
-          || (competition == 'hackaton' && request.auth.token.get('email', '') == 'hc.ipfest2027@gmail.com')
-        );
+        && request.auth.token.get('ipfestRole', '') == 'competition_manager'
+        && request.auth.token.get('ipfestCompetition', '') == competition;
     }
 
     function treasury() {
       return signedIn()
-        && request.auth.token.get('email_verified', false) == true
-        && request.auth.token.get('email', '') == 'treasury.ipfest2027@gmail.com';
+        && request.auth.token.get('ipfestRole', '') == 'treasury';
     }
 
     function delegatesRelation() {
       return signedIn()
-        && request.auth.token.get('email_verified', false) == true
-        && request.auth.token.get('email', '') == 'officialdelegates.ipfest2027@gmail.com';
+        && request.auth.token.get('ipfestRole', '') == 'delegates_relation';
     }
 
     function eventStaff() {
       return signedIn()
-        && request.auth.token.get('email_verified', false) == true
-        && request.auth.token.get('email', '') == 'event@ipfest25.com';
+        && request.auth.token.get('ipfestRole', '') == 'event_staff';
     }
 
     function merchManager() {
       return signedIn()
-        && request.auth.token.get('email_verified', false) == true
-        && request.auth.token.get('email', '') == 'entrepreneurship.ipfest2026@gmail.com';
+        && request.auth.token.get('ipfestRole', '') == 'merch_manager';
     }
 
     function participantFor(competition) {
@@ -135,48 +121,12 @@ service cloud.firestore {
         && newFinalReg.get('verifiedBy', null) == oldFinalReg.get('verifiedBy', null);
     }
 
-    function validManagerUpdate() {
-      let oldPrelim = resource.data.get('sub_preliminary', {});
-      let newPrelim = request.resource.data.get('sub_preliminary', {});
-      let changedPrelim = newPrelim.diff(oldPrelim).affectedKeys();
-      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sub_preliminary'])
-        && changedPrelim.hasOnly(['final', 'rank', 'score'])
-        && (!changedPrelim.hasAny(['final']) || newPrelim.get('final', null) == null || newPrelim.final is bool)
-        && (!changedPrelim.hasAny(['rank']) || newPrelim.get('rank', null) == null
-          || (newPrelim.rank is int && newPrelim.rank >= 1 && newPrelim.rank <= 10000))
-        && (!changedPrelim.hasAny(['score']) || newPrelim.get('score', null) == null
-          || (newPrelim.score is number && newPrelim.score >= 0 && newPrelim.score <= 250));
-    }
-
-    function validTreasuryUpdate() {
-      let changed = request.resource.data.diff(resource.data).affectedKeys();
-      let oldFinal = resource.data.get('final_reg', {});
-      let newFinal = request.resource.data.get('final_reg', {});
-      let changedFinal = newFinal.diff(oldFinal).affectedKeys();
-      return changed.hasOnly([
-          'payment_status', 'payment_verified_at', 'payment_verified_by', 'final_reg'
-        ])
-        && (!changed.hasAny(['payment_status', 'payment_verified_at', 'payment_verified_by'])
-          || (request.resource.data.payment_status in ['pending_verification', 'verified']
-            && request.resource.data.payment_verified_at == request.time
-            && request.resource.data.payment_verified_by == request.auth.token.email))
-        && changedFinal.hasOnly(['paymentStatus', 'verifiedAt', 'verifiedBy'])
-        && (!changed.hasAny(['final_reg']) || (newFinal is map
-          && newFinal.paymentStatus in ['pending', 'down_payment_verified', 'verified']
-          && newFinal.verifiedAt == request.time
-          && newFinal.verifiedBy == request.auth.token.email));
-    }
-
     match /Team/{teamId} {
       allow get: if signedIn()
         && (request.auth.uid == teamId || treasury() || delegatesRelation() || managerFor(resource.data.competition));
       allow list: if treasury() || delegatesRelation() || (signedIn() && managerFor(resource.data.competition));
       allow create: if signedIn() && request.auth.uid == teamId && validOwnerCreate();
-      allow update: if signedIn() && (
-        (request.auth.uid == teamId && validOwnerUpdate())
-        || (treasury() && validTreasuryUpdate())
-        || (managerFor(resource.data.competition) && validManagerUpdate())
-      );
+      allow update: if signedIn() && request.auth.uid == teamId && validOwnerUpdate();
     }
 
     match /SC_Selection/{uid} {
@@ -211,13 +161,7 @@ service cloud.firestore {
     match /Information/{infoId} {
       allow get, list: if managerFor(resource.data.competition_name)
         || participantFor(resource.data.competition_name);
-      allow update: if managerFor(resource.data.competition_name)
-        && request.resource.data.competition_name == resource.data.competition_name
-        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-          'prelim_case_link', 'sent_on', 'final'
-        ])
-        && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['final'])
-          || request.resource.data.final.diff(resource.data.get('final', {})).affectedKeys().hasOnly(['case_link', 'sent_on']));
+      allow update: if false;
     }
 
     match /Career_Talk/{email} {

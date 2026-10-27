@@ -2,6 +2,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, query, onSnapshot, getDocs, doc, updateDoc, orderBy } from "firebase/firestore";
 import { DB, AUTH } from "./index.js";
 import { privateStorageLink } from "./shared/private-download.js";
+import { getRoleClaims } from "./shared/role-claims.js";
 
 const escapeHTML = (value) => String(value ?? "-").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
@@ -19,20 +20,11 @@ onAuthStateChanged(AUTH, async (user) => {
     }
 
     try {
-        // Paksa refresh token untuk memastikan claims terbaru
-        await user.getIdToken(true);
-        const idTokenResult = await user.getIdTokenResult();
+        const claims = await getRoleClaims(user)
         console.log("[AUTH] User claims verified");
+        if (claims.role !== 'merch_manager') throw new Error('Unauthorized role')
     } catch (err) {
         console.error("[AUTH] Token error:", err);
-    }
-
-    // Ganti email sesuai dengan akun Entrepreneurship/Merchandise Anda
-    const authorizedEmail = "entrepreneurship.ipfest2026@gmail.com"; 
-
-    if (user.email !== authorizedEmail) {
-        console.warn(`[AUTH] Unauthorized Access Attempt: ${user.email}`);
-        alert("You do not have permission to access this dashboard.");
         window.location.href = "../login.html";
         return;
     }

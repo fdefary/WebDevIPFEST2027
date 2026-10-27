@@ -1,15 +1,18 @@
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 
 import { onSnapshot, collection } from 'firebase/firestore'
+import { httpsCallable } from 'firebase/functions'
 
-import { DB, AUTH } from './index.js'
+import { DB, AUTH, FUNCTIONS } from './index.js'
 
 import { setToastAlert } from './shared/alert.js'
+import { getRoleClaims } from './shared/role-claims.js'
 
 // Check auth
-onAuthStateChanged(AUTH, (user) => {
+onAuthStateChanged(AUTH, async (user) => {
+	const claims = user ? await getRoleClaims(user) : null
 	if (user) {
-		if (user.email !== 'event@ipfest25.com') {
+		if (claims?.role !== 'event_staff') {
 			window.location.href = '../login.html'
 		}
 	} else {
@@ -43,7 +46,8 @@ onSnapshot(CareerTalk, (snap) => {
 			data.nim,
 			data.email,
 			checkin,
-			checkout
+			checkout,
+			'Career_Talk', person.id
 		)
 	})
 })
@@ -72,18 +76,36 @@ onSnapshot(GrandIPCONVEX, (snap) => {
 			data.student_number ?? data.nim,
 			data.email,
 			checkin,
-			checkout
+			checkout,
+			'Grand_IPCONVEX', person.id
 		)
 	})
 })
 
-function createPersonList(table, rowNo, name, univ, major, batch, nim, email, checkin, checkout) {
+function createPersonList(table, rowNo, name, univ, major, batch, nim, email, checkin, checkout, event, attendeeId) {
 	const rowContainer = document.createElement('tr')
 	for (const value of [rowNo, name, univ, major, batch, nim, email, checkin, checkout]) {
 		const cell = document.createElement('td')
 		cell.textContent = String(value ?? '-')
 		rowContainer.append(cell)
 	}
+	const action = document.createElement('td')
+	const issue = document.createElement('button')
+	issue.type = 'button'
+	issue.className = 'btn btn-sm btn-outline-primary'
+	issue.textContent = 'Issue certificate'
+	issue.addEventListener('click', async () => {
+		issue.disabled = true
+		try {
+			await httpsCallable(FUNCTIONS, 'issueAttendanceCertificate')({ event, attendeeId })
+			setToastAlert('success', 'Certificate queued if attendance is eligible.')
+		} catch (err) {
+			setToastAlert('danger', err.code === 'functions/failed-precondition' ? 'Attendance must include check-in and check-out at least 2.5 hours apart.' : 'Could not issue certificate.')
+			issue.disabled = false
+		}
+	})
+	action.append(issue)
+	rowContainer.append(action)
 	table.append(rowContainer)
 }
 

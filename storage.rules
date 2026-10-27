@@ -8,18 +8,8 @@ service firebase.storage {
 
     function managerFor(competition) {
       return signedIn()
-        && request.auth.token.get('email_verified', false) == true
-        && (
-          (competition == 'business case' && request.auth.token.get('email', '') == 'bcc.ipfest2027@gmail.com')
-          || (competition == 'geothermal development plan' && request.auth.token.get('email', '') == 'gdpc.ipfest2027@gmail.com')
-          || (competition == 'mud inovation' && request.auth.token.get('email', '') == 'mic.ipfest2027@gmail.com')
-          || (competition == 'oil rig design' && request.auth.token.get('email', '') == 'ordc.ipfest2027@gmail.com')
-          || (competition == 'plan of development' && request.auth.token.get('email', '') == 'podc.ipfest2027@gmail.com')
-          || (competition == 'paper and poster' && request.auth.token.get('email', '') == 'ppc.ipfest2027@gmail.com')
-          || (competition == 'smart competition' && request.auth.token.get('email', '') == 'sc.ipfest2027@gmail.com')
-          || (competition == 'well design' && request.auth.token.get('email', '') == 'wdc.ipfest2027@gmail.com')
-          || (competition == 'hackaton' && request.auth.token.get('email', '') == 'hc.ipfest2027@gmail.com')
-        );
+        && request.auth.token.get('ipfestRole', '') == 'competition_manager'
+        && request.auth.token.get('ipfestCompetition', '') == competition;
     }
 
     function team(uid) {

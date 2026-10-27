@@ -75,34 +75,30 @@ describe('Firestore Team access', () => {
       final_reg: { paymentScheme: 'Full', paymentStatus: 'pending', leader: {} }
     })
     const manager = env.authenticatedContext('bcc-manager', {
-      email: 'bcc.ipfest2027@gmail.com', email_verified: true
+      ipfestRole: 'competition_manager', ipfestCompetition: 'business case'
     }).firestore()
-    const unverifiedManager = env.authenticatedContext('bcc-unverified', {
-      email: 'bcc.ipfest2027@gmail.com', email_verified: false
-    }).firestore()
+    const unclaimedManager = env.authenticatedContext('bcc-unverified', {}).firestore()
     await assertSucceeds(getDocs(query(collection(manager, 'Team'), where('competition', '==', 'business case'))))
     await assertFails(getDocs(collection(manager, 'Team')))
     await assertSucceeds(getDoc(doc(manager, 'Team', 'bcc-team')))
     await assertFails(getDoc(doc(manager, 'Team', 'sc-team')))
-    await assertFails(getDoc(doc(unverifiedManager, 'Team', 'bcc-team')))
+    await assertFails(getDoc(doc(unclaimedManager, 'Team', 'bcc-team')))
     const treasury = env.authenticatedContext('treasury', {
-      email: 'treasury.ipfest2027@gmail.com', email_verified: true
+      ipfestRole: 'treasury', email: 'treasury.ipfest2027@gmail.com'
     }).firestore()
-    const delegatesRelation = env.authenticatedContext('delegates-relation', {
-      email: 'officialdelegates.ipfest2027@gmail.com', email_verified: true
-    }).firestore()
+    const delegatesRelation = env.authenticatedContext('delegates-relation', { ipfestRole: 'delegates_relation' }).firestore()
     const unverifiedTreasury = env.authenticatedContext('unverified-treasury', {
-      email: 'treasury.ipfest2027@gmail.com', email_verified: false
+      email: 'treasury.ipfest2027@gmail.com'
     }).firestore()
     await assertSucceeds(getDocs(collection(treasury, 'Team')))
     await assertSucceeds(getDocs(collection(delegatesRelation, 'Team')))
     await assertFails(getDocs(collection(unverifiedTreasury, 'Team')))
-    await assertSucceeds(updateDoc(doc(treasury, 'Team', 'bcc-team'), {
+    await assertFails(updateDoc(doc(treasury, 'Team', 'bcc-team'), {
       payment_status: 'verified', payment_verified_at: serverTimestamp(),
       payment_verified_by: 'treasury.ipfest2027@gmail.com'
     }))
     await assertFails(updateDoc(doc(delegatesRelation, 'Team', 'bcc-team'), { payment_status: 'verified' }))
-    await assertSucceeds(updateDoc(doc(treasury, 'Team', 'final-team'), {
+    await assertFails(updateDoc(doc(treasury, 'Team', 'final-team'), {
       'final_reg.paymentStatus': 'verified',
       'final_reg.verifiedAt': serverTimestamp(),
       'final_reg.verifiedBy': 'treasury.ipfest2027@gmail.com'
@@ -111,7 +107,7 @@ describe('Firestore Team access', () => {
     await assertFails(updateDoc(doc(treasury, 'Team', 'final-team'), { final_reg: null }))
     await assertFails(updateDoc(doc(treasury, 'Team', 'bcc-team'), { status: 'approved' }))
     await assertFails(updateDoc(doc(treasury, 'Team', 'bcc-team'), { payment_status: 'verified', teamName: 'Tampered' }))
-    await assertSucceeds(updateDoc(doc(manager, 'Team', 'bcc-team'), { 'sub_preliminary.score': 100 }))
+    await assertFails(updateDoc(doc(manager, 'Team', 'bcc-team'), { 'sub_preliminary.score': 100 }))
     await assertFails(updateDoc(doc(manager, 'Team', 'bcc-team'), { payment_status: 'pending_verification' }))
     await assertFails(updateDoc(doc(manager, 'Team', 'bcc-team'), { 'sub_preliminary.score': 251 }))
   })
@@ -142,12 +138,12 @@ describe('Firestore active collection access', () => {
       await setDoc(doc(db, 'Information', 'sc-case'), { competition_name: 'smart competition', prelim_case_link: null })
     })
     const owner = env.authenticatedContext('bcc-team').firestore()
-    const manager = env.authenticatedContext('bcc-manager', { email: 'bcc.ipfest2027@gmail.com', email_verified: true }).firestore()
-    const wrongManager = env.authenticatedContext('sc-manager', { email: 'sc.ipfest2027@gmail.com', email_verified: true }).firestore()
+    const manager = env.authenticatedContext('bcc-manager', { ipfestRole: 'competition_manager', ipfestCompetition: 'business case' }).firestore()
+    const wrongManager = env.authenticatedContext('sc-manager', { ipfestRole: 'competition_manager', ipfestCompetition: 'smart competition' }).firestore()
     await assertSucceeds(getDoc(doc(owner, 'Information', 'bcc-case')))
     await assertSucceeds(getDocs(query(collection(owner, 'Information'), where('competition_name', '==', 'business case'))))
     await assertFails(getDoc(doc(owner, 'Information', 'sc-case')))
-    await assertSucceeds(updateDoc(doc(manager, 'Information', 'bcc-case'), { prelim_case_link: 'Case/business case/v1.pdf' }))
+    await assertFails(updateDoc(doc(manager, 'Information', 'bcc-case'), { prelim_case_link: 'Case/business case/v1.pdf' }))
     await assertFails(updateDoc(doc(manager, 'Information', 'bcc-case'), { unrelated: true }))
     await assertFails(getDoc(doc(wrongManager, 'Information', 'bcc-case')))
   })
@@ -181,7 +177,7 @@ describe('Firestore active collection access', () => {
       const db = context.firestore()
       await setDoc(doc(db, 'Career_Talk', 'attendee@example.com'), { email: 'attendee@example.com', checkin: null, checkout: null })
     })
-    const eventStaff = env.authenticatedContext('event-staff', { email: 'event@ipfest25.com', email_verified: true }).firestore()
+    const eventStaff = env.authenticatedContext('event-staff', { ipfestRole: 'event_staff' }).firestore()
     const participant = env.authenticatedContext('participant').firestore()
     await assertSucceeds(getDocs(collection(eventStaff, 'Career_Talk')))
     await assertFails(getDocs(collection(participant, 'Career_Talk')))
@@ -192,9 +188,7 @@ describe('Firestore active collection access', () => {
     await env.withSecurityRulesDisabled(async (context) => {
       await setDoc(doc(context.firestore(), 'Merch', 'order-1'), { status: 'pending', totalAmount: 100 })
     })
-    const manager = env.authenticatedContext('merch-manager', {
-      email: 'entrepreneurship.ipfest2026@gmail.com', email_verified: true
-    }).firestore()
+    const manager = env.authenticatedContext('merch-manager', { ipfestRole: 'merch_manager' }).firestore()
     const publicDb = env.unauthenticatedContext().firestore()
     await assertSucceeds(getDocs(collection(manager, 'Merch')))
     await assertSucceeds(updateDoc(doc(manager, 'Merch', 'order-1'), { status: 'verified' }))
@@ -230,10 +224,10 @@ describe('Storage access', () => {
   it('allows same-competition manager reads and restricts Case writes to its manager', async () => {
     await seedTeam('bcc-team', team('bcc-team', 'business case'))
     const manager = env.authenticatedContext('bcc-manager', {
-      email: 'bcc.ipfest2027@gmail.com', email_verified: true
+      ipfestRole: 'competition_manager', ipfestCompetition: 'business case'
     }).storage()
     const wrongManager = env.authenticatedContext('sc-manager', {
-      email: 'sc.ipfest2027@gmail.com', email_verified: true
+      ipfestRole: 'competition_manager', ipfestCompetition: 'smart competition'
     }).storage()
     const owner = env.authenticatedContext('bcc-team').storage()
     await assertSucceeds(uploadBytes(ref(owner, 'team/bcc-team/leader/id.jpg'), new Uint8Array([1]), { contentType: 'image/jpeg' }))

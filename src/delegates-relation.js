@@ -3,16 +3,11 @@ import { onSnapshot, collection } from 'firebase/firestore'
 
 import { DB, AUTH } from './index.js'
 import { privateStorageLink } from './shared/private-download.js'
+import { getRoleClaims } from './shared/role-claims.js'
 
 // ===============================
 //   IPFEST 2027 CONFIG
 // ===============================
-// Akun Delegates Relation. Versi 2026 memakai officialdelegates.ipfest2026@gmail.com.
-// TODO: pastikan akun 2027 ini sudah dibuat di Firebase Authentication.
-const DELEGATES_RELATION_EMAILS = [
-    "officialdelegates.ipfest2027@gmail.com"
-].map(e => e.trim().toLowerCase())
-
 // Kode kompetisi di dashboard (id <span class="total-del">) -> nama kompetisi di Firestore
 const COMPETITIONS = [
     { code: 'BCC',  name: 'business case',               full: 'Business Case Competition' },
@@ -148,8 +143,9 @@ let unsubscribeTeams = null
 // ===============================
 //   AUTH
 // ===============================
-onAuthStateChanged(AUTH, (user) => {
-    if (!user || !DELEGATES_RELATION_EMAILS.includes((user.email || '').trim().toLowerCase())) {
+onAuthStateChanged(AUTH, async (user) => {
+    const claims = user ? await getRoleClaims(user) : null
+    if (claims?.role !== 'delegates_relation') {
         window.location.href = '../login.html'
         return
     }

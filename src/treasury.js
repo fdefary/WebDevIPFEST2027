@@ -1,19 +1,14 @@
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-import {
-    onSnapshot, collection, doc, writeBatch, updateDoc, serverTimestamp
-} from 'firebase/firestore'
+import { onSnapshot, collection } from 'firebase/firestore'
+import { httpsCallable } from 'firebase/functions'
 
-import { DB, AUTH } from './index.js'
+import { DB, AUTH, FUNCTIONS } from './index.js'
 import { privateStorageLink } from './shared/private-download.js'
+import { getRoleClaims } from './shared/role-claims.js'
 
 // =====================================================================
 //   IPFEST 2027 CONFIG — cek dan isi bagian bertanda TODO
 // =====================================================================
-
-// TODO: email akun Treasury 2027 (harus ada di Firebase Authentication)
-const TREASURY_EMAILS = [
-    'treasury.ipfest2027@gmail.com'
-].map(e => e.trim().toLowerCase())
 
 // Biaya registrasi per tim (IDR), sama dengan treasury.js versi 2026.
 // TODO: pastikan nominal ini masih berlaku untuk IPFEST 2027.
@@ -211,7 +206,6 @@ const el = {
 const REG_COLS = 8
 const FINAL_COLS = 12
 
-let currentUserEmail = null
 let unsubscribeTeams = null
 let latestTeams = []
 
@@ -223,15 +217,13 @@ const pendingFinal = new Map()
 // =====================================================================
 //   AUTH
 // =====================================================================
-onAuthStateChanged(AUTH, (user) => {
-    const email = (user?.email || '').trim().toLowerCase()
-    if (!user || !TREASURY_EMAILS.includes(email)) {
+onAuthStateChanged(AUTH, async (user) => {
+    const claims = user ? await getRoleClaims(user) : null
+    if (claims?.role !== 'treasury') {
         if (unsubscribeTeams) { unsubscribeTeams(); unsubscribeTeams = null }
         window.location.href = '../login.html'
         return
     }
-    currentUserEmail = email
-
     if (!unsubscribeTeams) {
         showTableMessage(el.regList, REG_COLS, 'Loading data...')
         showTableMessage(el.finalList, FINAL_COLS, 'Loading data...')
@@ -435,7 +427,7 @@ el.finalList?.addEventListener('change', handleStatusChange)
 // =====================================================================
 //   SIMPAN
 // =====================================================================
-async function saveChanges(form, map, buildUpdate, label) {
+async function saveChanges(form, map, label) {
     const btn = form.querySelector('button[type="submit"]')
     if (map.size === 0) {
         alert('Tidak ada perubahan untuk disimpan.')
@@ -447,9 +439,9 @@ async function saveChanges(form, map, buildUpdate, label) {
     if (btn) { btn.disabled = true; btn.innerHTML = 'Saving...' }
 
     try {
-        const batch = writeBatch(DB)
-        map.forEach((status, id) => batch.update(doc(DB, 'Team', id), buildUpdate(status)))
-        await batch.commit()
+        await httpsCallable(FUNCTIONS, 'updatePaymentVerifications')({
+            updates: [...map].map(([teamId, status]) => ({ teamId, status, kind: label === 'final' ? 'final' : 'registration' }))
+        })
         map.clear()
         renderAll()
         alert('✅ Perubahan tersimpan.')
@@ -465,20 +457,12 @@ async function saveChanges(form, map, buildUpdate, label) {
 
 el.regForm?.addEventListener('submit', (e) => {
     e.preventDefault()
-    saveChanges(el.regForm, pendingReg, (status) => ({
-        payment_status: status,
-        payment_verified_at: serverTimestamp(),
-        payment_verified_by: currentUserEmail
-    }), 'registrasi')
+    saveChanges(el.regForm, pendingReg, 'registrasi')
 })
 
 el.finalForm?.addEventListener('submit', (e) => {
     e.preventDefault()
-    saveChanges(el.finalForm, pendingFinal, (status) => ({
-        'final_reg.paymentStatus': status,
-        'final_reg.verifiedAt': serverTimestamp(),
-        'final_reg.verifiedBy': currentUserEmail
-    }), 'final')
+    saveChanges(el.finalForm, pendingFinal, 'final')
 })
 
 // =====================================================================

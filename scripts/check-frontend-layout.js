@@ -39,7 +39,11 @@ const delegatesRelation = readFileSync(path.join(root, 'src/delegates-relation.j
 assert.match(treasury, /onSnapshot\(collection\(DB, 'Team'\)/);
 assert.match(delegatesRelation, /onSnapshot\(collection\(DB, 'Team'\)/);
 assert.doesNotMatch(treasury, /deleteField|data-delete-final/, 'Treasury may verify, not delete final payment records');
-assert.match(treasury, /payment_verified_by: currentUserEmail/);
+assert.match(treasury, /httpsCallable\(FUNCTIONS, 'updatePaymentVerifications'\)/);
+assert.match(competitionManager, /httpsCallable\(FUNCTIONS, 'updateCompetitionResult'\)/);
+assert.match(competitionManager, /httpsCallable\(FUNCTIONS, 'publishCompetitionCase'\)/);
+assert.match(treasury, /getRoleClaims\(user\)/);
+assert.match(delegatesRelation, /getRoleClaims\(user\)/);
 const delegatesSource = readFileSync(path.join(root, 'src/delegates.js'), 'utf8');
 assert.doesNotMatch(delegatesSource, /getDocs\(collection\(DB,\s*['"]Team['"]\)/, 'participants must not download all Team records for a fallback search');
 

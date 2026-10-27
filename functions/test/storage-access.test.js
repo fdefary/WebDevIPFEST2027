@@ -3,7 +3,7 @@ const { test } = require('node:test')
 const { authorizeStoragePath, signedReadOptions } = require('../storage-access')
 
 const owner = { uid: 'owner', email: 'owner@example.com', emailVerified: true }
-const bccManager = { uid: 'manager', email: 'bcc.ipfest2027@gmail.com', emailVerified: true }
+const bccManager = { uid: 'manager', role: 'competition_manager', competition: 'business case' }
 const teamLookup = async (uid) => ({ competition: uid === 'owner' ? 'business case' : 'smart competition' })
 
 test('authorizes private owner files and rejects other users', async () => {
@@ -13,7 +13,7 @@ test('authorizes private owner files and rejects other users', async () => {
 
 test('authorizes only verified managers and participants for the matching Case', async () => {
   assert.equal(await authorizeStoragePath(bccManager, 'Case/business case/v1.pdf', teamLookup), true)
-  assert.equal(await authorizeStoragePath({ ...bccManager, emailVerified: false }, 'Case/business case/v1.pdf', teamLookup), false)
+  assert.equal(await authorizeStoragePath({ ...bccManager, role: null }, 'Case/business case/v1.pdf', teamLookup), false)
   assert.equal(await authorizeStoragePath(owner, 'Case/business case/v1.pdf', teamLookup), true)
   assert.equal(await authorizeStoragePath(owner, 'Case/smart competition/v1.pdf', teamLookup), false)
 })

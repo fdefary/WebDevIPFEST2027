@@ -3,6 +3,7 @@ import { signInWithEmailAndPassword, signOut, sendEmailVerification } from "fire
 import { AUTH, DB } from "./index.js";
 import { emailNotVerified, accountCreated, failedLogin } from "./shared/alert.js";
 import { doc, getDoc } from "firebase/firestore";
+import { getRoleClaims } from "./shared/role-claims.js";
 
 // ==== Wait for DOM ====
 window.addEventListener("DOMContentLoaded", () => {
@@ -37,28 +38,12 @@ window.addEventListener("DOMContentLoaded", () => {
     try {
       const credential = await signInWithEmailAndPassword(AUTH, userEmail, userPassword);
       const user = credential.user;
+      const roleClaims = await getRoleClaims(user)
 
       console.log("Login successful:", user.email);
 
-      // ==== OFFICIAL ACCOUNTS ====
-      const officialAccounts = [
-        "officialdelegates.ipfest2027@gmail.com",
-        "treasury.ipfest2027@gmail.com",
-        "entrepreneurship.ipfest2026@gmail.com",
-        "event@ipfest2026.com",
-        "podc.ipfest2027@gmail.com",
-        "mic.ipfest2027@gmail.com",
-        "ppc.ipfest2027@gmail.com",
-        "ordc.ipfest2027@gmail.com",
-        "bcc.ipfest2027@gmail.com",
-        "gdpc.ipfest2027@gmail.com",
-        "wdc.ipfest2027@gmail.com",
-        "hc.ipfest2027@gmail.com",
-        "sc.ipfest2027@gmail.com",
-      ];
-
       // ==== RESEND EMAIL VERIFICATION IF USER IS NOT VERIFIED ====
-      if (!officialAccounts.includes(user.email) && !user.emailVerified) {
+      if (!roleClaims.role && !user.emailVerified) {
         try {
           await sendEmailVerification(user);
           console.log("Verification email resent to:", user.email);
@@ -74,7 +59,7 @@ window.addEventListener("DOMContentLoaded", () => {
       // ==== FETCH TEAM DATA (ONLY FOR DELEGATES) ====
       let competitionField = null;
 
-      if (!officialAccounts.includes(user.email)) {
+      if (!roleClaims.role) {
         const teamRef = doc(DB, "Team", user.uid);
         const teamSnap = await getDoc(teamRef);
 
@@ -90,25 +75,17 @@ window.addEventListener("DOMContentLoaded", () => {
       // ==== OFFICIAL ACCOUNT ROUTE ====
       // =============================
       const redirectMap = {
-        "officialdelegates.ipfest2027@gmail.com": "./dashboard/delegates-relation.html",
-        "treasury.ipfest2027@gmail.com": "./dashboard/treasury.html",
-        "entrepreneurship.ipfest2026@gmail.com": "./dashboard/merchandise.html",
-        "event@ipfest2026.com": "./dashboard/event.html",
-        "podc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
-        "mic.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
-        "ppc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
-        "ordc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
-        "bcc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
-        "gdpc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
-        "wdc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
-        "hc.ipfest2027@gmail.com": "./dashboard/compe-manager.html",
-        "sc.ipfest2027@gmail.com": "./dashboard/smart-competition/manager.html",
+        delegates_relation: "./dashboard/delegates-relation.html",
+        treasury: "./dashboard/treasury.html",
+        merch_manager: "./dashboard/merchandise.html",
+        event_staff: "./dashboard/event.html",
+        competition_manager: roleClaims.competition === 'smart competition'
+          ? "./dashboard/smart-competition/manager.html"
+          : "./dashboard/compe-manager.html"
       };
-
-      // Jika email official → tidak disentuh logic delegates
-      if (officialAccounts.includes(user.email)) {
-        const dest = redirectMap[user.email];
-        console.log("Redirect (official):", dest);
+      if (roleClaims.role) {
+        const dest = redirectMap[roleClaims.role];
+        if (!dest) throw new Error('Unrecognized staff role')
         window.location.href = dest;
         return;
       }
