@@ -6,7 +6,8 @@
   "scripts": {
     "start": "webpack serve --config webpack.config.babel.js --mode development",
     "build": "webpack --config webpack.config.babel.js --mode production",
-    "test": "node scripts/check-frontend-layout.js && node scripts/check-registration-flow.js"
+    "test": "node scripts/check-frontend-layout.js && node scripts/check-registration-flow.js && node scripts/check-storage-path.js && npm run test:rules",
+    "test:rules": "firebase emulators:exec --project demo-ipfest-p0 --only firestore,storage \"node --test tests/rules/access.test.js\""
   },
   "repository": {
     "type": "git",
@@ -23,8 +24,10 @@
     "@babel/core": "^7.28.5",
     "@babel/preset-env": "^7.28.5",
     "@babel/register": "^7.24.6",
+    "@firebase/rules-unit-testing": "^2.0.7",
     "babel-loader": "^10.0.0",
     "baseline-browser-mapping": "^2.11.27",
+    "firebase-tools": "^15.34.1",
     "webpack": "^5.102.1",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^6.0.0"

@@ -1,18 +1,14 @@
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-import {
-    onSnapshot, collection, doc, writeBatch, updateDoc, deleteField, serverTimestamp
-} from 'firebase/firestore'
+import { onSnapshot, collection } from 'firebase/firestore'
+import { httpsCallable } from 'firebase/functions'
 
-import { DB, AUTH } from './index.js'
+import { DB, AUTH, FUNCTIONS } from './index.js'
+import { privateStorageLink } from './shared/private-download.js'
+import { getRoleClaims } from './shared/role-claims.js'
 
 // =====================================================================
 //   IPFEST 2027 CONFIG — cek dan isi bagian bertanda TODO
 // =====================================================================
-
-// TODO: email akun Treasury 2027 (harus ada di Firebase Authentication)
-const TREASURY_EMAILS = [
-    'treasury.ipfest2027@gmail.com'
-].map(e => e.trim().toLowerCase())
 
 // Biaya registrasi per tim (IDR), sama dengan treasury.js versi 2026.
 // TODO: pastikan nominal ini masih berlaku untuk IPFEST 2027.
@@ -74,19 +70,8 @@ const esc = (value) => {
         .replace(/'/g, '&#39;')
 }
 
-const safeUrl = (value) => {
-    if (!value || value === '-') return null
-    try {
-        const url = new URL(String(value))
-        return (url.protocol === 'http:' || url.protocol === 'https:') ? url.href : null
-    } catch {
-        return null
-    }
-}
-
 const linkCell = (value, label = 'View') => {
-    const url = safeUrl(value)
-    return url ? `<a href="${esc(url)}" target="_blank" rel="noopener">${label}</a>` : '-'
+    return privateStorageLink(value, label) || '-'
 }
 
 const toDate = (ts) => {
@@ -219,9 +204,8 @@ const el = {
 }
 
 const REG_COLS = 8
-const FINAL_COLS = 13
+const FINAL_COLS = 12
 
-let currentUserEmail = null
 let unsubscribeTeams = null
 let latestTeams = []
 
@@ -233,26 +217,23 @@ const pendingFinal = new Map()
 // =====================================================================
 //   AUTH
 // =====================================================================
-onAuthStateChanged(AUTH, (user) => {
-    const email = (user?.email || '').trim().toLowerCase()
-    if (!user || !TREASURY_EMAILS.includes(email)) {
+onAuthStateChanged(AUTH, async (user) => {
+    const claims = user ? await getRoleClaims(user) : null
+    if (claims?.role !== 'treasury') {
         if (unsubscribeTeams) { unsubscribeTeams(); unsubscribeTeams = null }
         window.location.href = '../login.html'
         return
     }
-    currentUserEmail = email
-
     if (!unsubscribeTeams) {
         showTableMessage(el.regList, REG_COLS, 'Loading data...')
         showTableMessage(el.finalList, FINAL_COLS, 'Loading data...')
-
         unsubscribeTeams = onSnapshot(collection(DB, 'Team'), (snap) => {
             latestTeams = snap.docs.map(d => ({ id: d.id, ...d.data() }))
             renderAll()
         }, (err) => {
             console.error('Cannot read Team collection', err)
             const msg = err.code === 'permission-denied'
-                ? 'Akun ini tidak punya izin membaca data tim (cek Firestore Security Rules).'
+                ? 'Akun ini tidak punya izin membaca data tim.'
                 : 'Gagal memuat data tim. Coba muat ulang halaman.'
             showTableMessage(el.regList, REG_COLS, msg)
             showTableMessage(el.finalList, FINAL_COLS, msg)
@@ -378,11 +359,6 @@ function renderFinal(teams) {
                     <td rowspan="${span}">${isDP ? esc(fr.dpCategory) : '-'}</td>
                     ${personCells}
                     <td rowspan="${span}">${statusSelect(FINAL_STATUSES, current, `data-team-id="${esc(t.id)}" data-kind="final"`, finalStatusClass)}</td>
-                    <td rowspan="${span}">
-                        <button type="button" class="btn btn-sm btn-outline-danger" data-delete-final="${esc(t.id)}" data-team-name="${esc(t.teamName)}" title="Hapus data pembayaran final tim ini">
-                            <i class="bi bi-trash3"></i>
-                        </button>
-                    </td>
                 `
                 : personCells
 
@@ -451,7 +427,7 @@ el.finalList?.addEventListener('change', handleStatusChange)
 // =====================================================================
 //   SIMPAN
 // =====================================================================
-async function saveChanges(form, map, buildUpdate, label) {
+async function saveChanges(form, map, label) {
     const btn = form.querySelector('button[type="submit"]')
     if (map.size === 0) {
         alert('Tidak ada perubahan untuk disimpan.')
@@ -463,9 +439,9 @@ async function saveChanges(form, map, buildUpdate, label) {
     if (btn) { btn.disabled = true; btn.innerHTML = 'Saving...' }
 
     try {
-        const batch = writeBatch(DB)
-        map.forEach((status, id) => batch.update(doc(DB, 'Team', id), buildUpdate(status)))
-        await batch.commit()
+        await httpsCallable(FUNCTIONS, 'updatePaymentVerifications')({
+            updates: [...map].map(([teamId, status]) => ({ teamId, status, kind: label === 'final' ? 'final' : 'registration' }))
+        })
         map.clear()
         renderAll()
         alert('✅ Perubahan tersimpan.')
@@ -481,44 +457,12 @@ async function saveChanges(form, map, buildUpdate, label) {
 
 el.regForm?.addEventListener('submit', (e) => {
     e.preventDefault()
-    saveChanges(el.regForm, pendingReg, (status) => ({
-        payment_status: status,
-        payment_verified_at: serverTimestamp(),
-        payment_verified_by: currentUserEmail
-    }), 'registrasi')
+    saveChanges(el.regForm, pendingReg, 'registrasi')
 })
 
 el.finalForm?.addEventListener('submit', (e) => {
     e.preventDefault()
-    saveChanges(el.finalForm, pendingFinal, (status) => ({
-        'final_reg.paymentStatus': status,
-        'final_reg.verifiedAt': serverTimestamp(),
-        'final_reg.verifiedBy': currentUserEmail
-    }), 'final')
-})
-
-// =====================================================================
-//   HAPUS DATA PEMBAYARAN FINAL
-// =====================================================================
-// Menghapus field final_reg supaya tim bisa mengirim ulang dari dashboard delegates.
-// File bukti di Firebase Storage TIDAK ikut terhapus.
-el.finalList?.addEventListener('click', async (e) => {
-    const btn = e.target.closest('button[data-delete-final]')
-    if (!btn) return
-    const id = btn.dataset.deleteFinal
-    const name = btn.dataset.teamName || 'tim ini'
-
-    if (!confirm(`Hapus data pembayaran final "${name}"?\n\nTim harus mengirim ulang bukti pembayaran final. Tindakan ini tidak bisa dibatalkan.`)) return
-
-    btn.disabled = true
-    try {
-        await updateDoc(doc(DB, 'Team', id), { final_reg: deleteField() })
-        pendingFinal.delete(id)
-    } catch (err) {
-        console.error('Delete failed', err)
-        alert('Gagal menghapus data pembayaran final.')
-        btn.disabled = false
-    }
+    saveChanges(el.finalForm, pendingFinal, 'final')
 })
 
 // =====================================================================

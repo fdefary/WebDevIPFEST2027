@@ -1,6 +1,12 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, query, onSnapshot, getDocs, doc, updateDoc, orderBy } from "firebase/firestore";
 import { DB, AUTH } from "./index.js";
+import { privateStorageLink } from "./shared/private-download.js";
+import { getRoleClaims } from "./shared/role-claims.js";
+
+const escapeHTML = (value) => String(value ?? "-").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+}[char]));
 
 // =========================
 // AUTH CHECK (ENTREPRENEURSHIP)
@@ -14,20 +20,11 @@ onAuthStateChanged(AUTH, async (user) => {
     }
 
     try {
-        // Paksa refresh token untuk memastikan claims terbaru
-        await user.getIdToken(true);
-        const idTokenResult = await user.getIdTokenResult();
+        const claims = await getRoleClaims(user)
         console.log("[AUTH] User claims verified");
+        if (claims.role !== 'merch_manager') throw new Error('Unauthorized role')
     } catch (err) {
         console.error("[AUTH] Token error:", err);
-    }
-
-    // Ganti email sesuai dengan akun Entrepreneurship/Merchandise Anda
-    const authorizedEmail = "entrepreneurship.ipfest2026@gmail.com"; 
-
-    if (user.email !== authorizedEmail) {
-        console.warn(`[AUTH] Unauthorized Access Attempt: ${user.email}`);
-        alert("You do not have permission to access this dashboard.");
         window.location.href = "../login.html";
         return;
     }
@@ -97,28 +94,29 @@ async function loadMerchTable() {
             const orderDate = data.createdAt?.toDate ? data.createdAt.toDate().toLocaleString('id-ID') : "-";
 
             // 3. Mapping Items Array (Struktur Map: name, quantity)
-            const itemsList = data.items.map(item => 
-                `<li>${item.name} <span class="badge bg-light text-dark" style="border: 1px solid #ddd;">x${item.quantity}</span></li>`
+            const itemsList = (Array.isArray(data.items) ? data.items : []).map(item => 
+                `<li>${escapeHTML(item.name)} <span class="badge bg-light text-dark" style="border: 1px solid #ddd;">x${escapeHTML(item.quantity)}</span></li>`
             ).join('');
 
             // 4. Status Styling
             let currentStatus = data.status || "pending";
             const statusColor = currentStatus === "verified" ? "green" : (currentStatus === "rejected" ? "red" : "blue");
             const statusId = `status-click-${docId}`;
+            const fullName = data.customer_info?.fullName || "-";
+            const email = data.customer_info?.email || "";
+            const whatsapp = String(data.customer_info?.whatsapp || "").replace(/\D/g, "");
 
             const rowHTML = `
                 <tr>
                     <td>${index}</td>
                     <td>
-                        <div class="fw-bold">${data.customer_info?.fullName || "-"}</div>
-                        <div class="small text-muted">${orderDate}</div>
-                        <a href="mailto:${data.customer_info?.email || ""}" class="small text-decoration-none">
-                            <i class="bi bi-envelope"></i> ${data.customer_info?.email || ""}
+                        <div class="fw-bold">${escapeHTML(fullName)}</div>
+                        <div class="small text-muted">${escapeHTML(orderDate)}</div>
+                        <a href="mailto:${escapeHTML(email)}" class="small text-decoration-none">
+                            <i class="bi bi-envelope"></i> ${escapeHTML(email)}
                         </a>
                         <br>
-                        <a href="https://wa.me/${data.customer_info?.whatsapp}" target="_blank" class="small text-success text-decoration-none">
-                            <i class="bi bi-whatsapp"></i> ${data.customer_info?.whatsapp || ""}
-                        </a>
+                        ${whatsapp ? `<a href="https://wa.me/${whatsapp}" target="_blank" rel="noopener noreferrer" class="small text-success text-decoration-none"><i class="bi bi-whatsapp"></i> ${escapeHTML(data.customer_info?.whatsapp)}</a>` : ""}
                     </td>
                     <td>
                         <ul class="order-details-list" style="list-style: none; padding: 0; margin: 0; font-size: 0.85rem;">
@@ -129,14 +127,14 @@ async function loadMerchTable() {
                     <td>
                         <div class="btn-file-container">
                             ${data.files?.identityCardUrl ? 
-                                `<a href="${data.files.identityCardUrl}" target="_blank" class="btn-view-custom btn-view-id">View ID</a>` : ""}
+                                privateStorageLink(data.files.identityCardUrl, "View ID", "btn-view-custom btn-view-id") : ""}
                             ${data.files?.paymentProofUrl ? 
-                                `<a href="${data.files.paymentProofUrl}" target="_blank" class="btn-view-custom btn-view-proof">View Proof</a>` : ""}
+                                privateStorageLink(data.files.paymentProofUrl, "View Proof", "btn-view-custom btn-view-proof") : ""}
                         </div>
                     </td>
                     <td>
-                        <span id="${statusId}" class="fw-bold" style="cursor:pointer; color: ${statusColor}; text-transform: capitalize; border-bottom: 2px dashed ${statusColor}">
-                            ${currentStatus}
+                        <span id="${escapeHTML(statusId)}" class="fw-bold" style="cursor:pointer; color: ${statusColor}; text-transform: capitalize; border-bottom: 2px dashed ${statusColor}">
+                            ${escapeHTML(currentStatus)}
                         </span>
                     </td>
                 </tr>
@@ -149,7 +147,7 @@ async function loadMerchTable() {
                 const statusCycle = { "pending": "verified", "verified": "rejected", "rejected": "pending" };
                 const nextStatus = statusCycle[currentStatus];
 
-                if (!confirm(`Ubah status pesanan ${data.customer_info?.fullName} menjadi ${nextStatus}?`)) return;
+                if (!confirm(`Ubah status pesanan ${fullName} menjadi ${nextStatus}?`)) return;
 
                 try {
                     const merchDocRef = doc(DB, "Merch", docId);

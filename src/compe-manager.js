@@ -1,8 +1,11 @@
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-import { onSnapshot, collection, updateDoc, doc, serverTimestamp } from 'firebase/firestore'
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
+import { onSnapshot, collection, query, where } from 'firebase/firestore'
+import { httpsCallable } from 'firebase/functions'
+import { ref, uploadBytes } from 'firebase/storage'
 
-import { DB, AUTH, STORAGE } from './index.js'
+import { DB, AUTH, STORAGE, FUNCTIONS } from './index.js'
+import { privateStorageLink } from './shared/private-download.js'
+import { getRoleClaims } from './shared/role-claims.js'
 
 // =====================================================================
 //   IPFEST 2027 CONFIG
@@ -16,15 +19,15 @@ const FINAL_CASE_RELEASE  = { iso: '2027-01-20T00:00:00+07:00', label: '20 Jan 2
 // competition = nilai `competition` di dokumen Team (huruf kecil, ejaan sesuai registrasi)
 // TODO: update nama manager 2027
 const MANAGERS = {
-    'bcc.ipfest2027@gmail.com':  { competition: 'business case',               name: 'Sely',    label: 'Business Case' },
-    'gdpc.ipfest2027@gmail.com': { competition: 'geothermal development plan', name: 'Nicho',   label: 'Geothermal Development Plan' },
-    'mic.ipfest2027@gmail.com':  { competition: 'mud inovation',               name: 'Vincent', label: 'Mud Innovation' },
-    'ordc.ipfest2027@gmail.com': { competition: 'oil rig design',              name: 'Falah',   label: 'Oil Rig Design' },
-    'podc.ipfest2027@gmail.com': { competition: 'plan of development',         name: 'Steven',  label: 'Plan of Development' },
-    'ppc.ipfest2027@gmail.com':  { competition: 'paper and poster',            name: 'Junita',  label: 'Paper and Poster' },
-    'sc.ipfest2027@gmail.com':   { competition: 'smart competition',           name: 'Mujib',   label: 'Smart Competition' },
-    'wdc.ipfest2027@gmail.com':  { competition: 'well design',                 name: 'Akmal',   label: 'Well Design' },
-    'hc.ipfest2027@gmail.com':   { competition: 'hackaton',                    name: 'Ghani',   label: 'Hackathon' }
+    'business case':               { name: 'Sely',    label: 'Business Case' },
+    'geothermal development plan': { name: 'Nicho',   label: 'Geothermal Development Plan' },
+    'mud inovation':               { name: 'Vincent', label: 'Mud Innovation' },
+    'oil rig design':              { name: 'Falah',   label: 'Oil Rig Design' },
+    'plan of development':         { name: 'Steven',  label: 'Plan of Development' },
+    'paper and poster':            { name: 'Junita',  label: 'Paper and Poster' },
+    'smart competition':           { name: 'Mujib',   label: 'Smart Competition' },
+    'well design':                 { name: 'Akmal',   label: 'Well Design' },
+    'hackaton':                    { name: 'Ghani',   label: 'Hackathon' }
 }
 
 // ID dokumen di koleksi 'Information' tempat link case disimpan (dibaca dashboard delegasi)
@@ -71,16 +74,6 @@ const esc = (value) => {
         .replace(/'/g, '&#39;')
 }
 
-// Hanya izinkan link http/https
-const safeUrl = (value) => {
-    try {
-        const url = new URL(String(value))
-        return (url.protocol === 'http:' || url.protocol === 'https:') ? url.href : null
-    } catch {
-        return null
-    }
-}
-
 const toDate = (ts) => {
     if (!ts) return null
     const dt = typeof ts.toDate === 'function' ? ts.toDate() : new Date(ts)
@@ -93,9 +86,9 @@ const dateCell = (date) => date
     : '-'
 
 const fileCell = (url) => {
-    const safe = safeUrl(url)
+    const safe = privateStorageLink(url, 'VIEW FILE', 'btn-view-file')
     return safe
-        ? `<a href="${esc(safe)}" target="_blank" rel="noopener" class="btn-view-file"><i class="bi bi-cloud-arrow-down-fill"></i> VIEW FILE</a>`
+        ? safe
         : `<span class="badge-ipfest cm-badge-empty">NO FILE</span>`
 }
 
@@ -143,7 +136,7 @@ const showTableMessage = (tbody, colspan, message) => {
 // Tulis satu field; kalau gagal, beri tahu dan kembalikan tampilan
 async function saveField(teamId, field, value, onFail) {
     try {
-        await updateDoc(doc(DB, 'Team', teamId), { [field]: value })
+        await httpsCallable(FUNCTIONS, 'updateCompetitionResult')({ teamId, field: field.split('.').at(-1), value })
     } catch (err) {
         console.error(`Gagal menyimpan ${field}`, err)
         alert(err.code === 'permission-denied'
@@ -183,8 +176,11 @@ let unsubscribeTeams = null
 // =====================================================================
 //   AUTH
 // =====================================================================
-onAuthStateChanged(AUTH, (user) => {
-    const found = user ? MANAGERS[(user.email || '').trim().toLowerCase()] : null
+onAuthStateChanged(AUTH, async (user) => {
+    const claims = user ? await getRoleClaims(user) : null
+    const found = claims?.role === 'competition_manager'
+        ? MANAGERS[claims.competition]
+        : null
 
     // Belum login, atau bukan akun manager → ke halaman login
     if (!found) {
@@ -204,10 +200,10 @@ onAuthStateChanged(AUTH, (user) => {
         showTableMessage(el.prelimList, PRELIM_COLS, 'Loading data...')
         showTableMessage(el.finalList, FINAL_COLS, 'Loading data...')
 
-        unsubscribeTeams = onSnapshot(collection(DB, 'Team'), (snap) => {
+        const managerTeams = query(collection(DB, 'Team'), where('competition', '==', manager.competition))
+        unsubscribeTeams = onSnapshot(managerTeams, (snap) => {
             const teams = snap.docs
                 .map(d => ({ id: d.id, ...d.data() }))
-                .filter(t => normalizeCompetition(t.competition) === manager.competition)
                 .sort((a, b) => String(a.teamName ?? '').localeCompare(String(b.teamName ?? ''), 'id', { sensitivity: 'base' }))
 
             renderAll(teams)
@@ -449,7 +445,7 @@ el.finalExcel?.addEventListener('click', () => exportTable(el.finalTable, 'Final
 // =====================================================================
 const caseStorage = ref(STORAGE, 'Case')
 
-function setupCaseUpload(form, { release, label, buildUpdate }) {
+function setupCaseUpload(form, { release, stage, label }) {
     if (!form) return
     const input = form.querySelector('input[type="file"]')
     const clearBtn = form.querySelector('button[type="button"]')
@@ -481,10 +477,10 @@ function setupCaseUpload(form, { release, label, buildUpdate }) {
         sendBtn.disabled = true
         sendBtn.textContent = 'Uploading...'
         try {
-            const fileRef = ref(ref(caseStorage, manager.competition), file.name)
+            const fileRef = ref(ref(caseStorage, manager.competition), `${Date.now()}_${file.name}`)
             const snap = await uploadBytes(fileRef, file)
-            const url = await getDownloadURL(snap.ref)
-            await updateDoc(doc(DB, 'Information', infoDocId), buildUpdate(url))
+            const url = snap.ref.fullPath
+            await httpsCallable(FUNCTIONS, 'publishCompetitionCase')({ stage, path: url })
             input.value = ''
             alert(`✅ ${label} berhasil dikirim.`)
         } catch (err) {
@@ -503,23 +499,14 @@ function setupCaseUpload(form, { release, label, buildUpdate }) {
 //   prelim_case_link, sent_on, competition_name, final.case_link, final.sent_on
 setupCaseUpload(el.prelimCaseForm, {
     release: PRELIM_CASE_RELEASE,
-    label: 'Preliminary case',
-    buildUpdate: (url) => ({
-        prelim_case_link: url,
-        sent_on: serverTimestamp(),
-        competition_name: manager.competition
-    })
+    stage: 'preliminary',
+    label: 'Preliminary case'
 })
 
 setupCaseUpload(el.finalCaseForm, {
     release: FINAL_CASE_RELEASE,
-    label: 'Final case',
-    buildUpdate: (url) => ({
-        'final.case_link': url,
-        'final.sent_on': serverTimestamp(),
-        // dashboard delegasi mencari case berdasarkan competition_name
-        competition_name: manager.competition
-    })
+    stage: 'final',
+    label: 'Final case'
 })
 
 // =====================================================================

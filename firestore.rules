@@ -2,25 +2,185 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
 
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
-    match /Team/{document=**} {
-      allow write: if true;
-      allow read: if request.auth != null && request.auth.uid in ["8RATH0TSrXNPZgHfLg6tALhlh933", "kFHGRVeBcGVa41JyHWiGqfK8Gdr2", "RWhQeiJMw4NQ5lq0gwNb68AZrnf2", "FLkRL8x7ljNqPPfAwpfu7FxYT8z1", "FyPOX3W8xXaOdxxHtSQXjf4Yf4E2", "1VDPRzEZW8OlFGizcQRGs3NJdmM2", "tfRjtv1VxgMfsGx0ik3PjAx0wTA3", "9dyh9cWOVAYGtRDl3XyvFsG2RMk1", "6xWoxoPFf7OWHaiiUihPUG4Xkjl1", "MfbiHNuVIydGAZUNQR5NCK13J9N2"]
+    function managerFor(competition) {
+      return signedIn()
+        && request.auth.token.get('ipfestRole', '') == 'competition_manager'
+        && request.auth.token.get('ipfestCompetition', '') == competition;
     }
-    match /Team/{userId} {
-    	allow read, write: if request.auth != null && request.auth.uid == userId
+
+    function treasury() {
+      return signedIn()
+        && request.auth.token.get('ipfestRole', '') == 'treasury';
     }
-    match /Payment_Summary/{document=**} {
-    	allow read, write: if request.auth != null && request.auth.uid in ["8RATH0TSrXNPZgHfLg6tALhlh933", "kFHGRVeBcGVa41JyHWiGqfK8Gdr2", "RWhQeiJMw4NQ5lq0gwNb68AZrnf2", "FLkRL8x7ljNqPPfAwpfu7FxYT8z1", "FyPOX3W8xXaOdxxHtSQXjf4Yf4E2", "1VDPRzEZW8OlFGizcQRGs3NJdmM2", "tfRjtv1VxgMfsGx0ik3PjAx0wTA3", "9dyh9cWOVAYGtRDl3XyvFsG2RMk1", "6xWoxoPFf7OWHaiiUihPUG4Xkjl1", "MfbiHNuVIydGAZUNQR5NCK13J9N2"] 
+
+    function delegatesRelation() {
+      return signedIn()
+        && request.auth.token.get('ipfestRole', '') == 'delegates_relation';
+    }
+
+    function eventStaff() {
+      return signedIn()
+        && request.auth.token.get('ipfestRole', '') == 'event_staff';
+    }
+
+    function merchManager() {
+      return signedIn()
+        && request.auth.token.get('ipfestRole', '') == 'merch_manager';
+    }
+
+    function participantFor(competition) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/Team/$(request.auth.uid))
+        && get(/databases/$(database)/documents/Team/$(request.auth.uid)).data.competition == competition;
+    }
+
+    function validAttendanceIdentity(email) {
+      return request.resource.data.email == email
+        && request.resource.data.email is string
+        && request.resource.data.email.size() <= 254
+        && request.resource.data.major is string
+        && request.resource.data.major.size() <= 120
+        && request.resource.data.university is string
+        && request.resource.data.university.size() <= 160
+        && request.resource.data.batch is string
+        && request.resource.data.batch.size() <= 20;
+    }
+
+    function validCareerTalkCreate(email) {
+      return request.resource.data.keys().hasOnly([
+          'name', 'email', 'major', 'university', 'nim', 'batch', 'checkin', 'checkout'
+        ])
+        && validAttendanceIdentity(email)
+        && request.resource.data.name is string
+        && request.resource.data.name.size() <= 120
+        && request.resource.data.nim is string
+        && request.resource.data.nim.size() <= 40
+        && request.resource.data.checkin == request.time
+        && request.resource.data.checkout == null;
+    }
+
+    function validGrandIPCONVEXCreate(email) {
+      return request.resource.data.keys().hasOnly([
+          'name', 'full_name', 'email', 'major', 'university', 'nim', 'student_number', 'batch', 'checkin', 'checkout'
+        ])
+        && validAttendanceIdentity(email)
+        && ((request.resource.data.name is string
+            && request.resource.data.name.size() <= 120
+            && request.resource.data.nim is string
+            && request.resource.data.nim.size() <= 40)
+          || (request.resource.data.full_name is string
+            && request.resource.data.full_name.size() <= 120
+            && request.resource.data.student_number is string
+            && request.resource.data.student_number.size() <= 40))
+        && request.resource.data.checkin == request.time
+        && request.resource.data.checkout == null;
+    }
+
+    function validAttendanceCheckout() {
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['checkout'])
+        && resource.data.checkout == null
+        && request.resource.data.checkout == request.time;
+    }
+
+    function validOwnerCreate() {
+      return request.resource.data.keys().hasAll([
+          'competition', 'teamName', 'leader', 'members', 'status', 'payment_status'
+        ])
+        && request.resource.data.payment_status in ['unpaid', 'pending_verification']
+        && request.resource.data.status == 'pending'
+        && !request.resource.data.keys().hasAny([
+          'payment_verified_at', 'payment_verified_by', 'sub_preliminary', 'sub_final'
+        ])
+        && (!request.resource.data.keys().hasAny(['final_reg'])
+          || request.resource.data.final_reg.get('paymentStatus', 'pending') == 'pending');
+    }
+
+    function validOwnerUpdate() {
+      let changed = request.resource.data.diff(resource.data).affectedKeys();
+      let oldPrelim = resource.data.get('sub_preliminary', {});
+      let newPrelim = request.resource.data.get('sub_preliminary', {});
+      let oldFinalReg = resource.data.get('final_reg', {});
+      let newFinalReg = request.resource.data.get('final_reg', {});
+      return changed.hasOnly([
+          'teamName', 'leader', 'members', 'payment', 'final_reg',
+          'sub_preliminary', 'sub_final', 'sub_abstract'
+        ])
+        && request.resource.data.get('payment_status', null) == resource.data.get('payment_status', null)
+        && request.resource.data.get('payment_verified_at', null) == resource.data.get('payment_verified_at', null)
+        && request.resource.data.get('payment_verified_by', null) == resource.data.get('payment_verified_by', null)
+        && newPrelim.diff(oldPrelim).affectedKeys().hasOnly(['fileURL', 'submittedAt', 'status', 'overdue'])
+        && newPrelim.get('final', null) == oldPrelim.get('final', null)
+        && newPrelim.get('rank', null) == oldPrelim.get('rank', null)
+        && newPrelim.get('score', null) == oldPrelim.get('score', null)
+        && newFinalReg.get('paymentStatus', 'pending') == 'pending'
+        && newFinalReg.get('verifiedAt', null) == oldFinalReg.get('verifiedAt', null)
+        && newFinalReg.get('verifiedBy', null) == oldFinalReg.get('verifiedBy', null);
+    }
+
+    match /Team/{teamId} {
+      allow get: if signedIn()
+        && (request.auth.uid == teamId || treasury() || delegatesRelation() || managerFor(resource.data.competition));
+      allow list: if treasury() || delegatesRelation() || (signedIn() && managerFor(resource.data.competition));
+      allow create: if signedIn() && request.auth.uid == teamId && validOwnerCreate();
+      allow update: if signedIn() && request.auth.uid == teamId && validOwnerUpdate();
+    }
+
+    match /SC_Selection/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+    }
+
+    match /SC_Del_Answer/{uid} {
+      function selection() {
+        return get(/databases/$(database)/documents/SC_Selection/$(uid)).data;
+      }
+      function validQuestion(question) {
+        return question is map
+          && question.keys().hasOnly(['answer', 'startedAt', 'submittedAt'])
+          && (!question.keys().hasAny(['answer']) || question.answer in ['0', 'A', 'B', 'C', 'D', 'E'])
+          && (!question.keys().hasAny(['startedAt']) || question.startedAt is number)
+          && (!question.keys().hasAny(['submittedAt']) || question.submittedAt == request.time);
+      }
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow create: if signedIn() && request.auth.uid == uid
+        && exists(/databases/$(database)/documents/SC_Selection/$(uid))
+        && request.resource.data.keys().hasOnly(['university', 'team', 'question1', 'question2'])
+        && request.resource.data.get('university', null) == selection().get('university', null)
+        && request.resource.data.get('team', null) == selection().get('team', null)
+        && (!request.resource.data.keys().hasAny(['question1']) || validQuestion(request.resource.data.question1))
+        && (!request.resource.data.keys().hasAny(['question2']) || validQuestion(request.resource.data.question2));
+      allow update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['question1', 'question2'])
+        && (!request.resource.data.keys().hasAny(['question1']) || validQuestion(request.resource.data.question1))
+        && (!request.resource.data.keys().hasAny(['question2']) || validQuestion(request.resource.data.question2));
+    }
+
+    match /Information/{infoId} {
+      allow get, list: if managerFor(resource.data.competition_name)
+        || participantFor(resource.data.competition_name);
+      allow update: if false;
+    }
+
+    match /Career_Talk/{email} {
+      allow get, list: if eventStaff();
+      allow create: if validCareerTalkCreate(email);
+      allow update: if validAttendanceCheckout();
+    }
+
+    match /Grand_IPCONVEX/{email} {
+      allow get, list: if eventStaff();
+      allow create: if validGrandIPCONVEXCreate(email);
+      allow update: if validAttendanceCheckout();
+    }
+
+    match /Merch/{orderId} {
+      allow get, list: if merchManager();
+      allow update: if merchManager()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status in ['pending', 'verified', 'rejected'];
     }
   }
 }

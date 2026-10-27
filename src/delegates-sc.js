@@ -2,7 +2,7 @@ import { doc, getDoc, updateDoc, serverTimestamp,collection, getDocs, setDoc,whe
 
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
+import { ref, uploadBytes } from 'firebase/storage'
 
 import { DB, AUTH, STORAGE } from './index.js'
 import { setToastAlert } from './shared/alert.js'
@@ -892,7 +892,7 @@ async function submitFinalRegistration(currentUID, formData, teamData) {
         const leaderPath = `finalreg_submissions/${currentUID}/leader_${timeStamp}`;
         const leaderRef = ref(STORAGE, leaderPath);
         const uploadRes = await uploadBytes(leaderRef, formData.leader.file);
-        leaderURL = await getDownloadURL(uploadRes.ref);
+        leaderURL = uploadRes.ref.fullPath;
     }
 
     // 2. Upload Member Files
@@ -903,7 +903,7 @@ async function submitFinalRegistration(currentUID, formData, teamData) {
             const memPath = `finalreg_submissions/${currentUID}/member_${i}_${timeStamp}`;
             const memRef = ref(STORAGE, memPath);
             const uploadRes = await uploadBytes(memRef, memFile);
-            const url = await getDownloadURL(uploadRes.ref);
+            const url = uploadRes.ref.fullPath;
             memberURLs.push(url);
         } else {
             memberURLs.push(null);

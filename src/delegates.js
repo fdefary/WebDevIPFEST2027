@@ -2,11 +2,12 @@ import { doc, getDoc, updateDoc, serverTimestamp, collection, getDocs, where, qu
 
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 
-import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
+import { ref, uploadBytes, uploadBytesResumable } from 'firebase/storage'
 
 import { DB, AUTH, STORAGE } from './index.js'
 
 import { showProgressUI } from './shared/alert.js'
+import { privateStorageLink, privateStoragePathOf } from './shared/private-download.js'
 
 // =====================================================================
 //   IPFEST 2027 TIMELINE — samakan dengan src/compe-manager.js
@@ -33,16 +34,6 @@ const esc = (value) => String(value ?? '')
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#39;')
-
-// Hanya izinkan link http/https
-const safeUrl = (value) => {
-    try {
-        const url = new URL(String(value))
-        return (url.protocol === 'http:' || url.protocol === 'https:') ? url.href : null
-    } catch {
-        return null
-    }
-}
 
 // Tim dianggap sudah submit preliminary hanya kalau status === true.
 // Catatan: compe manager juga menulis sub_preliminary.final/rank/score,
@@ -336,45 +327,11 @@ function initDomBindings() {
             }
 
             try {
-                let teamRef = doc(DB, "Team", currentUserID);
-                let teamSnap = await getDoc(teamRef);
+                const teamRef = doc(DB, "Team", currentUserID);
+                const teamSnap = await getDoc(teamRef);
                 if (!teamSnap.exists()) {
-                    console.warn('Team doc by UID not found, attempting fallback search by user email');
-                    const firebaseUser = AUTH.currentUser;
-                    const userEmail = firebaseUser?.email || null;
-                    if (!userEmail) {
-                        alert('Team data not found (no email available). Please contact support.');
-                        return;
-                    }
-
-                    // Fallback: search Team collection for matching leader or member email
-                    const allTeamsSnap = await getDocs(collection(DB, 'Team'));
-                    let found = null;
-                    allTeamsSnap.forEach(d => {
-                        const data = d.data();
-                        if (!data) return;
-                        const leaderEmail = data.leader?.email?.toLowerCase();
-                        if (leaderEmail === userEmail.toLowerCase()) {
-                            found = { id: d.id, data };
-                            return;
-                        }
-                        const members = data.members || [];
-                        for (let m of members) {
-                            if (m.email && m.email.toLowerCase() === userEmail.toLowerCase()) {
-                                found = { id: d.id, data };
-                                return;
-                            }
-                        }
-                    });
-
-                    if (!found) {
-                        alert('Team data not found. Please contact committee.');
-                        return;
-                    }
-
-                    teamRef = doc(DB, 'Team', found.id);
-                    teamSnap = await getDoc(teamRef);
-                    console.log('Fallback found team doc:', found.id);
+                    alert('Team data not found for this account. Please contact support.');
+                    return;
                 }
 
                 const existingFinal = teamSnap.data().sub_final;
@@ -446,7 +403,7 @@ function initDomBindings() {
                     cancelUpload();
                 }, async () => {
                     try {
-                        const url = await getDownloadURL(uploadTask.snapshot.ref);
+                        const url = uploadTask.snapshot.ref.fullPath;
                         // simple overdue check (can be customized per competition)
                         const overdue = Date.now() > TIMELINE.finalDeadline.date.getTime() ? 'yes' : 'no';
                         await updateDoc(teamRef, {
@@ -556,10 +513,10 @@ function initDomBindings() {
                 }
 
                 const timeStamp = Date.now();
-                const uploadPath = `preliminary_submissions/${file.name}_${timeStamp}`;
+                const uploadPath = `preliminary_submissions/${currentUserID}/${file.name}_${timeStamp}`;
                 const uploadRef = ref(STORAGE, uploadPath);
                 const snap = await uploadBytes(uploadRef, file);
-                const downloadURL = await getDownloadURL(snap.ref);
+                const downloadURL = snap.ref.fullPath;
 
                 // Tulis per field supaya final/rank/score dari compe manager tidak terhapus
                 await updateDoc(doc(DB, "Team", currentUserID), {
@@ -687,7 +644,7 @@ export async function loadPrelimCase(currentUserID) {
         console.log("Normalized user competition:", userCompetition);
 
         // Ambil seluruh dokumen Information
-        const infoRef = collection(DB, "Information");
+        const infoRef = query(collection(DB, "Information"), where("competition_name", "==", userCompetition));
         const infoSnap = await getDocs(infoRef);
 
         console.log("Total documents in Information:", infoSnap.size);
@@ -714,8 +671,8 @@ export async function loadPrelimCase(currentUserID) {
 
         // Link preliminary dan final dicek TERPISAH:
         // compe manager bisa mengunggah case final walau link preliminary belum ada.
-        const prelimUrl = safeUrl(matchedCase?.prelim_case_link)
-        const finalUrl = safeUrl(
+        const prelimUrl = privateStoragePathOf(matchedCase?.prelim_case_link)
+        const finalUrl = privateStoragePathOf(
             matchedCase?.final?.case_link ||
             matchedCase?.final_case_link ||
             matchedCase?.final?.final_case_link
@@ -737,14 +694,16 @@ function setCaseLink(anchor, url, unavailableMsg) {
     if (anchor === delCasePrelimLink) delCasePrelimLink = fresh
 
     if (url) {
-        fresh.href = url
+        fresh.href = '#'
+        fresh.dataset.privateStoragePath = url
         fresh.target = "_blank"
         fresh.rel = "noopener"
         fresh.innerText = "Download Case"
         fresh.style.color = ""
         fresh.style.pointerEvents = "auto"
     } else {
-        fresh.href = "javascript:void(0)"
+        fresh.href = '#'
+        delete fresh.dataset.privateStoragePath
         fresh.removeAttribute("target")
         fresh.innerText = "Case Not Available"
         fresh.style.color = "gray"
@@ -948,9 +907,9 @@ function submissionSummary (PrelimOverdue, PrelimSubmittedAt, PrelimFileURL) {
     if (delSubmissionStatus) delSubmissionStatus.textContent = PrelimOverdue || "No submission yet";
 
     if (delFileURL) {
-        const prelimLink = safeUrl(PrelimFileURL);
+        const prelimLink = privateStorageLink(PrelimFileURL, 'Open File', 'text-primary text-decoration-underline');
         if (prelimLink) {
-            delFileURL.innerHTML = `<a href="${esc(prelimLink)}" target="_blank" rel="noopener" class="text-primary text-decoration-underline">Open File</a>`;
+            delFileURL.innerHTML = prelimLink;
         } else {
             delFileURL.textContent = "No file uploaded";
         }
@@ -1799,7 +1758,7 @@ async function submitFinalRegistration(currentUID, formData, teamData) {
         const leaderPath = `finalreg_submissions/${currentUID}/leader_${timeStamp}`;
         const leaderRef = ref(STORAGE, leaderPath);
         const uploadLeader = await uploadBytes(leaderRef, formData.leader.file);
-        leaderURL = await getDownloadURL(uploadLeader.ref);
+        leaderURL = uploadLeader.ref.fullPath;
     }
 
     // ==============================
@@ -1817,7 +1776,7 @@ async function submitFinalRegistration(currentUID, formData, teamData) {
         const memPath = `finalreg_submissions/${currentUID}/member_${i}_${timeStamp}`;
         const memRef = ref(STORAGE, memPath);
         const memSnap = await uploadBytes(memRef, mem.file);
-        const memURL = await getDownloadURL(memSnap.ref);
+            const memURL = memSnap.ref.fullPath;
         memberPaymentURLs.push(memURL);
     }
 
@@ -2018,9 +1977,9 @@ function checkSubmissionStatus(finalsubstatus,finalsubfileURL,finalsubsubmittedA
 
         const fileURL = document.getElementById('final-file-url');
         if (fileURL) {
-            const finalLink = safeUrl(finalsubfileURL);
+            const finalLink = privateStorageLink(finalsubfileURL, 'Open File', 'text-primary text-decoration-underline');
             if (finalLink) {
-                fileURL.innerHTML = `<a href="${esc(finalLink)}" target="_blank" rel="noopener" class="text-primary text-decoration-underline">Open File</a>`;
+                fileURL.innerHTML = finalLink;
             } else {
                 fileURL.textContent = "No file uploaded";
             }
