@@ -1,5 +1,5 @@
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-import { onSnapshot, collection, updateDoc, doc, serverTimestamp } from 'firebase/firestore'
+import { onSnapshot, collection, query, where, updateDoc, doc, serverTimestamp } from 'firebase/firestore'
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 
 import { DB, AUTH, STORAGE } from './index.js'
@@ -204,10 +204,10 @@ onAuthStateChanged(AUTH, (user) => {
         showTableMessage(el.prelimList, PRELIM_COLS, 'Loading data...')
         showTableMessage(el.finalList, FINAL_COLS, 'Loading data...')
 
-        unsubscribeTeams = onSnapshot(collection(DB, 'Team'), (snap) => {
+        const managerTeams = query(collection(DB, 'Team'), where('competition', '==', manager.competition))
+        unsubscribeTeams = onSnapshot(managerTeams, (snap) => {
             const teams = snap.docs
                 .map(d => ({ id: d.id, ...d.data() }))
-                .filter(t => normalizeCompetition(t.competition) === manager.competition)
                 .sort((a, b) => String(a.teamName ?? '').localeCompare(String(b.teamName ?? ''), 'id', { sensitivity: 'base' }))
 
             renderAll(teams)

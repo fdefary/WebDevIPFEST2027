@@ -2,25 +2,83 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
 
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
-    match /Team/{document=**} {
-      allow write: if true;
-      allow read: if request.auth != null && request.auth.uid in ["8RATH0TSrXNPZgHfLg6tALhlh933", "kFHGRVeBcGVa41JyHWiGqfK8Gdr2", "RWhQeiJMw4NQ5lq0gwNb68AZrnf2", "FLkRL8x7ljNqPPfAwpfu7FxYT8z1", "FyPOX3W8xXaOdxxHtSQXjf4Yf4E2", "1VDPRzEZW8OlFGizcQRGs3NJdmM2", "tfRjtv1VxgMfsGx0ik3PjAx0wTA3", "9dyh9cWOVAYGtRDl3XyvFsG2RMk1", "6xWoxoPFf7OWHaiiUihPUG4Xkjl1", "MfbiHNuVIydGAZUNQR5NCK13J9N2"]
+    function managerFor(competition) {
+      return signedIn()
+        && request.auth.token.get('email_verified', false) == true
+        && (
+          (competition == 'business case' && request.auth.token.get('email', '') == 'bcc.ipfest2027@gmail.com')
+          || (competition == 'geothermal development plan' && request.auth.token.get('email', '') == 'gdpc.ipfest2027@gmail.com')
+          || (competition == 'mud inovation' && request.auth.token.get('email', '') == 'mic.ipfest2027@gmail.com')
+          || (competition == 'oil rig design' && request.auth.token.get('email', '') == 'ordc.ipfest2027@gmail.com')
+          || (competition == 'plan of development' && request.auth.token.get('email', '') == 'podc.ipfest2027@gmail.com')
+          || (competition == 'paper and poster' && request.auth.token.get('email', '') == 'ppc.ipfest2027@gmail.com')
+          || (competition == 'smart competition' && request.auth.token.get('email', '') == 'sc.ipfest2027@gmail.com')
+          || (competition == 'well design' && request.auth.token.get('email', '') == 'wdc.ipfest2027@gmail.com')
+          || (competition == 'hackaton' && request.auth.token.get('email', '') == 'hc.ipfest2027@gmail.com')
+        );
     }
-    match /Team/{userId} {
-    	allow read, write: if request.auth != null && request.auth.uid == userId
+
+    function validOwnerCreate() {
+      return request.resource.data.keys().hasAll([
+          'competition', 'teamName', 'leader', 'members', 'status', 'payment_status'
+        ])
+        && request.resource.data.payment_status in ['unpaid', 'pending_verification']
+        && request.resource.data.status == 'pending'
+        && !request.resource.data.keys().hasAny([
+          'payment_verified_at', 'payment_verified_by', 'sub_preliminary', 'sub_final'
+        ])
+        && (!request.resource.data.keys().hasAny(['final_reg'])
+          || request.resource.data.final_reg.get('paymentStatus', 'pending') == 'pending');
     }
-    match /Payment_Summary/{document=**} {
-    	allow read, write: if request.auth != null && request.auth.uid in ["8RATH0TSrXNPZgHfLg6tALhlh933", "kFHGRVeBcGVa41JyHWiGqfK8Gdr2", "RWhQeiJMw4NQ5lq0gwNb68AZrnf2", "FLkRL8x7ljNqPPfAwpfu7FxYT8z1", "FyPOX3W8xXaOdxxHtSQXjf4Yf4E2", "1VDPRzEZW8OlFGizcQRGs3NJdmM2", "tfRjtv1VxgMfsGx0ik3PjAx0wTA3", "9dyh9cWOVAYGtRDl3XyvFsG2RMk1", "6xWoxoPFf7OWHaiiUihPUG4Xkjl1", "MfbiHNuVIydGAZUNQR5NCK13J9N2"] 
+
+    function validOwnerUpdate() {
+      let changed = request.resource.data.diff(resource.data).affectedKeys();
+      let oldPrelim = resource.data.get('sub_preliminary', {});
+      let newPrelim = request.resource.data.get('sub_preliminary', {});
+      let oldFinalReg = resource.data.get('final_reg', {});
+      let newFinalReg = request.resource.data.get('final_reg', {});
+      return changed.hasOnly([
+          'teamName', 'leader', 'members', 'payment', 'final_reg',
+          'sub_preliminary', 'sub_final', 'sub_abstract'
+        ])
+        && request.resource.data.get('payment_status', null) == resource.data.get('payment_status', null)
+        && request.resource.data.get('payment_verified_at', null) == resource.data.get('payment_verified_at', null)
+        && request.resource.data.get('payment_verified_by', null) == resource.data.get('payment_verified_by', null)
+        && newPrelim.diff(oldPrelim).affectedKeys().hasOnly(['fileURL', 'submittedAt', 'status', 'overdue'])
+        && newPrelim.get('final', null) == oldPrelim.get('final', null)
+        && newPrelim.get('rank', null) == oldPrelim.get('rank', null)
+        && newPrelim.get('score', null) == oldPrelim.get('score', null)
+        && newFinalReg.get('paymentStatus', 'pending') == 'pending'
+        && newFinalReg.get('verifiedAt', null) == oldFinalReg.get('verifiedAt', null)
+        && newFinalReg.get('verifiedBy', null) == oldFinalReg.get('verifiedBy', null);
+    }
+
+    function validManagerUpdate() {
+      let oldPrelim = resource.data.get('sub_preliminary', {});
+      let newPrelim = request.resource.data.get('sub_preliminary', {});
+      let changedPrelim = newPrelim.diff(oldPrelim).affectedKeys();
+      return request.resource.data.diff(resource.data).affectedKeys().hasOnly(['sub_preliminary'])
+        && changedPrelim.hasOnly(['final', 'rank', 'score'])
+        && (!changedPrelim.hasAny(['final']) || newPrelim.get('final', null) == null || newPrelim.final is bool)
+        && (!changedPrelim.hasAny(['rank']) || newPrelim.get('rank', null) == null
+          || (newPrelim.rank is int && newPrelim.rank >= 1 && newPrelim.rank <= 10000))
+        && (!changedPrelim.hasAny(['score']) || newPrelim.get('score', null) == null
+          || (newPrelim.score is number && newPrelim.score >= 0 && newPrelim.score <= 250));
+    }
+
+    match /Team/{teamId} {
+      allow get: if signedIn()
+        && (request.auth.uid == teamId || managerFor(resource.data.competition));
+      allow list: if signedIn() && managerFor(resource.data.competition);
+      allow create: if signedIn() && request.auth.uid == teamId && validOwnerCreate();
+      allow update: if signedIn() && (
+        (request.auth.uid == teamId && validOwnerUpdate())
+        || (managerFor(resource.data.competition) && validManagerUpdate())
+      );
     }
   }
 }

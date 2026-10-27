@@ -30,6 +30,26 @@ for (const file of htmlFiles(path.join(root, 'public'))) {
   assert(!/\bsrc\/[^"']+\.js/.test(readFileSync(file, 'utf8')), `HTML must load built bundles, not source: ${path.relative(root, file)}`);
 }
 
+const competitionManager = readFileSync(path.join(root, 'src/compe-manager.js'), 'utf8');
+assert.match(competitionManager, /query\(collection\(DB, 'Team'\), where\('competition', '==', manager\.competition\)\)/);
+
+const registrationSource = readFileSync(path.join(root, 'src/registration.js'), 'utf8');
+assert.match(registrationSource, /payments\/\$\{user\.uid\}\/\$\{Date\.now\(\)\}_/);
+assert.ok(registrationSource.indexOf('createUserWithEmailAndPassword(AUTH, email, password)') < registrationSource.indexOf('payments/${user.uid}/'), 'Payment upload must happen after Auth user creation');
+
+const delegates = readFileSync(path.join(root, 'src/delegates.js'), 'utf8');
+assert.match(delegates, /preliminary_submissions\/\$\{currentUserID\}\//);
+
+const scManager = readFileSync(path.join(root, 'src/compe-manager-sc.js'), 'utf8');
+assert.match(scManager, /escapeHTML\(/);
+assert.doesNotMatch(scManager, /\$\{(?:teamName|univ|compe|leader\.\w+|m\.\w+)\}/);
+
+const merchManager = readFileSync(path.join(root, 'src/merchmanager.js'), 'utf8');
+assert.match(merchManager, /escapeHTML\(/);
+assert.match(merchManager, /safeHttpUrl\(/);
+assert.doesNotMatch(merchManager, /\$\{data\.customer_info\?\.\w+\s*\|\|\s*"-"\}/);
+assert.doesNotMatch(merchManager, /href="\$\{data\.files\?\./);
+
 for (const [file, code] of [['400.html', '400'], ['404.html', '404']]) {
   const html = readFileSync(path.join(root, 'public', file), 'utf8');
   assert(!/<nav\b/i.test(html), `${file} should not include a header`);

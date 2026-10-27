@@ -370,15 +370,15 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!emailRegex.test(email)) throw new Error("Invalid email address");
       if (password.length < 8) throw new Error("Password must be at least 8 characters");
 
+      // Buat user terlebih dahulu agar unggahan bisa disimpan di folder pemilik.
+      const { user } = await createUserWithEmailAndPassword(AUTH, email, password);
+
       // Upload bukti pembayaran (jika ada)
       const paymentFile = document.getElementById("payment-proof")?.files[0];
       let paymentProofUrl = null;
       if (paymentFile) {
-        paymentProofUrl = await uploadFile(paymentFile, `payments/${Date.now()}_${paymentFile.name}`);
+        paymentProofUrl = await uploadFile(paymentFile, `payments/${user.uid}/${Date.now()}_${paymentFile.name}`);
       }
-
-      // Buat user auth di Firebase Authentication
-      const { user } = await createUserWithEmailAndPassword(AUTH, email, password);
 
       // Upload file leader ke Firebase Storage
       const leaderUploads = {};

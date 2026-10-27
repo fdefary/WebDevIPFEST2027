@@ -556,7 +556,7 @@ function initDomBindings() {
                 }
 
                 const timeStamp = Date.now();
-                const uploadPath = `preliminary_submissions/${file.name}_${timeStamp}`;
+                const uploadPath = `preliminary_submissions/${currentUserID}/${file.name}_${timeStamp}`;
                 const uploadRef = ref(STORAGE, uploadPath);
                 const snap = await uploadBytes(uploadRef, file);
                 const downloadURL = await getDownloadURL(snap.ref);

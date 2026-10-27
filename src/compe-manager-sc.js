@@ -33,6 +33,10 @@ const compeManagerEmail = {
 // =========================
 let switchCompetition = null;
 
+const escapeHTML = (value) => String(value ?? "-").replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+}[char]));
+
 onAuthStateChanged(AUTH, (user) => {
     if (!user) return (window.location.href = "../../login.html");
 
@@ -131,21 +135,21 @@ function createTeamList(rowNo, teamName, univ, compe, leader, members, paymentSt
     const leaderRow = document.createElement("tr")
     leaderRow.innerHTML = `
         <td rowspan="${totalMembers}">${rowNo}</td>
-        <td rowspan="${totalMembers}">${teamName}</td>
-        <td rowspan="${totalMembers}">${univ}</td>
-        <td rowspan="${totalMembers}">${compe}</td>
-        <td rowspan="${totalMembers}">${paymentStatus}</td>
+        <td rowspan="${totalMembers}">${escapeHTML(teamName)}</td>
+        <td rowspan="${totalMembers}">${escapeHTML(univ)}</td>
+        <td rowspan="${totalMembers}">${escapeHTML(compe)}</td>
+        <td rowspan="${totalMembers}">${escapeHTML(paymentStatus)}</td>
         <td rowspan="${totalMembers}">${totalMembers}</td>
 
-        <td>${leader.firstName}</td>
-        <td>${leader.lastName}</td>
-        <td>${leader.gender ?? leader.sex ?? "-"}</td>
-        <td>${leader.major}</td>
-        <td>${leader.batch}</td>
-        <td>${leader.idCard}</td>
-        <td>${leader.studentId}</td>
-        <td>${leader.phoneNo}</td>
-        <td>${leader.email}</td>
+        <td>${escapeHTML(leader.firstName)}</td>
+        <td>${escapeHTML(leader.lastName)}</td>
+        <td>${escapeHTML(leader.gender ?? leader.sex)}</td>
+        <td>${escapeHTML(leader.major)}</td>
+        <td>${escapeHTML(leader.batch)}</td>
+        <td>${escapeHTML(leader.idCard)}</td>
+        <td>${escapeHTML(leader.studentId)}</td>
+        <td>${escapeHTML(leader.phoneNo)}</td>
+        <td>${escapeHTML(leader.email)}</td>
     `
     delRelList.appendChild(leaderRow)
 
@@ -153,15 +157,15 @@ function createTeamList(rowNo, teamName, univ, compe, leader, members, paymentSt
     members.forEach(m => {
         const mRow = document.createElement("tr")
         mRow.innerHTML = `
-            <td>${m.firstName}</td>
-            <td>${m.lastName}</td>
-            <td>${m.gender ?? m.sex ?? "-"}</td>
-            <td>${m.major}</td>
-            <td>${m.batch}</td>
-            <td>${m.idCard}</td>
-            <td>${m.studentId}</td>
-            <td>${m.phoneNo}</td>
-            <td>${m.email}</td>
+            <td>${escapeHTML(m.firstName)}</td>
+            <td>${escapeHTML(m.lastName)}</td>
+            <td>${escapeHTML(m.gender ?? m.sex)}</td>
+            <td>${escapeHTML(m.major)}</td>
+            <td>${escapeHTML(m.batch)}</td>
+            <td>${escapeHTML(m.idCard)}</td>
+            <td>${escapeHTML(m.studentId)}</td>
+            <td>${escapeHTML(m.phoneNo)}</td>
+            <td>${escapeHTML(m.email)}</td>
         `
         delRelList.appendChild(mRow)
     })
@@ -200,8 +204,8 @@ function createPrelimSelectionRow(tableElement, teamId, rowNo, teamData, totalTe
     const staticCols = `
         <th scope="row" class="text-center">${rowNo}</th>
         <td>
-            <div class="fw-bold text-primary">${teamData.teamName || "No Name"}</div>
-            <div class="small text-muted">${teamData.leader?.university || "-"}</div>
+            <div class="fw-bold text-primary">${escapeHTML(teamData.teamName || "No Name")}</div>
+            <div class="small text-muted">${escapeHTML(teamData.leader?.university)}</div>
         </td>
     `;
     row.innerHTML = staticCols;
