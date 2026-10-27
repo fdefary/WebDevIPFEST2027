@@ -32,6 +32,7 @@ for (const file of htmlFiles(path.join(root, 'public'))) {
 
 const competitionManager = readFileSync(path.join(root, 'src/compe-manager.js'), 'utf8');
 assert.match(competitionManager, /query\(collection\(DB, 'Team'\), where\('competition', '==', manager\.competition\)\)/);
+assert.match(competitionManager, /ref\(ref\(caseStorage, manager\.competition\), `\$\{Date\.now\(\)\}_\$\{file\.name\}`\)/);
 
 const registrationSource = readFileSync(path.join(root, 'src/registration.js'), 'utf8');
 assert.match(registrationSource, /payments\/\$\{user\.uid\}\/\$\{Date\.now\(\)\}_/);

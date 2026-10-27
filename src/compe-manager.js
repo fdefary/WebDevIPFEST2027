@@ -481,7 +481,7 @@ function setupCaseUpload(form, { release, label, buildUpdate }) {
         sendBtn.disabled = true
         sendBtn.textContent = 'Uploading...'
         try {
-            const fileRef = ref(ref(caseStorage, manager.competition), file.name)
+            const fileRef = ref(ref(caseStorage, manager.competition), `${Date.now()}_${file.name}`)
             const snap = await uploadBytes(fileRef, file)
             const url = await getDownloadURL(snap.ref)
             await updateDoc(doc(DB, 'Information', infoDocId), buildUpdate(url))

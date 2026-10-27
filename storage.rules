@@ -36,38 +36,41 @@ service firebase.storage {
 
     function validUpload() {
       return request.resource != null
+        && resource == null
         && request.resource.size <= 20 * 1024 * 1024
-        && request.resource.contentType.matches('image/.*|application/.*');
+        && request.resource.contentType.matches(
+          'image/(jpeg|png|webp|heic|heif)|application/(pdf|zip|x-zip-compressed|vnd.rar|x-rar-compressed|msword|vnd.ms-powerpoint|vnd.ms-excel|vnd.openxmlformats-officedocument\\.(wordprocessingml\\.document|presentationml\\.presentation|spreadsheetml\\.sheet))'
+        );
     }
 
     match /Case/{competition}/{allPaths=**} {
       allow read: if managerFor(competition) || participantIn(competition);
-      allow write: if managerFor(competition) && validUpload();
+      allow create: if managerFor(competition) && validUpload();
     }
 
     match /team/{uid}/{allPaths=**} {
       allow read: if canReadTeamFiles(uid);
-      allow write: if signedIn() && request.auth.uid == uid && validUpload();
+      allow create: if signedIn() && request.auth.uid == uid && validUpload();
     }
 
     match /payments/{uid}/{allPaths=**} {
       allow read: if canReadTeamFiles(uid);
-      allow write: if signedIn() && request.auth.uid == uid && validUpload();
+      allow create: if signedIn() && request.auth.uid == uid && validUpload();
     }
 
     match /preliminary_submissions/{uid}/{allPaths=**} {
       allow read: if canReadTeamFiles(uid);
-      allow write: if signedIn() && request.auth.uid == uid && validUpload();
+      allow create: if signedIn() && request.auth.uid == uid && validUpload();
     }
 
     match /final_submissions/{uid}/{allPaths=**} {
       allow read: if canReadTeamFiles(uid);
-      allow write: if signedIn() && request.auth.uid == uid && validUpload();
+      allow create: if signedIn() && request.auth.uid == uid && validUpload();
     }
 
     match /finalreg_submissions/{uid}/{allPaths=**} {
       allow read: if canReadTeamFiles(uid);
-      allow write: if signedIn() && request.auth.uid == uid && validUpload();
+      allow create: if signedIn() && request.auth.uid == uid && validUpload();
     }
 
     match /{allPaths=**} {

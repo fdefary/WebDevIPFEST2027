@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import { after, before, beforeEach, describe, it } from 'node:test'
 import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing'
 import { collection, doc, getDoc, getDocs, query, setDoc, updateDoc, where } from 'firebase/firestore'
-import { ref, getBytes, uploadBytes } from 'firebase/storage'
+import { ref, deleteObject, getBytes, uploadBytes } from 'firebase/storage'
 
 const projectId = 'demo-ipfest-p0'
 let env
@@ -101,6 +101,9 @@ describe('Storage access', () => {
     await assertSucceeds(getBytes(ref(owner, 'team/owner/leader/id.jpg')))
     await assertFails(getBytes(ref(other, 'team/owner/leader/id.jpg')))
     await assertFails(uploadBytes(ref(other, 'team/owner/leader/id.jpg'), new Uint8Array([2]), { contentType: 'image/jpeg' }))
+    await assertFails(uploadBytes(ref(owner, 'team/owner/leader/id.jpg'), new Uint8Array([2]), { contentType: 'image/jpeg' }))
+    await assertFails(deleteObject(ref(owner, 'team/owner/leader/id.jpg')))
+    await assertFails(uploadBytes(ref(owner, 'team/owner/leader/payload.exe'), new Uint8Array([2]), { contentType: 'application/x-msdownload' }))
   })
 
   it('allows same-competition manager reads and restricts Case writes to its manager', async () => {
@@ -116,6 +119,8 @@ describe('Storage access', () => {
     await assertSucceeds(getBytes(ref(manager, 'team/bcc-team/leader/id.jpg')))
     await assertFails(getBytes(ref(wrongManager, 'team/bcc-team/leader/id.jpg')))
     await assertSucceeds(uploadBytes(ref(manager, 'Case/business case/case.pdf'), new Uint8Array([1]), { contentType: 'application/pdf' }))
+    await assertFails(uploadBytes(ref(manager, 'Case/business case/case.pdf'), new Uint8Array([2]), { contentType: 'application/pdf' }))
+    await assertFails(deleteObject(ref(manager, 'Case/business case/case.pdf')))
     await assertFails(uploadBytes(ref(wrongManager, 'Case/business case/case.pdf'), new Uint8Array([1]), { contentType: 'application/pdf' }))
     await assertSucceeds(getBytes(ref(owner, 'Case/business case/case.pdf')))
     await assertFails(getBytes(ref(owner, 'Case/smart competition/case.pdf')))
