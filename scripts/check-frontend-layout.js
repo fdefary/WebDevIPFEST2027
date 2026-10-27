@@ -63,12 +63,13 @@ assert.match(resetCss, /@media\(max-width:575\.98px\)/);
 const comingSoon = readFileSync(path.join(root, 'public/coming-soon.html'), 'utf8');
 const merchandise = readFileSync(path.join(root, 'public/merchandise.html'), 'utf8');
 const merchandiseCatalog = readFileSync(path.join(root, 'public/merchandise-catalog.html'), 'utf8');
-assert.match(comingSoon, /static\/images\/ipfest_2027_mascot\.png/);
+assert.match(comingSoon, /static\/images\/Oii%20mikir\.PNG/);
+assert(statSync(path.join(root, 'public/static/images', 'Oii mikir.PNG')).isFile(), 'Missing Coming Soon mascot image');
 assert.match(readFileSync(path.join(root, 'public/static/css/coming-soon.css'), 'utf8'), /\.\.\/images\/ipfest-background\.jpg/);
 assert.doesNotMatch(comingSoon, /Merchandise|<nav\b/i);
 assert.match(merchandise, /class="coming-soon-page"/);
 assert.match(merchandise, /<h1[^>]*>Merchandise is not available yet<\/h1>/);
-assert.match(merchandise, /static\/images\/ipfest_2027_mascot\.png/);
+assert.match(merchandise, /static\/images\/Oii%20mikir\.PNG/);
 assert.match(merchandise, /static\/css\/coming-soon\.css/);
 assert.doesNotMatch(merchandise, /location\.replace|http-equiv="refresh"/);
 assert.match(merchandiseCatalog, /id="checkout-form"/);
@@ -81,7 +82,7 @@ for (const file of ['index.html', 'events/ipconvex.html', 'events/ipexpo.html', 
 }
 
 const notFound = readFileSync(path.join(root, 'public/404.html'), 'utf8');
-assert.match(notFound, /class="error-button error-button-secondary" href="https:\/\/wa\.me\/\+6289518593615">Contact Us/);
+assert.match(notFound, /class="error-button error-button-secondary" href="https:\/\/wa\.me\/\+6285136328278">Contact Us/);
 const notFoundCopy = notFound.match(/<p>We're sorry,[\s\S]*?<\/p>/)?.[0] ?? '';
 assert(notFoundCopy && !/<a\b/.test(notFoundCopy), '404 contact mention in the paragraph should not be a link');
 
