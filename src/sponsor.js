@@ -1,5 +1,18 @@
 // --- BAGIAN 1: DATABASE DATA
 const sponsorData = {
+    // ID: phe
+    "phe": {
+        title: "Pertamina Hulu Energi",
+        img: "static/images/sponsor/PHE_Horizontal_Warna.png",
+        desc: `PT Pertamina Hulu Energi (PHE) is the upstream oil and gas subholding of PT Pertamina (Persero). The company began as AOS, was renamed PT Pertahulu Energy in 2002, and has operated as PT Pertamina Hulu Energi since 2007.
+        <br><br>
+        In 2021, PHE was appointed as the Subholding Upstream following Pertamina's transformation into a holding structure. On 1 September 2021, PHE completed the Legal End-State by taking over all shares owned by PT Pertamina (Persero) in 11 upstream subsidiaries.
+        <br><br>
+        Acting as planner, rule maker, and validator for the subholding, PHE oversees upstream operations that are organized into five regional work areas, while each regional unit focuses on optimizing its operations.
+        <br><br>
+        <hr style="border-color: rgba(255,255,255,0.3);"> <strong>Website:</strong> <a href="https://phe.pertamina.com/" target="_blank" style="color: #4da6ff; text-decoration: underline;">phe.pertamina.com</a>`
+    },
+
     // ID: exxon (Sesuai HTML data-id="exxon")
     "exxon": {
         title: "ExxonMobil Indonesia",
