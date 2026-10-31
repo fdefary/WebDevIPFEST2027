@@ -13,6 +13,8 @@ import { DB, AUTH, STORAGE, FUNCTIONS } from './index.js'
 
 import { setToastAlert } from './shared/alert.js'
 import { getRoleClaims } from './shared/role-claims.js'
+import { privateStorageLink } from './shared/private-download.js'
+import { TEAM_DOCUMENTS } from './shared/team-documents.js'
 
 // =========================
 // Manager Mapping
@@ -36,6 +38,9 @@ let switchCompetition = null;
 const escapeHTML = (value) => String(value ?? "-").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[char]));
+const teamDocumentCells = (team, span) => TEAM_DOCUMENTS
+    .map(({ field }) => `<td rowspan="${span}">${privateStorageLink(team.teamDocuments?.[field], 'VIEW FILE', 'btn-view-file') || '-'}</td>`)
+    .join('')
 
 onAuthStateChanged(AUTH, async (user) => {
     if (!user) return (window.location.href = "../../login.html");
@@ -78,6 +83,22 @@ const delRelList = document.getElementById("delrel-team-list")
 let SCTeam = null
 
 const selectionList = document.getElementById("del-selection-list-prelim");
+const selectionPagination = document.getElementById("selection-pagination");
+const selectionPageInfo = document.getElementById("selection-page-info");
+const selectionPagePrev = document.getElementById("selection-page-prev");
+const selectionPageNext = document.getElementById("selection-page-next");
+const SELECTION_PAGE_SIZE = 20;
+let selectionTeams = [];
+let selectionPage = 1;
+
+selectionPagePrev.addEventListener("click", () => {
+    selectionPage--;
+    renderSelectionPage();
+});
+selectionPageNext.addEventListener("click", () => {
+    selectionPage++;
+    renderSelectionPage();
+});
 
 const waitCompetition = setInterval(() => {
     if (!switchCompetition) return;
@@ -87,38 +108,28 @@ const waitCompetition = setInterval(() => {
     SCTeam = query(collection(DB, 'Team'), where('competition', '==', switchCompetition));
 
     onSnapshot(SCTeam, (snap) => {
-        let teamDocs = snap.docs;
-        
-        const totalTeams = teamDocs.length; 
+        const teamDocs = snap.docs;
 
         // RESET TABEL 
         delRelList.innerHTML = '';
-        selectionList.innerHTML = ''; 
+        selectionTeams = teamDocs;
+        selectionPage = Math.min(selectionPage, Math.max(1, Math.ceil(selectionTeams.length / SELECTION_PAGE_SIZE)));
 
         teamDocs.forEach((team, index) => {
             let teamData = team.data();
-            let teamId = team.id; // 
-
             // --- A. Render Tabel Database Utama ---
             createTeamList(
                 index + 1,
                 teamData.teamName,
                 teamData.leader.university,
-                teamData.competition,
                 teamData.leader,
                 teamData.members ?? [],
-                teamData.payment_status === "verified" ? "Verified" : "Pending"
+                teamData.payment_status === "verified" ? "Verified" : "Pending",
+                teamData
             );
 
-            // --- B. Render Tabel Preliminary ---
-            createPrelimSelectionRow(
-                selectionList,  
-                teamId,         
-                index + 1,      
-                teamData,       
-                totalTeams      
-            );
         });
+        renderSelectionPage();
     });
 }, 100);
 
@@ -128,21 +139,20 @@ const waitCompetition = setInterval(() => {
 // ===============================
 
 
-function createTeamList(rowNo, teamName, univ, compe, leader, members, paymentStatus) {
+function createTeamList(rowNo, teamName, univ, leader, members, paymentStatus, teamData) {
 
     const totalMembers = members.length + 1
 
     // Leader row
     const leaderRow = document.createElement("tr")
     leaderRow.innerHTML = `
-        <td rowspan="${totalMembers}">${rowNo}</td>
-        <td rowspan="${totalMembers}">${escapeHTML(teamName)}</td>
-        <td rowspan="${totalMembers}">${escapeHTML(univ)}</td>
-        <td rowspan="${totalMembers}">${escapeHTML(compe)}</td>
-        <td rowspan="${totalMembers}">${escapeHTML(paymentStatus)}</td>
-        <td rowspan="${totalMembers}">${totalMembers}</td>
+        <td class="cm-team-cell" rowspan="${totalMembers}">${rowNo}</td>
+        <td class="cm-team-cell" rowspan="${totalMembers}">${escapeHTML(teamName)}</td>
+        <td class="cm-team-cell" rowspan="${totalMembers}">${escapeHTML(univ)}</td>
+        <td class="cm-team-cell" rowspan="${totalMembers}">${escapeHTML(paymentStatus)}</td>
+        <td class="cm-team-cell" rowspan="${totalMembers}">${totalMembers}</td>
 
-        <td>${escapeHTML(leader.firstName)}</td>
+        <td>${escapeHTML(leader.firstName)} <span class="cm-leader-tag">Leader</span></td>
         <td>${escapeHTML(leader.lastName)}</td>
         <td>${escapeHTML(leader.gender ?? leader.sex)}</td>
         <td>${escapeHTML(leader.major)}</td>
@@ -151,6 +161,7 @@ function createTeamList(rowNo, teamName, univ, compe, leader, members, paymentSt
         <td>${escapeHTML(leader.studentId)}</td>
         <td>${escapeHTML(leader.phoneNo)}</td>
         <td>${escapeHTML(leader.email)}</td>
+        ${teamDocumentCells(teamData, totalMembers)}
     `
     delRelList.appendChild(leaderRow)
 
@@ -187,6 +198,21 @@ excelConvertBtn.addEventListener("click", () => {
 // =========================
 // Function to Render Prelim Selection Row
 // =========================
+function renderSelectionPage() {
+    const totalPages = Math.max(1, Math.ceil(selectionTeams.length / SELECTION_PAGE_SIZE));
+    selectionPage = Math.min(Math.max(selectionPage, 1), totalPages);
+    const start = (selectionPage - 1) * SELECTION_PAGE_SIZE;
+    selectionList.replaceChildren();
+    selectionTeams.slice(start, start + SELECTION_PAGE_SIZE).forEach((team, index) => {
+        createPrelimSelectionRow(selectionList, team.id, start + index + 1, team.data(), selectionTeams.length);
+    });
+    selectionPagination.hidden = totalPages <= 1;
+    selectionPagination.classList.toggle("d-flex", totalPages > 1);
+    selectionPageInfo.textContent = `Page ${selectionPage} of ${totalPages}`;
+    selectionPagePrev.disabled = selectionPage === 1;
+    selectionPageNext.disabled = selectionPage === totalPages;
+}
+
 function createPrelimSelectionRow(tableElement, teamId, rowNo, teamData, totalTeams) {
     // Ambil data sub_preliminary (gunakan object kosong jika belum ada)
     const prelim = teamData.sub_preliminary || {};
@@ -218,13 +244,8 @@ function createPrelimSelectionRow(tableElement, teamId, rowNo, teamData, totalTe
     finalTd.className = "text-center";
     
     const finalSelect = document.createElement("select");
-    // Styling warna warni berdasarkan status
-    let finalClass = "btn-light border-secondary text-secondary"; // Pending styling
-    if (finalStatus === true) finalClass = "btn-success text-white";
-    else if (finalStatus === false) finalClass = "btn-danger text-white";
-
-    finalSelect.className = `form-select form-select-sm text-center fw-bold ${finalClass}`;
-    finalSelect.style.borderRadius = "20px"; // Rounded pill style
+    const finalClass = (status) => status === true ? 'status-passed' : status === false ? 'status-failed' : 'status-pending';
+    finalSelect.className = `form-select form-select-sm text-center fw-bold select-pill ${finalClass(finalStatus)}`;
     
     finalSelect.innerHTML = `
         <option value="pending" ${finalStatus === null || finalStatus === undefined ? "selected" : ""}>🕒 Pending</option>
@@ -241,10 +262,7 @@ function createPrelimSelectionRow(tableElement, teamId, rowNo, teamData, totalTe
             // Update Firestore
             await httpsCallable(FUNCTIONS, 'updateCompetitionResult')({ teamId, field: 'final', value: newStatus });
             // Update visual class tanpa reload
-            e.target.className = `form-select form-select-sm text-center fw-bold ${
-                newStatus === true ? "btn-success text-white" : 
-                (newStatus === false ? "btn-danger text-white" : "btn-light border-secondary text-secondary")
-            }`;
+            e.target.className = `form-select form-select-sm text-center fw-bold select-pill ${finalClass(newStatus)}`;
         } catch (err) {
             console.error("Error updating final status:", err);
             alert("Gagal mengupdate status.");
@@ -260,7 +278,7 @@ function createPrelimSelectionRow(tableElement, teamId, rowNo, teamData, totalTe
     rankTd.className = "text-center";
 
     const rankSelect = document.createElement("select");
-    rankSelect.className = "form-select form-select-sm text-center";
+    rankSelect.className = "form-select form-select-sm text-center select-pill";
     
     // Opsi Default
     let rankOptions = `<option value="0" class="text-muted">- Rank -</option>`;

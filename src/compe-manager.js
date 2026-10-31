@@ -5,6 +5,7 @@ import { ref, uploadBytes } from 'firebase/storage'
 
 import { DB, AUTH, STORAGE, FUNCTIONS } from './index.js'
 import { privateStorageLink } from './shared/private-download.js'
+import { TEAM_DOCUMENTS } from './shared/team-documents.js'
 import { getRoleClaims } from './shared/role-claims.js'
 
 // =====================================================================
@@ -44,25 +45,11 @@ const CASE_INFO_DOC = {
     'hackaton':                    '6gRhBNQ5yjBMg1tbK66d'
 }
 
-const COMPETITION_FULL_NAME = {
-    'business case': 'Business Case Competition',
-    'geothermal development plan': 'Geothermal Development Plan Competition',
-    'mud inovation': 'Mud Innovation Competition',
-    'oil rig design': 'Oil Rig Design Competition',
-    'plan of development': 'Plan of Development Competition',
-    'paper and poster': 'Paper and Poster Competition',
-    'smart competition': 'Smart Competition',
-    'well design': 'Well Design Competition',
-    'hackaton': 'Hackathon Competition'
-}
-
 const MAX_PRELIM_SCORE = 100
 
 // =====================================================================
 //   HELPERS
 // =====================================================================
-const normalizeCompetition = (value = '') => String(value).trim().toLowerCase()
-
 // Escape supaya data dari Firestore tidak dirender sebagai HTML; nilai kosong jadi "-"
 const esc = (value) => {
     if (value === undefined || value === null || value === '') return '-'
@@ -92,6 +79,12 @@ const fileCell = (url) => {
         : `<span class="badge-ipfest cm-badge-empty">NO FILE</span>`
 }
 
+const twibbonCell = (person = {}) => privateStorageLink(person.twibbonUrl, 'VIEW FILE', 'btn-view-file') || '-'
+const followIgCell = (person = {}) => privateStorageLink(person.followIgUrl, 'VIEW IG PROOF', 'btn-view-file') || '-'
+const teamDocumentCells = (team, span) => TEAM_DOCUMENTS
+    .map(({ field }) => `<td rowspan="${span}">${fileCell(team.teamDocuments?.[field])}</td>`)
+    .join('')
+
 const submissionBadge = (submitted, overdue) => {
     if (!submitted) return `<span class="badge-ipfest cm-badge-empty">EMPTY</span>`
     return overdue === 'no'
@@ -110,7 +103,7 @@ const fileSafeName = (s) => String(s || 'competition').replace(/[^\w-]+/g, '_')
 // (tanpa ini, dropdown Rank akan tertulis "RANK#1#2#3..." di Excel)
 const tableForExport = (table) => {
     const copy = table.cloneNode(true)
-    copy.querySelectorAll('a').forEach(a => a.replaceWith(document.createTextNode(a.getAttribute('href') || a.textContent)))
+    copy.querySelectorAll('a').forEach(a => a.replaceWith(document.createTextNode(a.dataset.privateStoragePath || a.getAttribute('href') || a.textContent)))
     const originals = table.querySelectorAll('select, input')
     copy.querySelectorAll('select, input').forEach((field, i) => {
         const src = originals[i]
@@ -166,7 +159,7 @@ const el = {
     logoutBtn:          document.getElementById('logout-btn')
 }
 
-const DB_COLS = 15
+const DB_COLS = 21
 const PRELIM_COLS = 8
 const FINAL_COLS = 5
 
@@ -253,6 +246,8 @@ const personCells = (p = {}, isLeader = false) => `
     <td>${esc(p.studentId)}</td>
     <td>${esc(p.phoneNo)}</td>
     <td>${esc(p.email)}</td>
+    <td>${twibbonCell(p)}</td>
+    <td>${followIgCell(p)}</td>
 `
 
 function renderDatabase(teams) {
@@ -272,13 +267,13 @@ function renderDatabase(teams) {
         leaderRow.dataset.teamId = team.id
         leaderRow.className = 'cm-leader-row'
         leaderRow.innerHTML = `
-            <td rowspan="${span}">${i + 1}</td>
-            <td rowspan="${span}">${esc(team.teamName)}</td>
-            <td rowspan="${span}">${esc(team.leader?.university)}</td>
-            <td rowspan="${span}">${esc(COMPETITION_FULL_NAME[normalizeCompetition(team.competition)] ?? team.competition)}</td>
-            <td rowspan="${span}"><span class="badge-ipfest ${verified ? 'bg-success text-white' : 'cm-badge-pending'}">${verified ? 'Verified' : 'Pending'}</span></td>
-            <td rowspan="${span}">${span}</td>
+            <td class="cm-team-cell" rowspan="${span}">${i + 1}</td>
+            <td class="cm-team-cell" rowspan="${span}">${esc(team.teamName)}</td>
+            <td class="cm-team-cell" rowspan="${span}">${esc(team.leader?.university)}</td>
+            <td class="cm-team-cell" rowspan="${span}"><span class="badge-ipfest ${verified ? 'bg-success text-white' : 'cm-badge-pending'}">${verified ? 'Verified' : 'Pending'}</span></td>
+            <td class="cm-team-cell" rowspan="${span}">${span}</td>
             ${personCells(team.leader, true)}
+            ${teamDocumentCells(team, span)}
         `
         fragment.appendChild(leaderRow)
 

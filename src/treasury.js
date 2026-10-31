@@ -5,23 +5,11 @@ import { httpsCallable } from 'firebase/functions'
 import { DB, AUTH, FUNCTIONS } from './index.js'
 import { privateStorageLink } from './shared/private-download.js'
 import { getRoleClaims } from './shared/role-claims.js'
+import { registrationPriceAt } from './shared/registration-pricing.js'
 
 // =====================================================================
 //   IPFEST 2027 CONFIG — cek dan isi bagian bertanda TODO
 // =====================================================================
-
-// Biaya registrasi per tim (IDR), sama dengan treasury.js versi 2026.
-// TODO: pastikan nominal ini masih berlaku untuk IPFEST 2027.
-// Kalau dokumen Team punya field angka `payment_amount`, angka itu yang dipakai.
-const REGISTRATION_FEE = {
-    normal: 250000,
-    earlyBird: 200000
-}
-
-// Batas early bird, dicocokkan dengan Team.join_on.
-// Versi 2026 memakai 16 Nov 2025; di sini digeser satu tahun.
-// TODO: pastikan tanggal early bird IPFEST 2027.
-const EARLY_BIRD_DEADLINE = new Date('2026-11-16T23:59:59+07:00')
 
 // TODO: kurs untuk pembayaran Paypal (USD) agar bisa dijumlah dalam Rupiah
 const USD_TO_IDR = 16000
@@ -73,6 +61,9 @@ const esc = (value) => {
 const linkCell = (value, label = 'View') => {
     return privateStorageLink(value, label) || '-'
 }
+const teamFileLinks = (team, field) => [team.leader, ...(Array.isArray(team.members) ? team.members : [])]
+    .map((person, index) => `<div>${index === 0 ? 'Leader' : `Member ${index}`}: ${linkCell(person?.[field])}</div>`)
+    .join('')
 
 const toDate = (ts) => {
     if (!ts) return null
@@ -116,18 +107,13 @@ const competitionName = (t) => {
 const finalStatusOf = (t) => String(t.final_reg?.paymentStatus ?? 'pending').toLowerCase()
 
 const isEarlyBird = (t) => {
-    const flag = t.early_bird ?? t.earlyBird ?? t.isEarlyBird
-    if (typeof flag === 'boolean') return flag
-    if (typeof flag === 'string') return ['yes', 'true', 'early bird'].includes(flag.toLowerCase())
     const joined = toDate(joinedAtOf(t))
-    if (EARLY_BIRD_DEADLINE && joined) return joined <= EARLY_BIRD_DEADLINE
-    return null
+    return joined ? registrationPriceAt(joined)?.tier === 'Early Bird' : null
 }
 
 const regFeeOf = (t) => {
     if (typeof t.payment_amount === 'number') return t.payment_amount
-    const fee = isEarlyBird(t) ? REGISTRATION_FEE.earlyBird : REGISTRATION_FEE.normal
-    return typeof fee === 'number' ? fee : null
+    return registrationPriceAt(toDate(joinedAtOf(t)))?.amount ?? null
 }
 
 // Uang final yang sudah DIVERIFIKASI untuk satu tim (IDR).
@@ -203,7 +189,7 @@ const el = {
     logoutBtn:      document.getElementById('logout-btn')
 }
 
-const REG_COLS = 8
+const REG_COLS = 10
 const FINAL_COLS = 12
 
 let unsubscribeTeams = null
@@ -259,7 +245,7 @@ function renderDashboard(teams) {
     const regKnown = regFees.every(f => typeof f === 'number')
     const regTotal = regKnown ? regFees.reduce((a, b) => a + b, 0) : null
     if (!regKnown && verified.length > 0) {
-        console.warn('Biaya registrasi belum diatur. Isi REGISTRATION_FEE di src/treasury.js.')
+        console.warn('Biaya registrasi belum tersedia untuk sebagian tim.')
     }
 
     const finTotal = teams.reduce((sum, t) => sum + finalFeeOf(t), 0)
@@ -300,6 +286,8 @@ function renderVerification(teams) {
             <td>${esc(competitionName(t))}</td>
             <td>${formatDate(joinedAtOf(t))}</td>
             <td>${eb === null ? '-' : eb ? 'Yes' : 'No'}</td>
+            <td>${teamFileLinks(t, 'twibbonUrl')}</td>
+            <td>${teamFileLinks(t, 'followIgUrl')}</td>
             <td>${linkCell(regProofOf(t))}</td>
             <td>${statusSelect(REG_STATUSES, current, `data-team-id="${esc(t.id)}" data-kind="reg"`, regStatusClass)}</td>
         `

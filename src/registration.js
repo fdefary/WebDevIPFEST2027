@@ -12,6 +12,8 @@ import { ref, uploadBytes } from 'firebase/storage';
 // Import Firebase SDK initialization
 import { AUTH, STORAGE, DB } from './index.js';
 import { firstInvalidRegistrationStep } from './shared/registration-fields.js';
+import { registrationPriceAt } from './shared/registration-pricing.js';
+import { TEAM_DOCUMENTS, isValidTeamDocumentFile, teamDocumentPath } from './shared/team-documents.js';
 
 // Daftar kompetisi dan jumlah anggota yang valid
 const teamMemberCondition = {
@@ -76,11 +78,11 @@ function generateMemberEntry(entry, count) {
           <div class="col-md-6">
             <label for="batch${i}" class="form-label">Class year</label>
             <select name="batch${i}" id="batch${i}" class="form-select" required>
+              <option value="2026">2026</option>
               <option value="2025">2025</option>
               <option value="2024">2024</option>
               <option value="2023">2023</option>
               <option value="2022">2022</option>
-              <option value="2021">2021</option>
             </select>
             <div class="invalid-feedback">Select member ${i}'s class year.</div>
           </div>
@@ -113,28 +115,6 @@ function generateMemberEntry(entry, count) {
           </div>
         </div>
           </fieldset>
-          <fieldset class="registration-subsection">
-            <legend>Required Documents</legend>
-        <div class="row my-1">
-          <div class="col-md-6">
-            <label for="studentCardPhoto${i}" class="form-label">Student ID card photo</label>
-            <input type="file" name="studentCardPhoto${i}" id="studentCardPhoto${i}" class="form-control" required>
-            <div class="invalid-feedback">Upload member ${i}'s student ID card photo.</div>
-          </div>
-          <div class="col-md-6">
-            <label for="twibbon${i}" class="form-label">Twibbon proof</label>
-            <input type="file" name="twibbon${i}" id="twibbon${i}" class="form-control" required>
-            <div class="invalid-feedback">Upload the Twibbon proof for member ${i}.</div>
-          </div>
-        </div>
-        <div class="row my-1">
-          <div class="col-md-6">
-            <label for="follow-ig${i}" class="form-label">Proof of following IPFEST on Instagram</label>
-            <input type="file" name="follow-ig${i}" id="follow-ig${i}" class="form-control" required>
-            <div class="invalid-feedback">Upload proof that member ${i} follows IPFEST on Instagram.</div>
-          </div>
-        </div>
-          </fieldset>
         </div>
       </div>
     `;
@@ -144,10 +124,10 @@ function generateMemberEntry(entry, count) {
 }
 
 // Fungsi upload file ke Firebase Storage
-async function uploadFile(file, path) {
+async function uploadFile(file, path, contentType = file?.type) {
   if (!file) return null;
   const fileRef = ref(STORAGE, path);
-  await uploadBytes(fileRef, file);
+  await uploadBytes(fileRef, file, contentType ? { contentType } : undefined);
   return fileRef.fullPath;
 }
 
@@ -249,13 +229,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const selectedCompetition = card.dataset.value;
 
-      // Disable Smart Competition
-      if (selectedCompetition === "smart competition") {
-        card.classList.add("disabled");
-        alert("Smart Competition registration is closed.");
-        return;
-      }
-
       document.querySelectorAll(".card-compe").forEach(c => {
         c.classList.remove('active');
         c.setAttribute("aria-pressed", "false");
@@ -280,11 +253,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Handle metode pembayaran
-  function earlybirdStatus() {
-    const earlybirdDeadline = new Date('Nov 17, 2025 00:00:00').getTime();
-    return Date.now() < earlybirdDeadline;
-  }
-
   const paymentMethods = [...document.querySelectorAll(".payment-method .nav-link")];
   const showPaymentMethod = (method) => {
       const payMethod = method.dataset.method;
@@ -300,19 +268,20 @@ document.addEventListener("DOMContentLoaded", () => {
         panel.hidden = panel !== targetPane;
       });
 
-      const isEarly = earlybirdStatus();
-      const indoPrice = isEarly ? "IDR 200.000" : "IDR 250.000";
-      const intlPrice = isEarly ? "USD 17" : "USD 20";
+      const price = registrationPriceAt(new Date());
+      const indoPrice = `IDR ${price.amount.toLocaleString('id-ID')}`;
+      const intlPrice = `USD ${Math.ceil(price.amount / 16000)}`;
+      const total = `<div class="payment-total"><span>Total payment — ${price.tier}</span><strong>${indoPrice}</strong></div>`;
 
       switch (payMethod) {
         case "Bank BCA":
-          targetPane.innerHTML = `<div class="payment-total"><span>Total payment</span><strong>${indoPrice}</strong></div><p>Transfer to BCA account <strong>2650508800</strong> under the name <strong>Mochammad Rafly Ghazany A</strong>.</p>`;
+          targetPane.innerHTML = `${total}<p>Transfer to BCA account <strong>2650508800</strong> under the name <strong>Mochammad Rafly Ghazany A</strong>.</p>`;
           break;
         case "Gopay":
-          targetPane.innerHTML = `<div class="payment-total"><span>Total payment</span><strong>${indoPrice}</strong></div><p>Send GoPay to <strong>085655226900</strong> under the name <strong>Rafly Ghazany</strong>.</p>`;
+          targetPane.innerHTML = `${total}<p>Send GoPay to <strong>085655226900</strong> under the name <strong>Rafly Ghazany</strong>.</p>`;
           break;
         case "Paypal":
-          targetPane.innerHTML = `<div class="payment-total"><span>Total payment</span><strong>${intlPrice}</strong></div><p>Pay through <a href="https://www.paypal.me/RaflyGhazany" target="_blank" rel="noopener noreferrer">paypal.me/RaflyGhazany</a>.</p>`;
+          targetPane.innerHTML = `<div class="payment-total"><span>Total payment — ${price.tier} (approx.)</span><strong>${intlPrice}</strong></div><p>Pay through <a href="https://www.paypal.me/RaflyGhazany" target="_blank" rel="noopener noreferrer">paypal.me/RaflyGhazany</a>.</p>`;
           break;
       }
   };
@@ -362,17 +331,27 @@ document.addEventListener("DOMContentLoaded", () => {
       const phoneNo = document.getElementById("phoneNo")?.value;
       const idCard = document.getElementById("idCard")?.value;
       const studentId = document.getElementById("studentId")?.value;
-      const studentCardFile = document.getElementById("studentCardPhoto")?.files[0];
-      const twibbonFile = document.getElementById("twibbon")?.files[0];
-      const followIgFile = document.getElementById("follow-ig")?.files[0];
+      const teamDocumentFiles = Object.fromEntries(TEAM_DOCUMENTS.map(definition => [
+        definition.field,
+        document.getElementById(definition.inputId)?.files[0]
+      ]));
 
       // Validasi dasar
       if (
         !email || !password || !firstName || !lastName || !major || !gender || !batch ||
-        !teamName || !university || !phoneNo || !idCard || !studentId ||
-        !studentCardFile || !twibbonFile || !followIgFile
+        !teamName || !university || !phoneNo || !idCard || !studentId
       ) {
         throw new Error("All leader fields are required");
+      }
+      for (const definition of TEAM_DOCUMENTS) {
+        const file = teamDocumentFiles[definition.field];
+        if (!file) throw new Error(`Upload the required ${definition.label} PDF.`);
+        if ((file.type && file.type !== 'application/pdf') || !file.name.toLowerCase().endsWith('.pdf')) {
+          throw new Error(`${definition.label} must be a PDF file.`);
+        }
+        if (!await isValidTeamDocumentFile(file)) {
+          throw new Error(`${definition.label} must be a valid PDF file under 20 MiB.`);
+        }
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -389,14 +368,14 @@ document.addEventListener("DOMContentLoaded", () => {
         paymentProofUrl = await uploadFile(paymentFile, `payments/${user.uid}/${Date.now()}_${paymentFile.name}`);
       }
 
-      // Upload file leader ke Firebase Storage
-      const leaderUploads = {};
-      if (studentCardFile)
-        leaderUploads.studentCardUrl = await uploadFile(studentCardFile, `team/${user.uid}/leader/student_card.jpg`);
-      if (twibbonFile)
-        leaderUploads.twibbonUrl = await uploadFile(twibbonFile, `team/${user.uid}/leader/twibbon.jpg`);
-      if (followIgFile)
-        leaderUploads.followIgUrl = await uploadFile(followIgFile, `team/${user.uid}/leader/follow_ig.jpg`);
+      const teamDocuments = {};
+      for (const definition of TEAM_DOCUMENTS) {
+        teamDocuments[definition.field] = await uploadFile(
+          teamDocumentFiles[definition.field],
+          teamDocumentPath(user.uid, selectedCompetition, teamName, definition.suffix),
+          'application/pdf'
+        );
+      }
 
       // Siapkan data tim untuk Firestore
       const teamData = {
@@ -412,14 +391,14 @@ document.addEventListener("DOMContentLoaded", () => {
           university,
           phoneNo,
           idCard,
-          studentId,
-          ...leaderUploads // gunakan hasil upload (URL)
+          studentId
         },
         members: [],
         join_on: serverTimestamp(),
         status: "pending",
         payment_status: paymentProofUrl ? "pending_verification" : "unpaid"
       };
+      teamData.teamDocuments = teamDocuments;
 
       if (paymentProofUrl) {
         teamData.payment = {
@@ -457,22 +436,13 @@ document.addEventListener("DOMContentLoaded", () => {
           phoneNo: mPhoneNo
         };
 
-        // Upload file anggota (jika ada)
-        const studentCard = document.getElementById(`studentCardPhoto${i}`)?.files[0];
-        const twibbon = document.getElementById(`twibbon${i}`)?.files[0];
-        const followIg = document.getElementById(`follow-ig${i}`)?.files[0];
-
-        if (studentCard)
-          member.studentCardUrl = await uploadFile(studentCard, `team/${user.uid}/member${i}/student_card.jpg`);
-        if (twibbon)
-          member.twibbonUrl = await uploadFile(twibbon, `team/${user.uid}/member${i}/twibbon.jpg`);
-        if (followIg)
-          member.followIgUrl = await uploadFile(followIg, `team/${user.uid}/member${i}/follow_ig.jpg`);
-
         teamData.members.push(member);
       }
 
       // Simpan ke Firestore
+      const registrationPrice = registrationPriceAt(new Date());
+      if (!registrationPrice) throw new Error('Could not determine the registration fee. Please try again.');
+      teamData.payment_amount = registrationPrice.amount;
       await setDoc(doc(DB, "Team", user.uid), teamData);
 
       // Kirim verifikasi email

@@ -3,6 +3,7 @@ import { onSnapshot, collection } from 'firebase/firestore'
 
 import { DB, AUTH } from './index.js'
 import { privateStorageLink } from './shared/private-download.js'
+import { TEAM_DOCUMENTS } from './shared/team-documents.js'
 import { getRoleClaims } from './shared/role-claims.js'
 
 // ===============================
@@ -85,7 +86,7 @@ const statusInfo = (raw) => {
 
 const statusBadge = (raw) => {
     const { label, cls } = statusInfo(raw)
-    return `<span class="pay-badge pay-${cls}">${label}</span>`
+    return `<span class="pay-badge pay-${cls}${cls === 'pending' ? ' cm-badge-pending' : ''}">${label}</span>`
 }
 
 // Urutkan per kompetisi (sesuai urutan COMPETITIONS), lalu nama tim
@@ -151,7 +152,7 @@ onAuthStateChanged(AUTH, async (user) => {
     }
 
     if (!unsubscribeTeams) {
-        showTableMessage(delRelList, 16, 'Loading data...')
+        showTableMessage(delRelList, 21, 'Loading data...')
         showTableMessage(treasuryList, PAYMENT_COLS, 'Loading data...')
         unsubscribeTeams = onSnapshot(collection(DB, 'Team'), (snap) => {
             const teams = sortTeams(snap.docs.map(d => ({ id: d.id, ...d.data() })))
@@ -163,7 +164,7 @@ onAuthStateChanged(AUTH, async (user) => {
             const msg = err.code === 'permission-denied'
                 ? 'Akun ini tidak punya izin membaca data tim.'
                 : 'Gagal memuat data tim. Coba muat ulang halaman.'
-            showTableMessage(delRelList, 16, msg)
+            showTableMessage(delRelList, 21, msg)
             showTableMessage(treasuryList, PAYMENT_COLS, msg)
             if (totalTeamsEl) totalTeamsEl.textContent = msg
         })
@@ -285,11 +286,14 @@ const studentCardOf = (person) => person.studentCardUrl ?? person.studentCardURL
 const studentCardCell = (person) => {
     return privateStorageLink(studentCardOf(person), 'View', 'link-info link-offset-2') || '-'
 }
+const teamDocumentCells = (team, rows) => TEAM_DOCUMENTS
+    .map(({ field, label }) => `<td rowspan="${rows}">${privateStorageLink(team.teamDocuments?.[field], 'View ' + label, 'link-info link-offset-2') || '-'}</td>`)
+    .join('')
 
 // Urutan kolom orang mengikuti thead:
 // First Name, Last Name, Sex, Major, Batch, ID, Student ID, Phone, Email, Student Card
-const personCells = (p, fmt = COMPETITION_FORMAT.default) => `
-    <td>${esc(p.firstName)}</td>
+const personCells = (p, fmt = COMPETITION_FORMAT.default, isLeader = false) => `
+    <td>${esc(p.firstName)}${isLeader ? ' <span class="cm-leader-tag">Leader</span>' : ''}</td>
     <td>${esc(p.lastName)}</td>
     <td>${esc(p.gender ?? p.sex)}</td>
     <td>${fmt.showMajor ? esc(p.major) : '-'}</td>
@@ -305,7 +309,7 @@ function renderDatabase(teams) {
     if (!delRelList) return
 
     if (teams.length === 0) {
-        showTableMessage(delRelList, 16, 'Belum ada tim yang terdaftar.')
+        showTableMessage(delRelList, 21, 'Belum ada tim yang terdaftar.')
         return
     }
 
@@ -318,7 +322,7 @@ function renderDatabase(teams) {
         const fmt = formatOf(team)
 
         const leaderRow = document.createElement('tr')
-        leaderRow.classList.add('leader-row')
+        leaderRow.classList.add('leader-row', 'cm-leader-row')
         leaderRow.innerHTML = `
             <td rowspan="${rows}">${index + 1}</td>
             <td rowspan="${rows}">${esc(team.teamName)}</td>
@@ -326,7 +330,8 @@ function renderDatabase(teams) {
             <td rowspan="${rows}">${esc(competitionName(team))}</td>
             <td rowspan="${rows}">${statusBadge(team.payment_status)}</td>
             <td rowspan="${rows}">${rows}</td>
-            ${personCells(leader, fmt)}
+            ${personCells(leader, fmt, true)}
+            ${teamDocumentCells(team, rows)}
         `
         fragment.appendChild(leaderRow)
 

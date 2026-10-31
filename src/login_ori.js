@@ -42,7 +42,6 @@ window.addEventListener("DOMContentLoaded", () => {
       const officialAccounts = [
         "officialdelegates.ipfest2026@gmail.com",
         "treasury.ipfest2026@gmail.com",
-        "event@ipfest2026.com",
         "podc.ipfest2026@gmail.com",
         "mic.ipfest2026@gmail.com",
         "ppc.ipfest2026@gmail.com",
@@ -65,7 +64,6 @@ window.addEventListener("DOMContentLoaded", () => {
       const redirectMap = {
         "officialdelegates.ipfest2026@gmail.com": "./dashboard/delegates-relation.html",
         "treasury.ipfest2026@gmail.com": "./dashboard/treasury.html",
-        "event@ipfest2026.com": "./dashboard/event.html",
         "podc.ipfest2026@gmail.com": "./dashboard/compe-manager.html",
         "mic.ipfest2026@gmail.com": "./dashboard/compe-manager.html",
         "ppc.ipfest2026@gmail.com": "./dashboard/compe-manager.html",

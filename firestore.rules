@@ -88,8 +88,10 @@ service cloud.firestore {
 
     function validOwnerCreate() {
       return request.resource.data.keys().hasAll([
-          'competition', 'teamName', 'leader', 'members', 'status', 'payment_status'
+          'competition', 'teamName', 'leader', 'members', 'status', 'payment_status', 'join_on', 'payment_amount'
         ])
+        && request.resource.data.join_on == request.time
+        && request.resource.data.payment_amount == registrationAmount(request.time)
         && request.resource.data.payment_status in ['unpaid', 'pending_verification']
         && request.resource.data.status == 'pending'
         && !request.resource.data.keys().hasAny([
@@ -97,6 +99,12 @@ service cloud.firestore {
         ])
         && (!request.resource.data.keys().hasAny(['final_reg'])
           || request.resource.data.final_reg.get('paymentStatus', 'pending') == 'pending');
+    }
+
+    function registrationAmount(time) {
+      return time < timestamp.date(2026, 11, 12) - duration.value(7, 'h') ? 150000
+        : time < timestamp.date(2026, 12, 5) - duration.value(7, 'h') ? 175000
+        : 225000;
     }
 
     function validOwnerUpdate() {

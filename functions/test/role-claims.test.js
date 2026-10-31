@@ -7,7 +7,6 @@ test('maps approved staff accounts to scoped custom claims', () => {
     ipfestRole: 'competition_manager', ipfestCompetition: 'business case'
   })
   assert.deepEqual(resolveRoleClaims('treasury.ipfest2027@gmail.com'), { ipfestRole: 'treasury' })
-  assert.deepEqual(resolveRoleClaims('event@ipfest2026.com'), { ipfestRole: 'event_staff' })
   assert.equal(resolveRoleClaims('unlisted@example.com'), null)
 })
 
