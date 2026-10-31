@@ -35,6 +35,10 @@ body {
 	font: 400 1rem/1.5 "Poppins", sans-serif;
 }
 
+/* The navbar is position:fixed (navbar-unified.css): reserve its height so the heading and stepper are not hidden under it. */
+body { padding-top: 96px; }
+@media(max-width:991.98px) { body { padding-top: 84px; } }
+
 .registration-navbar { position:relative; z-index:1; width:100%; min-height:156px; padding:0; border:0; background:#fff; }
 .registration-navbar-inner { display:flex; width:calc(100% - 48px); max-width:1600px; min-height:152px; align-items:center; margin-inline:auto; padding-left:80px; }
 .registration-navbar .navbar-brand { gap:24px; margin:0; }

@@ -1276,8 +1276,8 @@ html body:not(#_) .experience .timeline .timeline-text a:hover {
 }
 
 /* Accent words in the light sections (About IPFEST 2027, Skills, Insights, Innovation):
-   hero "Create" size and gold, with a gold-foil gradient and warm edge so it still
-   reads as shiny on the ivory cards (the plain gold glow vanishes on a light background). */
+   hero "Create" size and gold, with a gold-foil gradient and a stronger glow so it
+   still reads as shiny on the ivory cards (the plain gold glow vanishes on light). */
 .text-background-box h1 span,
 h1 span[style*="#bc2300" i] {
   font-size: 1.4em;
@@ -1286,5 +1286,10 @@ h1 span[style*="#bc2300" i] {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 0 1px rgba(150, 105, 8, .85)) drop-shadow(0 2px 7px rgba(230, 170, 20, .6));
+  /* background-clip:text only paints inside the box, and Great Vibes glyphs overhang it
+     (the tail of the final "7" got cut). Pad the box and cancel it with a negative margin. */
+  padding: .1em .2em;
+  margin: 0 -.2em;
+  /* Same 14px halo as the hero "Create", but stronger: .45 gold is invisible on ivory. */
+  filter: drop-shadow(0 0 14px rgba(230, 199, 42, .9)) drop-shadow(0 0 5px rgba(230, 170, 20, .55));
 }

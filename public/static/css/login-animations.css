@@ -62,6 +62,10 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  /* background-clip:text only paints inside the box and Great Vibes glyphs overhang it
+     (the "f" got cut). Pad the box and cancel it with a negative margin. */
+  padding: .2em .3em;
+  margin: 0 -.3em;
   animation: lg-shimmer 5s linear infinite;
 }
 
