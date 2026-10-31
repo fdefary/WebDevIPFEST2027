@@ -4,7 +4,12 @@ const { authorizeStoragePath, signedReadOptions } = require('../storage-access')
 
 const owner = { uid: 'owner', email: 'owner@example.com', emailVerified: true }
 const bccManager = { uid: 'manager', role: 'competition_manager', competition: 'business case' }
-const teamLookup = async (uid) => ({ competition: uid === 'owner' ? 'business case' : 'smart competition' })
+const delegatesRelation = { uid: 'delegates', role: 'delegates_relation' }
+const teams = {
+  owner: { competition: 'business case', leader: {}, members: [{}, {}] },
+  smart: { competition: 'smart competition', leader: {}, members: [{}] }
+}
+const teamLookup = async (uid) => teams[uid] ?? null
 
 test('authorizes private owner files and rejects other users', async () => {
   assert.equal(await authorizeStoragePath(owner, 'payments/owner/proof.pdf', teamLookup), true)
@@ -16,6 +21,27 @@ test('authorizes only verified managers and participants for the matching Case',
   assert.equal(await authorizeStoragePath({ ...bccManager, role: null }, 'Case/business case/v1.pdf', teamLookup), false)
   assert.equal(await authorizeStoragePath(owner, 'Case/business case/v1.pdf', teamLookup), true)
   assert.equal(await authorizeStoragePath(owner, 'Case/smart competition/v1.pdf', teamLookup), false)
+})
+
+test('authorizes Delegates Relation only for registered student cards', async () => {
+  assert.equal(await authorizeStoragePath(delegatesRelation, 'team/owner/leader/student_card.jpg', teamLookup), true)
+  assert.equal(await authorizeStoragePath(delegatesRelation, 'team/owner/member1/student_card.jpg', teamLookup), true)
+  assert.equal(await authorizeStoragePath(delegatesRelation, 'team/owner/member2/student_card.jpg', teamLookup), true)
+  assert.equal(await authorizeStoragePath(delegatesRelation, 'team/owner/member3/student_card.jpg', teamLookup), false)
+  assert.equal(await authorizeStoragePath(delegatesRelation, 'team/missing/leader/student_card.jpg', teamLookup), false)
+  for (const path of [
+    'team/owner/leader/twibbon.jpg',
+    'team/owner/member1/follow_ig.jpg',
+    'payments/owner/proof.pdf',
+    'preliminary_submissions/owner/file.pdf'
+  ]) {
+    assert.equal(await authorizeStoragePath(delegatesRelation, path, teamLookup), false, path)
+  }
+})
+
+test('competition managers can read team files only for their claimed competition', async () => {
+  assert.equal(await authorizeStoragePath(bccManager, 'team/owner/leader/student_card.jpg', teamLookup), true)
+  assert.equal(await authorizeStoragePath(bccManager, 'team/smart/leader/student_card.jpg', teamLookup), false)
 })
 
 test('rejects merchandise, unknown roots, and malformed object paths', async () => {

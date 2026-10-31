@@ -85,7 +85,7 @@ const statusInfo = (raw) => {
 
 const statusBadge = (raw) => {
     const { label, cls } = statusInfo(raw)
-    return `<span class="pay-badge pay-${cls}">${label}</span>`
+    return `<span class="pay-badge pay-${cls}${cls === 'pending' ? ' cm-badge-pending' : ''}">${label}</span>`
 }
 
 // Urutkan per kompetisi (sesuai urutan COMPETITIONS), lalu nama tim
@@ -288,8 +288,8 @@ const studentCardCell = (person) => {
 
 // Urutan kolom orang mengikuti thead:
 // First Name, Last Name, Sex, Major, Batch, ID, Student ID, Phone, Email, Student Card
-const personCells = (p, fmt = COMPETITION_FORMAT.default) => `
-    <td>${esc(p.firstName)}</td>
+const personCells = (p, fmt = COMPETITION_FORMAT.default, isLeader = false) => `
+    <td>${esc(p.firstName)}${isLeader ? ' <span class="cm-leader-tag">Leader</span>' : ''}</td>
     <td>${esc(p.lastName)}</td>
     <td>${esc(p.gender ?? p.sex)}</td>
     <td>${fmt.showMajor ? esc(p.major) : '-'}</td>
@@ -318,7 +318,7 @@ function renderDatabase(teams) {
         const fmt = formatOf(team)
 
         const leaderRow = document.createElement('tr')
-        leaderRow.classList.add('leader-row')
+        leaderRow.classList.add('leader-row', 'cm-leader-row')
         leaderRow.innerHTML = `
             <td rowspan="${rows}">${index + 1}</td>
             <td rowspan="${rows}">${esc(team.teamName)}</td>
@@ -326,7 +326,7 @@ function renderDatabase(teams) {
             <td rowspan="${rows}">${esc(competitionName(team))}</td>
             <td rowspan="${rows}">${statusBadge(team.payment_status)}</td>
             <td rowspan="${rows}">${rows}</td>
-            ${personCells(leader, fmt)}
+            ${personCells(leader, fmt, true)}
         `
         fragment.appendChild(leaderRow)
 

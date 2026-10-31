@@ -92,6 +92,12 @@ const fileCell = (url) => {
         : `<span class="badge-ipfest cm-badge-empty">NO FILE</span>`
 }
 
+const studentCardCell = (person = {}) => privateStorageLink(person.studentCardUrl ?? person.studentCardURL, 'VIEW CARD', 'btn-view-file')
+    || `<span class="badge-ipfest cm-badge-empty">NO FILE</span>`
+const teamStudentCardCell = (team) => [team.leader, ...(Array.isArray(team.members) ? team.members : [])]
+    .map((person, index) => `<div>${index === 0 ? 'Leader' : `Member ${index}`}: ${studentCardCell(person)}</div>`)
+    .join('')
+
 const submissionBadge = (submitted, overdue) => {
     if (!submitted) return `<span class="badge-ipfest cm-badge-empty">EMPTY</span>`
     return overdue === 'no'
@@ -110,7 +116,7 @@ const fileSafeName = (s) => String(s || 'competition').replace(/[^\w-]+/g, '_')
 // (tanpa ini, dropdown Rank akan tertulis "RANK#1#2#3..." di Excel)
 const tableForExport = (table) => {
     const copy = table.cloneNode(true)
-    copy.querySelectorAll('a').forEach(a => a.replaceWith(document.createTextNode(a.getAttribute('href') || a.textContent)))
+    copy.querySelectorAll('a').forEach(a => a.replaceWith(document.createTextNode(a.dataset.privateStoragePath || a.getAttribute('href') || a.textContent)))
     const originals = table.querySelectorAll('select, input')
     copy.querySelectorAll('select, input').forEach((field, i) => {
         const src = originals[i]
@@ -166,9 +172,9 @@ const el = {
     logoutBtn:          document.getElementById('logout-btn')
 }
 
-const DB_COLS = 15
-const PRELIM_COLS = 8
-const FINAL_COLS = 5
+const DB_COLS = 16
+const PRELIM_COLS = 9
+const FINAL_COLS = 6
 
 let manager = null          // { competition, name, label } milik akun yang login
 let unsubscribeTeams = null
@@ -253,6 +259,7 @@ const personCells = (p = {}, isLeader = false) => `
     <td>${esc(p.studentId)}</td>
     <td>${esc(p.phoneNo)}</td>
     <td>${esc(p.email)}</td>
+    <td>${studentCardCell(p)}</td>
 `
 
 function renderDatabase(teams) {
@@ -328,6 +335,7 @@ function prelimRow(team, rowNo, totalTeams, rankCount) {
     row.innerHTML = `
         <td class="text-center fw-bold">${rowNo}</td>
         <td>${teamCell(team)}</td>
+        <td>${teamStudentCardCell(team)}</td>
         <td>${submitted ? dateCell(toDate(prelim.submittedAt)) : '-'}</td>
         <td class="text-center">${submissionBadge(submitted, prelim.overdue)}</td>
         <td class="text-center">${fileCell(prelim.fileURL)}</td>
@@ -429,6 +437,7 @@ function renderFinal(teams) {
         row.innerHTML = `
             <td class="text-center fw-bold">${i + 1}</td>
             <td>${teamCell(team)}</td>
+            <td>${teamStudentCardCell(team)}</td>
             <td>${submitted ? dateCell(toDate(fin.submittedAt)) : '-'}</td>
             <td class="text-center">${submissionBadge(submitted, fin.overdue)}</td>
             <td class="text-center">${fileCell(fin.fileURL)}</td>
