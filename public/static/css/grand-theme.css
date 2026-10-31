@@ -1293,3 +1293,45 @@ h1 span[style*="#bc2300" i] {
   /* Same 14px halo as the hero "Create", but stronger: .45 gold is invisible on ivory. */
   filter: drop-shadow(0 0 14px rgba(230, 199, 42, .9)) drop-shadow(0 0 5px rgba(230, 170, 20, .55));
 }
+
+/* Homepage cards: same look as the competition-page cards (navy glass, gold hairline).
+   Body text is white; the eyebrow and title follow the competition section-header style. */
+.text-background-box {
+  background: rgba(30, 45, 79, .55);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(230, 199, 42, .3);
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(230, 199, 42, .12);
+}
+.text-background-box p { color: #FFFFFF !important; }
+.text-background-box h4.text-primary { color: var(--gold) !important; }
+.text-background-box h1 {
+  background: linear-gradient(100deg, var(--ivory) 0%, var(--gold) 40%, var(--ivory) 65%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: var(--ivory) !important;
+  -webkit-text-fill-color: transparent;
+}
+.text-background-box h1::after {
+  content: "";
+  display: block;
+  width: 110px;
+  height: 2px;
+  margin: 22px 0 0;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--orange), var(--gold), transparent);
+}
+.text-background-box .btn-primary {
+  background: rgba(230, 199, 42, .12) !important;
+  border: 2px solid var(--gold) !important;
+  color: #FFFFFF !important;
+}
+.text-background-box .btn-primary:hover,
+.text-background-box .btn-primary:focus {
+  background: var(--gold) !important;
+  color: var(--navy) !important;
+}
+@media (max-width: 575.98px) {
+  .text-background-box { padding: 28px 22px; }
+}

@@ -256,6 +256,17 @@ html body .bg-breadcrumb h1,
   text-shadow: 0 0 30px rgba(230, 199, 42, .65), 0 2px 10px rgba(0, 0, 0, .6) !important;
 }
 
+/* Hero title accent word ("Competition", "Bandung", "Dinner"...): same script as the section accent words (e.g. "More").
+   The extra classes beat the event-page .hero-highlight rule in grand-theme.css. */
+html body .bg-breadcrumb h1.display-3 span.hero-script.hero-highlight {
+  font-family: "Great Vibes", cursive !important;
+  font-size: 1.25em;
+  font-weight: 400;
+  line-height: 1;
+  text-shadow: none !important;
+  filter: drop-shadow(0 0 14px rgba(230, 199, 42, .45));
+}
+
 /* Subtitle / Description */
 html body:not(.dashboard-theme) .bg-breadcrumb figcaption,
 html body:not(.dashboard-theme) .bg-breadcrumb .blockquote-footer,
