@@ -84,6 +84,12 @@ for (const file of ['ct-start.js', 'ct-finish.js', 'gi-start.js', 'gi-finish.js'
   assert.doesNotMatch(readFileSync(path.join(root, 'src', file), 'utf8'), /getDoc\(docRef\)/, `${file} must rely on bounded attendance Rules, not expose public reads`);
 }
 
+for (const file of ['login.js', 'login-sc.js']) {
+  const script = readFileSync(path.join(root, 'src', file), 'utf8');
+  assert.match(script, /auth\/invalid-login-credentials/, `${file} must treat auth/invalid-login-credentials as a credential error instead of redirecting to 400.html`);
+}
+assert.match(readFileSync(path.join(root, 'src', 'login.js'), 'utf8'), /auth\/too-many-requests/, 'login.js must handle auth/too-many-requests');
+
 for (const [file, code] of [['400.html', '400'], ['404.html', '404']]) {
   const html = readFileSync(path.join(root, 'public', file), 'utf8');
   assert(!/<nav\b/i.test(html), `${file} should not include a header`);

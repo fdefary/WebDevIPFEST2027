@@ -41,12 +41,12 @@ export function resetEmailSent(){
 }
 
 // alert when user fail to login
-export function failedLogin(){
+export function failedLogin(message = 'Cannot find specified account'){
 	const container = document.querySelector("#failLoginAlert")
 	const wraper = document.createElement('div')
 	wraper.innerHTML = `
 		<div class="alert alert-danger alert-dismissible fade show" role="alert">
-  			<strong>Cannot find specified account</strong>
+			<strong>${message}</strong>
   			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		</div>
 	`
