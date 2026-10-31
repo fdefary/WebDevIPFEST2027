@@ -446,6 +446,61 @@ body:not(.dashboard-theme) .timeline-date {
   text-transform: uppercase !important;
 }
 
+/* Section headers (competition + event pages): same look as the Home timeline header */
+html body:not(.dashboard-theme) main h4.section-eyebrow {
+  color: var(--gsp-gold) !important;
+  -webkit-text-fill-color: var(--gsp-gold) !important;
+}
+
+html body:not(.dashboard-theme) main h2.section-title {
+  background: linear-gradient(100deg, var(--gsp-ivory) 0%, var(--gsp-gold) 40%, var(--gsp-ivory) 65%, var(--gsp-gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: var(--gsp-ivory) !important;
+  -webkit-text-fill-color: transparent !important;
+}
+
+html body:not(.dashboard-theme) main h2.section-title span {
+  font-family: "Great Vibes", cursive;
+  font-size: 1.25em;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--gsp-gold) !important;
+  -webkit-text-fill-color: var(--gsp-gold) !important;
+  filter: drop-shadow(0 0 14px rgba(230, 199, 42, .45));
+}
+
+html body:not(.dashboard-theme) main h2.section-title::after {
+  content: "";
+  display: block;
+  width: 110px;
+  height: 2px;
+  margin: 22px 0 0;
+  background: linear-gradient(90deg, transparent, var(--gsp-gold), var(--gsp-orange), var(--gsp-gold), transparent);
+}
+
+html body:not(.dashboard-theme) main .text-center > h2.section-title::after {
+  margin: 22px auto 0;
+}
+
+/* Competition pages: same timeline item typography as the Home page */
+
+body:not(.dashboard-theme) main .competition-timeline .timeline-date {
+  font-family: "Safira March", "Playfair Display", serif !important;
+  font-size: 16px !important;
+  letter-spacing: .06em !important;
+  text-transform: none !important;
+  line-height: 1.5 !important;
+}
+
+body:not(.dashboard-theme) main .competition-timeline .timeline-text .lead {
+  margin: 0 0 5px 0;
+  font-family: "Playfair Display", serif !important;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.2 !important;
+}
+
 /* ================================================================
    9. GUIDEBOOK / CTA BUTTON
    ================================================================ */
@@ -477,32 +532,6 @@ body:not(.dashboard-theme) .btn-outline-primary:hover {
    ================================================================ */
 .prev-event-gallery {
   padding: 3rem 0;
-}
-
-.prev-event-gallery .section-label {
-  font-family: "Poppins", sans-serif;
-  font-weight: 600;
-  color: var(--gsp-gold);
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  font-size: .8rem;
-  display: block;
-  margin-bottom: .5rem;
-}
-
-.prev-event-gallery h2.section-title {
-  font-family: "Playfair Display", serif;
-  color: var(--gsp-ivory);
-  font-size: clamp(1.5rem, 3vw, 2.2rem);
-  font-weight: 600;
-  margin-bottom: 2.5rem;
-}
-
-.prev-event-gallery h2.section-title span {
-  font-family: "Great Vibes", cursive;
-  color: var(--gsp-orange);
-  font-size: 1.3em;
-  font-weight: 400;
 }
 
 .gallery-grid {

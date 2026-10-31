@@ -1264,3 +1264,27 @@ body:not(.dashboard-theme) .event-navbar .navbar-toggler .fa-bars.text-white:not
   position: relative;
   z-index: 1055;
 }
+
+/* ---------- Timeline items: all text white ----------
+   Covers Home, competition and event pages. The :not(#_) id bump is needed to
+   beat the !important colour rules in competition.css and grand-subpage.css. */
+html body:not(#_) .experience .timeline .timeline-text,
+html body:not(#_) .experience .timeline .timeline-text *,
+html body:not(#_) .experience .timeline .timeline-text a:hover {
+  color: #FFFFFF !important;
+  -webkit-text-fill-color: #FFFFFF !important;
+}
+
+/* Accent words in the light sections (About IPFEST 2027, Skills, Insights, Innovation):
+   hero "Create" size and gold, with a gold-foil gradient and warm edge so it still
+   reads as shiny on the ivory cards (the plain gold glow vanishes on a light background). */
+.text-background-box h1 span,
+h1 span[style*="#bc2300" i] {
+  font-size: 1.4em;
+  color: var(--gold) !important;
+  background: linear-gradient(135deg, #F8E58A 0%, #E6C72A 42%, #C9980F 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 1px rgba(150, 105, 8, .85)) drop-shadow(0 2px 7px rgba(230, 170, 20, .6));
+}
