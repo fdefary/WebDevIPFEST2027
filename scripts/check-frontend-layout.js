@@ -67,6 +67,8 @@ assert.doesNotMatch(merchManager, /href="\$\{data\.files\?\./);
 const eventAttendance = readFileSync(path.join(root, 'src/event-attendance.js'), 'utf8');
 assert.match(eventAttendance, /cell\.textContent\s*=/);
 assert.doesNotMatch(eventAttendance, /\$\{(?:name|univ|major|batch|nim|email|checkin|checkout)\}/);
+assert.doesNotMatch(eventAttendance, /issueAttendanceCertificate|Issue certificate/);
+assert.doesNotMatch(readFileSync(path.join(root, 'public/dashboard/event.html'), 'utf8'), /<th[^>]*>\s*Certificate\s*<\/th>/i);
 
 for (const file of [
   'registration.js', 'delegates.js', 'delegates-sc.js', 'compe-manager.js', 'merchandise.js',

@@ -20,15 +20,15 @@ let isPODC = false
 const managerName = document.querySelector("#manager-name")
 const managerCompetition = document.querySelector("#manager-competition")
 const compeManagerEmail = {
-    "PODC": "podc.ipfest2026@gmail.com",
-    "SC": "sc.ipfest2026@gmail.com",
-    "MIC": "mic.ipfest2026@gmail.com",
-    "PPC": "ppc.ipfest2026@gmail.com",
-    "ORDC": "ordc.ipfest2026@gmail.com",
-    "BCC": "bcc.ipfest2026@gmail.com",
-    "GDPC": "gdpc.ipfest2026@gmail.com",
-    "WDC": "wdc.ipfest2026@gmail.com",
-    "HC": "hc.ipfest2026@gmail.com"
+    "PODC": "podc.ipfest2027@gmail.com",
+    "SC": "sc.ipfest2027@gmail.com",
+    "MIC": "mic.ipfest2027@gmail.com",
+    "PPC": "ppc.ipfest2027@gmail.com",
+    "ORDC": "ordc.ipfest2027@gmail.com",
+    "BCC": "bcc.ipfest2027@gmail.com",
+    "GDPC": "gdpc.ipfest2027@gmail.com",
+    "WDC": "wdc.ipfest2027@gmail.com",
+    "HC": "hc.ipfest2027@gmail.com"
 }
 
 onAuthStateChanged(AUTH, (user) => {

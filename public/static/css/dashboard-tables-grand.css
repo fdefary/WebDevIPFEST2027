@@ -1,0 +1,68 @@
+/* ===== Tabel dashboard: latar navy & teks ivory (Grand IPFEST 2027) =====
+   Dipakai halaman event.html dan merchandise.html, muat SETELAH style.css
+   (dan merchmanager.css). Cakupan per tabel agar tidak menyentuh dashboard
+   lain yang sudah punya CSS sendiri. */
+
+/* ---------- Tabel ---------- */
+#ct-table,
+#gi-table,
+#nav-merch .table {
+	background-color: #16213E;
+	border-color: rgba(230, 199, 42, .45) !important;
+}
+
+/* Header: latar navy pekat, teks emas */
+#ct-table thead th,
+#gi-table thead th,
+#nav-merch .table thead th {
+	background-color: #0F1830 !important;
+	color: #E6C72A !important;
+	-webkit-text-fill-color: #E6C72A !important;
+	font-weight: 600;
+	font-size: 12px;
+	letter-spacing: .8px;
+	text-transform: uppercase;
+	white-space: nowrap;
+	border-bottom: 2px solid #E6C72A !important;
+	box-shadow: none !important;
+	position: sticky;
+	top: 0;
+	z-index: 2;
+}
+
+/* Isi: teks ivory, baris selang-seling */
+#ct-table tbody td,
+#gi-table tbody td,
+#nav-merch .table tbody td {
+	background-color: transparent !important;
+	color: #F8F5F2 !important;
+	-webkit-text-fill-color: #F8F5F2 !important;
+	font-size: 14px;
+	vertical-align: middle;
+	box-shadow: none !important;
+	border-color: rgba(248, 245, 242, .16) !important;
+}
+#ct-table tbody tr:nth-child(even) > td,
+#gi-table tbody tr:nth-child(even) > td,
+#nav-merch .table tbody tr:nth-child(even) > td { background-color: rgba(248, 245, 242, .06) !important; }
+#ct-table tbody tr:hover > td,
+#gi-table tbody tr:hover > td,
+#nav-merch .table tbody tr:hover > td { background-color: rgba(230, 199, 42, .16) !important; }
+
+/* ---------- Merchandise: tautan, status, tombol di tabel ---------- */
+#nav-merch .table a { color: #E6C72A !important; -webkit-text-fill-color: #E6C72A !important; text-underline-offset: 3px; }
+#nav-merch .table .text-muted { color: rgba(248, 245, 242, .8) !important; }
+#nav-merch .table .text-success { color: #4ade80 !important; -webkit-text-fill-color: #4ade80 !important; }
+
+/* Status di-inline lewat JS ("color: green/red/blue") — dikoreksi agar terbaca di navy */
+#nav-merch .table span[style*="color: green"] { color: #4ade80 !important; border-color: #4ade80 !important; }
+#nav-merch .table span[style*="color: red"] { color: #fca5a5 !important; border-color: #fca5a5 !important; }
+#nav-merch .table span[style*="color: blue"] { color: #93c5fd !important; border-color: #93c5fd !important; }
+
+/* Tombol View ID / View Proof ungu: beri latar terang agar tetap terbaca */
+#nav-merch .table a.btn-view-id,
+#nav-merch .table a.btn-view-proof { background-color: #F8F5F2 !important; }
+#nav-merch .table a.btn-view-id { color: #4C41A9 !important; -webkit-text-fill-color: #4C41A9 !important; border-color: #4C41A9 !important; }
+#nav-merch .table a.btn-view-proof { color: #198754 !important; -webkit-text-fill-color: #198754 !important; border-color: #198754 !important; }
+#nav-merch .table a.btn-view-id:hover { background-color: #4C41A9 !important; color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
+#nav-merch .table a.btn-view-proof:hover { background-color: #198754 !important; color: #FFFFFF !important; -webkit-text-fill-color: #FFFFFF !important; }
