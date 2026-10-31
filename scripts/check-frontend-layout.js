@@ -56,7 +56,7 @@ assert.match(delegatesRelation, /cm-badge-pending/);
 assert.match(delegatesRelationCss, /\.delrel-stage \.cm-help\s*\{/);
 assert.match(delegatesRelationCss, /\.delrel-stage \.cm-leader-tag\s*\{/);
 assert.match(delegatesRelationCss, /\.delrel-stage \.cm-badge-pending\s*\{/);
-assert.match(standardManagerHtml, /<th scope="col">Student Card<\/th>[\s\S]*?<th scope="col">Twibbon<\/th>[\s\S]*?<th scope="col">IG Following<\/th>/, 'Competition Manager database must show all participant document columns');
+assert.match(standardManagerHtml, /<th scope="col">Email<\/th>[\s\S]*?<th scope="col">Twibbon<\/th>[\s\S]*?<th scope="col">IG Following<\/th>/, 'Competition Manager database must retain the other participant document columns');
 for (const header of ['Student ID PDF', 'Twibbon PDF', 'Social Media Follow', 'Instagram Story Share', 'Like and Repost']) {
   assert.ok(standardManagerHtml.includes(`<th scope="col">${header}</th>`), `Competition Manager database must include ${header}`);
   assert.ok(delegatesRelationHtml.includes(`<th scope="col">${header}</th>`), `Delegates Relation database must include ${header}`);
@@ -68,9 +68,34 @@ assert.match(competitionManager, /team\.teamDocuments\?\.\[field\]/, 'Competitio
 assert.match(delegatesRelation, /team\.teamDocuments\?\.\[field\]/, 'Delegates Relation must link team document paths');
 assert.match(competitionManager, /teamDocumentCells\(team,\s*span\)/, 'Competition Manager team document links must span the team rows');
 assert.match(delegatesRelation, /teamDocumentCells\(team,\s*rows\)/, 'Delegates Relation team document links must span the team rows');
+const scManager = readFileSync(path.join(root, 'src/compe-manager-sc.js'), 'utf8');
+const scManagerHtml = readFileSync(path.join(root, 'public/dashboard/smart-competition/manager.html'), 'utf8');
+assert.match(competitionManager, /class="cm-team-cell" rowspan="\$\{span\}"/, 'Common Competition Manager columns must be grouped for hover');
+assert.match(scManager, /class="cm-team-cell" rowspan="\$\{totalMembers\}"/, 'Common Smart Competition columns must be grouped for hover');
+assert.doesNotMatch(standardManagerHtml, /<th scope="col">Competition<\/th>/, 'Competition Manager database must omit its redundant Competition column');
+assert.doesNotMatch(scManagerHtml, /<th scope="col">Competition<\/th>/, 'Smart Competition database must omit its redundant Competition column');
+assert.doesNotMatch(competitionManager, /COMPETITION_FULL_NAME|team\.competition\}\}<\/td>/, 'Competition Manager rows must not render the redundant Competition value');
+assert.doesNotMatch(scManager, /escapeHTML\(compe\)/, 'Smart Competition rows must not render the redundant Competition value');
+assert.match(scManager, /<td>\$\{escapeHTML\(leader\.firstName\)\} <span class="cm-leader-tag">Leader<\/span><\/td>/, 'Smart Competition leader must be tagged in the leader name cell');
+assert.match(readFileSync(path.join(root, 'public/static/css/compe-manager-grand.css'), 'utf8'), /tr:has\(> td\.cm-team-cell:hover\) > td\.cm-team-cell[\s\S]*?tr:hover:not\(:has\(> td\[rowspan\]:hover\)\) > td:not\(\.cm-team-cell\):not\(\[rowspan\]\)/, 'Hover should group common columns and keep member rows independent');
+const managerCss = readFileSync(path.join(root, 'public/static/css/compe-manager-grand.css'), 'utf8');
+assert.match(managerCss, /\.manager-stage \.table tbody td \.form-select option\s*\{[^}]*color:\s*#16213E[^}]*-webkit-text-fill-color:\s*#16213E[^}]*background-color:\s*#F8F5F2/s, 'Manager select options must remain legible in the open dropdown');
+assert.match(managerCss, /\.select-pill\s*\{[^}]*border-radius:\s*6px/s, 'Table selects must use the same modest corner radius as inputs');
+assert.match(managerCss, /\.manager-stage \.table tbody td select\.form-select\s*\{[^}]*-webkit-text-fill-color:\s*currentColor\s*!important/s, 'Table status and rank values must retain their own readable text colors');
+assert.match(managerCss, /#selection-table td select\.form-select\s*\{[^}]*color:\s*#16213E\s*!important[^}]*-webkit-text-fill-color:\s*#16213E\s*!important/s, 'Smart Competition Final and Rank controls must use dark readable text');
+assert.match(managerCss, /#selection-table td select\.form-select\.status-passed\s*\{[^}]*color:\s*#1b5e20\s*!important[^}]*-webkit-text-fill-color:\s*#1b5e20\s*!important/s, 'Smart Competition passed status must use readable dark text');
+assert.match(managerCss, /#selection-table td select\.form-select\.status-failed\s*\{[^}]*color:\s*#be123c\s*!important[^}]*-webkit-text-fill-color:\s*#be123c\s*!important/s, 'Smart Competition failed status must use readable dark text');
+assert.match(managerCss, /#selection-table td select\.form-select\.status-pending\s*\{[^}]*background-color:\s*#F8F5F2\s*!important/s, 'Smart Competition pending status must use an ivory background');
+assert.match(scManager, /const finalClass = \(status\) => status === true \? 'status-passed' : status === false \? 'status-failed' : 'status-pending'/, 'Smart Competition final states must use readable semantic status classes');
+assert.doesNotMatch(scManager, /btn-(?:success|danger) text-white/, 'Smart Competition final labels must not be forced white');
+assert.match(scManager, /rankSelect\.className = "form-select form-select-sm text-center select-pill"/, 'Smart Competition rank control must use the readable, consistent select style');
+assert.match(scManagerHtml, /id="selection-pagination"/, 'Smart Competition preliminary table must provide pagination controls');
+assert.match(scManager, /const SELECTION_PAGE_SIZE = 20/);
+assert.match(scManager, /selectionTeams\.slice\(start,\s*start \+ SELECTION_PAGE_SIZE\)/, 'Smart Competition preliminary rows must be limited to the current page');
 assert.match(delegatesRelation, /showTableMessage\(delRelList,\s*21,/);
 assert.doesNotMatch(treasuryHtml, /<th scope="col">(?:Student ID PDF|Twibbon PDF|Social Media Follow|Instagram Story Share|Like and Repost)<\/th>/, 'Treasury columns must remain unchanged');
-assert.match(competitionManager, /twibbonCell\s*=\s*\(person = \{\}\)\s*=> privateStorageLink\(person\.twibbonUrl/);
+assert.match(competitionManager, /twibbonCell\s*=\s*\(person = \{\}\)\s*=> privateStorageLink\(person\.twibbonUrl, 'VIEW FILE', 'btn-view-file'\)/, 'Twibbon PDF button must use the same label and dimensions as other PDF buttons');
+assert.match(readFileSync(path.join(root, 'public/static/css/compe-manager-grand.css'), 'utf8'), /\.btn-view-file\s*\{[^}]*white-space:\s*nowrap/s, 'PDF buttons must keep their label on one line so their height stays consistent');
 assert.match(competitionManager, /followIgCell\s*=\s*\(person = \{\}\)\s*=> privateStorageLink\(person\.followIgUrl/);
 assert.match(treasuryHtml, /<th scope="col">Early Bird<\/th>[\s\S]*?<th scope="col">Twibbon<\/th>[\s\S]*?<th scope="col">IG Following<\/th>[\s\S]*?<th scope="col">Proof Link<\/th>/, 'Treasury database must show participant document columns');
 assert.match(treasury, /teamFileLinks\(t,\s*'twibbonUrl'\)/);
@@ -88,30 +113,37 @@ assert.ok(registrationSource.indexOf('createUserWithEmailAndPassword(AUTH, email
 const delegates = readFileSync(path.join(root, 'src/delegates.js'), 'utf8');
 assert.match(delegates, /preliminary_submissions\/\$\{currentUserID\}\//);
 
-const scManager = readFileSync(path.join(root, 'src/compe-manager-sc.js'), 'utf8');
+assert.match(scManagerHtml, /<p class="cm-help"><span class="cm-leader-tag">Leader<\/span> menandai ketua tim\. Baris di bawahnya adalah anggota tim yang sama\.<\/p>/, 'Smart Competition manager legend must match the standard manager');
+assert.match(scManagerHtml, /\.manager-stage \.cm-leader-tag\s*\{[^}]*background:\s*#E6C72A/s, 'Smart Competition manager must style the Leader tag as a badge');
 assert.match(scManager, /escapeHTML\(/);
 assert.doesNotMatch(scManager, /\$\{(?:teamName|univ|compe|leader\.\w+|m\.\w+)\}/);
 
 for (const tableId of ['db-table', 'submission-table', 'submission-table-final']) {
-  assert.match(standardManagerHtml, new RegExp(`<table id="${tableId}"[\\s\\S]*?<th scope="col">Student Card</th>`), `${tableId} must show the Student Card column`);
+  const tableHtml = standardManagerHtml.match(new RegExp(`<table id="${tableId}"[\\s\\S]*?<\\/table>`))?.[0] ?? '';
+  assert.ok(tableHtml, `Missing Competition Manager table ${tableId}`);
+  assert.doesNotMatch(tableHtml, /<th scope="col">Student Card<\/th>/, `${tableId} must not show Student Card`);
 }
 for (const [tableId, html] of [
   ['db-table', readFileSync(path.join(root, 'public/dashboard/smart-competition/manager.html'), 'utf8')],
   ['selection-table', readFileSync(path.join(root, 'public/dashboard/smart-competition/manager.html'), 'utf8')]
 ]) {
-  assert.match(html, new RegExp(`<table id="${tableId}"[\\s\\S]*?<th scope="col">Student Card</th>`), `Smart Competition ${tableId} must show the Student Card column`);
+  const tableHtml = html.match(new RegExp(`<table id="${tableId}"[\\s\\S]*?<\\/table>`))?.[0] ?? '';
+  assert.ok(tableHtml, `Missing Smart Competition table ${tableId}`);
+  assert.doesNotMatch(tableHtml, /<th scope="col">Student Card<\/th>/, `Smart Competition ${tableId} must not show Student Card`);
 }
+for (const header of ['Student ID PDF', 'Twibbon PDF', 'Social Media Follow', 'Instagram Story Share', 'Like and Repost']) {
+  assert.ok(scManagerHtml.includes(`<th scope="col">${header}</th>`), `Smart Competition database must include ${header}`);
+}
+assert.match(scManager, /team\.teamDocuments\?\.\[field\]/, 'Smart Competition manager must link team document paths');
+assert.match(scManager, /teamDocumentCells\(teamData,\s*totalMembers\)/, 'Smart Competition team document links must span the team rows');
 for (const [file, source] of [['compe-manager.js', competitionManager], ['compe-manager-sc.js', scManager]]) {
   assert.match(source, /privateStorageLink\(/, `${file} must use temporary private Storage links`);
-  assert.match(source, /studentCardUrl\s*\?\?\s*\w+\.studentCardURL/, `${file} must support both participant card field names`);
-  assert.match(source, /teamStudentCardCell\s*=\s*\(team\)\s*=>\s*\[team\.leader,\s*\.\.\./, `${file} team cells must include leader and members`);
+  assert.doesNotMatch(source, /studentCardCell|teamStudentCardCell|studentCardUrl|studentCardURL/, `${file} must not render the removed Student Card column`);
 }
-assert.ok((competitionManager.match(/teamStudentCardCell\(team\)/g) || []).length >= 2, 'standard manager submission tables must show every team member card');
 assert.match(competitionManager, /a\.dataset\.privateStoragePath\s*\|\|/, 'standard manager exports must retain private object paths');
-assert.match(competitionManager, /const DB_COLS = 23/);
-assert.match(competitionManager, /const PRELIM_COLS = 9/);
-assert.match(competitionManager, /const FINAL_COLS = 6/);
-assert.match(scManager, /teamStudentCardCell\(teamData\)/, 'Smart Competition preliminary table must show team member cards');
+assert.match(competitionManager, /const DB_COLS = 21/);
+assert.match(competitionManager, /const PRELIM_COLS = 8/);
+assert.match(competitionManager, /const FINAL_COLS = 5/);
 
 const merchManager = readFileSync(path.join(root, 'src/merchmanager.js'), 'utf8');
 assert.match(merchManager, /escapeHTML\(/);

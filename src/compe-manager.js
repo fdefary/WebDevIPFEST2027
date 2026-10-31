@@ -45,25 +45,11 @@ const CASE_INFO_DOC = {
     'hackaton':                    '6gRhBNQ5yjBMg1tbK66d'
 }
 
-const COMPETITION_FULL_NAME = {
-    'business case': 'Business Case Competition',
-    'geothermal development plan': 'Geothermal Development Plan Competition',
-    'mud inovation': 'Mud Innovation Competition',
-    'oil rig design': 'Oil Rig Design Competition',
-    'plan of development': 'Plan of Development Competition',
-    'paper and poster': 'Paper and Poster Competition',
-    'smart competition': 'Smart Competition',
-    'well design': 'Well Design Competition',
-    'hackaton': 'Hackathon Competition'
-}
-
 const MAX_PRELIM_SCORE = 100
 
 // =====================================================================
 //   HELPERS
 // =====================================================================
-const normalizeCompetition = (value = '') => String(value).trim().toLowerCase()
-
 // Escape supaya data dari Firestore tidak dirender sebagai HTML; nilai kosong jadi "-"
 const esc = (value) => {
     if (value === undefined || value === null || value === '') return '-'
@@ -93,13 +79,8 @@ const fileCell = (url) => {
         : `<span class="badge-ipfest cm-badge-empty">NO FILE</span>`
 }
 
-const studentCardCell = (person = {}) => privateStorageLink(person.studentCardUrl ?? person.studentCardURL, 'VIEW CARD', 'btn-view-file')
-    || `<span class="badge-ipfest cm-badge-empty">NO FILE</span>`
-const twibbonCell = (person = {}) => privateStorageLink(person.twibbonUrl, 'VIEW TWIBBON', 'btn-view-file') || '-'
+const twibbonCell = (person = {}) => privateStorageLink(person.twibbonUrl, 'VIEW FILE', 'btn-view-file') || '-'
 const followIgCell = (person = {}) => privateStorageLink(person.followIgUrl, 'VIEW IG PROOF', 'btn-view-file') || '-'
-const teamStudentCardCell = (team) => [team.leader, ...(Array.isArray(team.members) ? team.members : [])]
-    .map((person, index) => `<div>${index === 0 ? 'Leader' : `Member ${index}`}: ${studentCardCell(person)}</div>`)
-    .join('')
 const teamDocumentCells = (team, span) => TEAM_DOCUMENTS
     .map(({ field }) => `<td rowspan="${span}">${fileCell(team.teamDocuments?.[field])}</td>`)
     .join('')
@@ -178,9 +159,9 @@ const el = {
     logoutBtn:          document.getElementById('logout-btn')
 }
 
-const DB_COLS = 23
-const PRELIM_COLS = 9
-const FINAL_COLS = 6
+const DB_COLS = 21
+const PRELIM_COLS = 8
+const FINAL_COLS = 5
 
 let manager = null          // { competition, name, label } milik akun yang login
 let unsubscribeTeams = null
@@ -265,7 +246,6 @@ const personCells = (p = {}, isLeader = false) => `
     <td>${esc(p.studentId)}</td>
     <td>${esc(p.phoneNo)}</td>
     <td>${esc(p.email)}</td>
-    <td>${studentCardCell(p)}</td>
     <td>${twibbonCell(p)}</td>
     <td>${followIgCell(p)}</td>
 `
@@ -287,12 +267,11 @@ function renderDatabase(teams) {
         leaderRow.dataset.teamId = team.id
         leaderRow.className = 'cm-leader-row'
         leaderRow.innerHTML = `
-            <td rowspan="${span}">${i + 1}</td>
-            <td rowspan="${span}">${esc(team.teamName)}</td>
-            <td rowspan="${span}">${esc(team.leader?.university)}</td>
-            <td rowspan="${span}">${esc(COMPETITION_FULL_NAME[normalizeCompetition(team.competition)] ?? team.competition)}</td>
-            <td rowspan="${span}"><span class="badge-ipfest ${verified ? 'bg-success text-white' : 'cm-badge-pending'}">${verified ? 'Verified' : 'Pending'}</span></td>
-            <td rowspan="${span}">${span}</td>
+            <td class="cm-team-cell" rowspan="${span}">${i + 1}</td>
+            <td class="cm-team-cell" rowspan="${span}">${esc(team.teamName)}</td>
+            <td class="cm-team-cell" rowspan="${span}">${esc(team.leader?.university)}</td>
+            <td class="cm-team-cell" rowspan="${span}"><span class="badge-ipfest ${verified ? 'bg-success text-white' : 'cm-badge-pending'}">${verified ? 'Verified' : 'Pending'}</span></td>
+            <td class="cm-team-cell" rowspan="${span}">${span}</td>
             ${personCells(team.leader, true)}
             ${teamDocumentCells(team, span)}
         `
@@ -344,7 +323,6 @@ function prelimRow(team, rowNo, totalTeams, rankCount) {
     row.innerHTML = `
         <td class="text-center fw-bold">${rowNo}</td>
         <td>${teamCell(team)}</td>
-        <td>${teamStudentCardCell(team)}</td>
         <td>${submitted ? dateCell(toDate(prelim.submittedAt)) : '-'}</td>
         <td class="text-center">${submissionBadge(submitted, prelim.overdue)}</td>
         <td class="text-center">${fileCell(prelim.fileURL)}</td>
@@ -446,7 +424,6 @@ function renderFinal(teams) {
         row.innerHTML = `
             <td class="text-center fw-bold">${i + 1}</td>
             <td>${teamCell(team)}</td>
-            <td>${teamStudentCardCell(team)}</td>
             <td>${submitted ? dateCell(toDate(fin.submittedAt)) : '-'}</td>
             <td class="text-center">${submissionBadge(submitted, fin.overdue)}</td>
             <td class="text-center">${fileCell(fin.fileURL)}</td>

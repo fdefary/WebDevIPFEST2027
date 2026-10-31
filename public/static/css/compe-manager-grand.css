@@ -85,6 +85,35 @@ body.manager-page h1, body.manager-page h2, body.manager-page h3 {
 	border: 1px solid var(--g-slate);
 	color: var(--g-navy);
 }
+.manager-stage .table tbody td .form-select option {
+	color: #16213E;
+	-webkit-text-fill-color: #16213E;
+	background-color: #F8F5F2;
+}
+.manager-stage .table tbody td select.form-select {
+	-webkit-text-fill-color: currentColor !important;
+}
+.manager-stage #selection-table td select.form-select {
+	color: #16213E !important;
+	-webkit-text-fill-color: #16213E !important;
+}
+.manager-stage #selection-table td select.form-select.status-passed {
+	color: #1b5e20 !important;
+	-webkit-text-fill-color: #1b5e20 !important;
+}
+.manager-stage #selection-table td select.form-select.status-failed {
+	color: #be123c !important;
+	-webkit-text-fill-color: #be123c !important;
+}
+.manager-stage #selection-table td select.form-select.status-pending {
+	background-color: #F8F5F2 !important;
+	color: #16213E !important;
+	-webkit-text-fill-color: #16213E !important;
+}
+.manager-stage .table tbody td .form-select,
+.manager-stage .table tbody td input.form-control {
+	border-radius: 6px !important;
+}
 /* Teks input (mis. kolom Score) harus selalu kontras dengan latar terang */
 .manager-stage .table tbody td input.form-control,
 .manager-stage .table tbody td input.form-control.text-primary,
@@ -138,6 +167,7 @@ body.manager-page h1, body.manager-page h2, body.manager-page h3 {
 	letter-spacing: 1.5px;
 	display: inline-flex;
 	align-items: center;
+	white-space: nowrap;
 	gap: 8px;
 	text-decoration: none !important;
 	transition: all .3s ease;
@@ -148,7 +178,7 @@ body.manager-page h1, body.manager-page h2, body.manager-page h3 {
 
 /* Pill status dan rank (dipakai script saat render tabel) */
 .select-pill {
-	border-radius: 12px; padding: 4px 12px; font-weight: 700; font-size: .75rem;
+	border-radius: 6px; padding: 4px 12px; font-weight: 700; font-size: .75rem;
 	border: 2px solid transparent; text-transform: uppercase; letter-spacing: .5px;
 	transition: all .3s ease;
 }
@@ -199,7 +229,10 @@ body.manager-page h1, body.manager-page h2, body.manager-page h3 {
 }
 .manager-stage .table tbody tr:nth-child(odd) > td  { background-color: rgba(248, 245, 242, .04) !important; }
 .manager-stage .table tbody tr:nth-child(even) > td { background-color: rgba(248, 245, 242, .09) !important; }
-.manager-stage .table tbody tr:hover > td {
+.manager-stage .table tbody tr:has(> td.cm-team-cell:hover) > td.cm-team-cell {
+	background-color: rgba(230, 199, 42, .18) !important;
+}
+.manager-stage .table tbody tr:hover:not(:has(> td[rowspan]:hover)) > td:not(.cm-team-cell):not([rowspan]) {
 	background-color: rgba(230, 199, 42, .18) !important;
 }
 

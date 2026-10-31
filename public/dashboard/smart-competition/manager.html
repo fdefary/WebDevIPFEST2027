@@ -19,6 +19,14 @@
 	<link href="../../static/css/grand-subpage.css" rel="stylesheet">
 	<link href="../../static/css/compe-manager-grand.css" rel="stylesheet">
 	<link rel="stylesheet" href="../../static/css/navbar-unified.css">
+	<style>
+		.manager-stage .cm-leader-tag {
+			display: inline-block; margin-left: .35rem; padding: .05rem .45rem;
+			border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: .05em;
+			color: #16213E; background: #E6C72A; vertical-align: middle;
+		}
+		.manager-stage .cm-help { color: rgba(248, 245, 242, .75); font-size: .9rem; }
+	</style>
 </head>
 <body class="event-page manager-page">
 	<ul class="circles" aria-hidden="true">
@@ -104,8 +112,7 @@
 									<h1 class="display-6 text-primary lead">Wassup, <span id="manager-name"></span></h1>
 									<h2 class="display-5 text-secondary lead" id="manager-competition"></h2>
 								</div>
-								<h6>Legend:</h6>
-								<h1 class="fs-6 text-secondary"><i class="bi bi-grip-horizontal text-secondary"></i> <strong>Leader</strong></h1>
+								<p class="cm-help"><span class="cm-leader-tag">Leader</span> menandai ketua tim. Baris di bawahnya adalah anggota tim yang sama.</p>
 								<div class="w-100 overflow-auto" style="max-height: 70vh;">
 									<table id="db-table" class="table table-hover table-bordered border-primary" style="width:120vw">
 										<thead class="text-primary">
@@ -113,7 +120,6 @@
 												<th scope="col">No.</th>
 												<th scope="col">Team Name</th>
 												<th scope="col">University</th>
-												<th scope="col">Competition</th>
 												<th scope="col">Payment Status</th>
 												<th scope="col">Members</th>
 												<th scope="col">First Name</th>
@@ -125,7 +131,11 @@
 												<th scope="col">Student ID</th>
 												<th scope="col">Phone</th>
 												<th scope="col">Email</th>
-												<th scope="col">Student Card</th>
+											<th scope="col">Student ID PDF</th>
+												<th scope="col">Twibbon PDF</th>
+												<th scope="col">Social Media Follow</th>
+												<th scope="col">Instagram Story Share</th>
+												<th scope="col">Like and Repost</th>
 											</tr>
 										</thead>
 										<tbody id="delrel-team-list"></tbody>
@@ -147,14 +157,18 @@
 												<tr>
 													<th scope="col">No.</th>
 													<th scope="col">Team Name/University</th>
-													<th scope="col">Student Card</th>
 													<th scope="col">Final</th>
 													<th scope="col">Rank</th>
 													<th scope="col">Score</th>
-												</tr>
-											</thead>
-											<tbody id="del-selection-list-prelim"></tbody>
+											</tr>
+										</thead>
+										<tbody id="del-selection-list-prelim"></tbody>
 										</table>
+										<nav id="selection-pagination" class="justify-content-between align-items-center mt-3" aria-label="Preliminary team pages" hidden>
+											<button class="btn btn-light border-primary" type="button" id="selection-page-prev">Previous</button>
+											<span id="selection-page-info" class="px-3" aria-live="polite"></span>
+											<button class="btn btn-light border-primary" type="button" id="selection-page-next">Next</button>
+										</nav>
 									</div>
 									<div class="d-flex justify-content-end py-2">
 										<button type="submit" class="btn btn-light border border-primary rounded-pill text-primary py-2 px-4 me-4">Save</button>
