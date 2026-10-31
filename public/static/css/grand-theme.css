@@ -114,7 +114,7 @@ a:focus-visible, .btn:focus-visible { outline: 2px solid var(--gold); outline-of
   box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
 }
 .text-background-box h4.text-primary { color: var(--slate) !important; }
-.feature .feature-img { background: var(--ivory); border: 2px solid var(--gold); }
+.feature .feature-img { background: transparent; border: 0; border-radius: 0; }
 
 /* ---------- Buttons ---------- */
 .btn.btn-primary { background: var(--navy) !important; color: var(--ivory) !important; border-color: var(--navy) !important; }
@@ -357,7 +357,7 @@ h1.display-5[style*="color: #FFFFFF" i]::after {
 
 /* Event boxes + images */
 .text-background-box { border-left: 5px solid var(--gold); }
-.feature .feature-img { box-shadow: 0 0 50px rgba(230, 199, 42, .28); }
+.feature .feature-img { box-shadow: none; }
 
 /* Timeline: glowing line and dots */
 .experience .timeline::after {
