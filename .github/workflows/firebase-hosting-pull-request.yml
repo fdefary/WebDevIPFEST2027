@@ -17,5 +17,5 @@ jobs:
       - uses: FirebaseExtended/action-hosting-deploy@v0
         with:
           repoToken: ${{ secrets.GITHUB_TOKEN }}
-          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_IPFEST25WEB }}
-          projectId: ipfest25web
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_IPFEST_2027 || secrets.FIREBASE_SERVICE_ACCOUNT }}
+          projectId: ipfest-2027

@@ -193,6 +193,7 @@ body.tr-page #logout-btn:hover {
 .tr-stage .table {
 	--bs-table-bg: transparent;
 	--bs-table-color: var(--g-ivory);
+	background-color: var(--g-navy);
 	color: var(--g-ivory);
 	margin-bottom: 0;
 	border-color: rgba(248, 245, 242, .14) !important;

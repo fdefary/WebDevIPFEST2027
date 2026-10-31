@@ -110,12 +110,17 @@ window.addEventListener("DOMContentLoaded", () => {
         "auth/wrong-password",
         "auth/invalid-email",
         "auth/user-not-found",
-        "auth/invalid-credential"
+        "auth/invalid-credential",
+        "auth/invalid-login-credentials"
       ];
 
       if (known.includes(err.code)) {
         failedLogin("Invalid email or password.");
         loginForm.reset();
+      } else if (err.code === "auth/too-many-requests") {
+        failedLogin("Too many login attempts. Please wait a moment and try again.");
+      } else if (err.code === "auth/network-request-failed") {
+        failedLogin("Network error. Please check your connection and try again.");
       } else {
         window.location.href = "400.html";
       }

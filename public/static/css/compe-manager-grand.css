@@ -60,6 +60,7 @@ body.manager-page h1, body.manager-page h2, body.manager-page h3 {
 .manager-stage .table {
 	--bs-table-bg: transparent;
 	--bs-table-color: var(--g-ivory);
+	background-color: var(--g-navy);
 	color: var(--g-ivory);
 	border-color: rgba(230, 199, 42, .35) !important;
 }

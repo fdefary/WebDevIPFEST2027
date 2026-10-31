@@ -67,6 +67,8 @@ assert.doesNotMatch(merchManager, /href="\$\{data\.files\?\./);
 const eventAttendance = readFileSync(path.join(root, 'src/event-attendance.js'), 'utf8');
 assert.match(eventAttendance, /cell\.textContent\s*=/);
 assert.doesNotMatch(eventAttendance, /\$\{(?:name|univ|major|batch|nim|email|checkin|checkout)\}/);
+assert.doesNotMatch(eventAttendance, /issueAttendanceCertificate|Issue certificate/);
+assert.doesNotMatch(readFileSync(path.join(root, 'public/dashboard/event.html'), 'utf8'), /<th[^>]*>\s*Certificate\s*<\/th>/i);
 
 for (const file of [
   'registration.js', 'delegates.js', 'delegates-sc.js', 'compe-manager.js', 'merchandise.js',
@@ -81,6 +83,12 @@ for (const file of ['registration.js', 'delegates.js', 'delegates-sc.js', 'compe
 for (const file of ['ct-start.js', 'ct-finish.js', 'gi-start.js', 'gi-finish.js']) {
   assert.doesNotMatch(readFileSync(path.join(root, 'src', file), 'utf8'), /getDoc\(docRef\)/, `${file} must rely on bounded attendance Rules, not expose public reads`);
 }
+
+for (const file of ['login.js', 'login-sc.js']) {
+  const script = readFileSync(path.join(root, 'src', file), 'utf8');
+  assert.match(script, /auth\/invalid-login-credentials/, `${file} must treat auth/invalid-login-credentials as a credential error instead of redirecting to 400.html`);
+}
+assert.match(readFileSync(path.join(root, 'src', 'login.js'), 'utf8'), /auth\/too-many-requests/, 'login.js must handle auth/too-many-requests');
 
 for (const [file, code] of [['400.html', '400'], ['404.html', '404']]) {
   const html = readFileSync(path.join(root, 'public', file), 'utf8');

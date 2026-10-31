@@ -189,7 +189,7 @@ onAuthStateChanged(AUTH, async (user) => {
         return
     }
 
-    manager = found
+    manager = { ...found, competition: claims.competition }
     if (el.managerName) el.managerName.textContent = manager.name
     if (el.managerCompetition) el.managerCompetition.textContent = manager.label
 
