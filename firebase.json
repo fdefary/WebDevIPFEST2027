@@ -19,6 +19,7 @@
   "hosting": {
     "site":"ipfest-2027",
     "public": "public",
+    "cleanUrls": true,
     "ignore": [
       "firebase.json",
       "**/.*",
