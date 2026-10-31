@@ -4,6 +4,7 @@
   "description": "Ini adalah repository untuk pengembangan website IPFEST 2026. Laman website terdiri dari home/landing page, login page, registration page, events page, dan competitions page.",
   "main": "index.js",
   "scripts": {
+    "dev": "webpack serve --config webpack.config.babel.js --mode development",
     "start": "webpack serve --config webpack.config.babel.js --mode development",
     "build": "webpack --config webpack.config.babel.js --mode production",
     "test": "node scripts/check-frontend-layout.js && node scripts/check-registration-flow.js && node scripts/check-storage-path.js && node scripts/check-firebase-project.js && node --test tests/registration-fields.test.js && npm run test:rules",
