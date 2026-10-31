@@ -10,6 +10,7 @@ const firestoreRules = readFileSync('firestore.rules', 'utf8');
 const adminHtml = readFileSync('public/dashboard/delegates-relation.html', 'utf8');
 const adminScript = readFileSync('src/delegates-relation.js', 'utf8');
 const validation = readFileSync('public/static/js/validation.js', 'utf8');
+const teamDocuments = readFileSync('src/shared/team-documents.js', 'utf8');
 
 const steps = [...html.matchAll(/data-registration-step="([^"]+)"/g)].map((match) => match[1]);
 assert.deepEqual(steps, ['competition', 'leader', 'members', 'account', 'payment']);
@@ -64,13 +65,12 @@ assert.doesNotMatch(html, /<legend>Informasi Tim<\/legend>|<legend>Identitas &am
 assert.match(html, /<legend>Required Documents<\/legend>/);
 assert.match(script, /class="registration-subsection-grid member-details"/);
 assert.match(script, /<legend>Identity &amp; Contact Information<\/legend>/);
-assert.match(script, /<legend>Required Documents<\/legend>/);
+assert.doesNotMatch(script, /<legend>Required Documents<\/legend>/);
 for (const copy of [
   'Choose one competition', 'Prepare Your Twibbon Proof', 'Team Members', 'Account Setup',
   'Upload payment proof', 'I agree to the terms and conditions', 'Please select a competition first.',
   'Total payment', 'Transfer to BCA account', 'Send GoPay to', 'Pay through',
-  'Personal &amp; Academic Details', 'Class year', "Enter member ${i}'s first name.",
-  'Upload proof that member ${i} follows IPFEST on Instagram.'
+  'Personal &amp; Academic Details', 'Class year', "Enter member ${i}'s first name."
 ]) {
   assert(html.includes(copy) || script.includes(copy), `Missing English registration copy: ${copy}`);
 }
@@ -112,5 +112,27 @@ assert.doesNotMatch(script, /selectedCompetition === ["']smart competition["']/)
 assert.match(script, /["']smart competition["']:\s*\[2,\s*3\]/, 'Smart Competition must retain the two- or three-person team sizes');
 assert.match(script, /createUserWithEmailAndPassword/);
 assert.match(script, /setDoc\(doc\(DB, "Team", user\.uid\), teamData\)/);
+for (const copy of [
+  'Upload the student ID card of every team member. Only student ID cards are accepted. Make sure the name, student ID number, and university are easy to read. Put all ID cards in one PDF file named [CompetitionName]_[TeamName]_StudentID.pdf.',
+  'Upload a screenshot of the IPFest 2027 twibbon post on each team member’s Instagram feed. The screenshot must show the username and the full post, including the caption. Make sure the caption follows the given guidelines. Put all proof in one PDF file named [CompetitionName]_[TeamName]_Twibbon.pdf.',
+  'Upload screenshots showing that each team member follows these accounts:',
+  'Instagram: @ipfest27', 'TikTok: @ipfest27', 'LinkedIn: Integrated Petroleum Festival',
+  'The screenshots must show the “Following” status. Put all proof in one PDF file named [CompetitionName]_[TeamName]_Follow.pdf.',
+  'Upload a screenshot of each team member’s Instagram Story sharing the post of the competition you are registering for. The story must mention @ipfest27. The screenshot must show the username and the mention. Put all proof in one PDF file named [CompetitionName]_[TeamName]_AddToStory.pdf.',
+  'Upload screenshots showing that each team member has liked and reposted the Instagram post of the competition you are registering for. Put all proof in one PDF file named [CompetitionName]_[TeamName]_LikeRepost.pdf.'
+]) assert.ok(html.includes(copy), `Missing team document instructions: ${copy}`);
+for (const id of ['student-id-card-pdf', 'twibbon-pdf', 'social-media-follow-pdf', 'instagram-story-share-pdf', 'like-and-repost-pdf']) {
+  assert.match(html, new RegExp(`<input[^>]*id="${id}"[^>]*type="file"|<input[^>]*type="file"[^>]*id="${id}"`), `${id} must be a file upload`);
+  assert.match(html, new RegExp(`<input[^>]*id="${id}"[^>]*accept="application/pdf"[^>]*required|<input[^>]*accept="application/pdf"[^>]*required[^>]*id="${id}"`), `${id} must require a PDF`);
+}
+assert.match(html, /Social Media Follow/);
+assert.doesNotMatch(script, /studentCardPhoto\$\{i\}|twibbon\$\{i\}|follow-ig\$\{i\}/, 'team proofs must not be requested per member');
+assert.match(script, /teamDocumentPath\(user\.uid, selectedCompetition, teamName, definition\.suffix\)/);
+assert.match(script, /teamData\.teamDocuments\s*=/);
+assert.doesNotMatch(script, /leaderUploads/, 'Registration must not reference the removed per-leader upload object');
+assert.match(script, /await isValidTeamDocumentFile\(file\)/, 'Validate PDF contents and Storage size before creating the account');
+assert.match(script, /file\.type\s*&&\s*file\.type\s*!==\s*['"]application\/pdf['"][\s\S]*?file\.name\.toLowerCase\(\)\.endsWith\(['"]\.pdf['"]\)/, 'Reject non-PDF MIME types even when the filename ends in .pdf');
+assert.match(script, /teamDocumentPath\(user\.uid, selectedCompetition, teamName, definition\.suffix\)[\s\S]*?['"]application\/pdf['"]/, 'Store team documents with PDF content type');
+assert.match(teamDocuments, /export const TEAM_DOCUMENTS/);
 assert.ok(script.indexOf('firstInvalidRegistrationStep(steps)', script.indexOf("registrationForm.addEventListener('submit'")) < script.indexOf('createUserWithEmailAndPassword(AUTH, email, password)'), 'Validate every step before creating a Firebase account');
 assert.match(validation, /data-registration-step/);

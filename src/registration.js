@@ -13,6 +13,7 @@ import { ref, uploadBytes } from 'firebase/storage';
 import { AUTH, STORAGE, DB } from './index.js';
 import { firstInvalidRegistrationStep } from './shared/registration-fields.js';
 import { registrationPriceAt } from './shared/registration-pricing.js';
+import { TEAM_DOCUMENTS, isValidTeamDocumentFile, teamDocumentPath } from './shared/team-documents.js';
 
 // Daftar kompetisi dan jumlah anggota yang valid
 const teamMemberCondition = {
@@ -114,28 +115,6 @@ function generateMemberEntry(entry, count) {
           </div>
         </div>
           </fieldset>
-          <fieldset class="registration-subsection">
-            <legend>Required Documents</legend>
-        <div class="row my-1">
-          <div class="col-md-6">
-            <label for="studentCardPhoto${i}" class="form-label">Student ID card photo</label>
-            <input type="file" name="studentCardPhoto${i}" id="studentCardPhoto${i}" class="form-control" required>
-            <div class="invalid-feedback">Upload member ${i}'s student ID card photo.</div>
-          </div>
-          <div class="col-md-6">
-            <label for="twibbon${i}" class="form-label">Twibbon proof</label>
-            <input type="file" name="twibbon${i}" id="twibbon${i}" class="form-control" required>
-            <div class="invalid-feedback">Upload the Twibbon proof for member ${i}.</div>
-          </div>
-        </div>
-        <div class="row my-1">
-          <div class="col-md-6">
-            <label for="follow-ig${i}" class="form-label">Proof of following IPFEST on Instagram</label>
-            <input type="file" name="follow-ig${i}" id="follow-ig${i}" class="form-control" required>
-            <div class="invalid-feedback">Upload proof that member ${i} follows IPFEST on Instagram.</div>
-          </div>
-        </div>
-          </fieldset>
         </div>
       </div>
     `;
@@ -145,10 +124,10 @@ function generateMemberEntry(entry, count) {
 }
 
 // Fungsi upload file ke Firebase Storage
-async function uploadFile(file, path) {
+async function uploadFile(file, path, contentType = file?.type) {
   if (!file) return null;
   const fileRef = ref(STORAGE, path);
-  await uploadBytes(fileRef, file);
+  await uploadBytes(fileRef, file, contentType ? { contentType } : undefined);
   return fileRef.fullPath;
 }
 
@@ -352,17 +331,27 @@ document.addEventListener("DOMContentLoaded", () => {
       const phoneNo = document.getElementById("phoneNo")?.value;
       const idCard = document.getElementById("idCard")?.value;
       const studentId = document.getElementById("studentId")?.value;
-      const studentCardFile = document.getElementById("studentCardPhoto")?.files[0];
-      const twibbonFile = document.getElementById("twibbon")?.files[0];
-      const followIgFile = document.getElementById("follow-ig")?.files[0];
+      const teamDocumentFiles = Object.fromEntries(TEAM_DOCUMENTS.map(definition => [
+        definition.field,
+        document.getElementById(definition.inputId)?.files[0]
+      ]));
 
       // Validasi dasar
       if (
         !email || !password || !firstName || !lastName || !major || !gender || !batch ||
-        !teamName || !university || !phoneNo || !idCard || !studentId ||
-        !studentCardFile || !twibbonFile || !followIgFile
+        !teamName || !university || !phoneNo || !idCard || !studentId
       ) {
         throw new Error("All leader fields are required");
+      }
+      for (const definition of TEAM_DOCUMENTS) {
+        const file = teamDocumentFiles[definition.field];
+        if (!file) throw new Error(`Upload the required ${definition.label} PDF.`);
+        if ((file.type && file.type !== 'application/pdf') || !file.name.toLowerCase().endsWith('.pdf')) {
+          throw new Error(`${definition.label} must be a PDF file.`);
+        }
+        if (!await isValidTeamDocumentFile(file)) {
+          throw new Error(`${definition.label} must be a valid PDF file under 20 MiB.`);
+        }
       }
 
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -379,14 +368,14 @@ document.addEventListener("DOMContentLoaded", () => {
         paymentProofUrl = await uploadFile(paymentFile, `payments/${user.uid}/${Date.now()}_${paymentFile.name}`);
       }
 
-      // Upload file leader ke Firebase Storage
-      const leaderUploads = {};
-      if (studentCardFile)
-        leaderUploads.studentCardUrl = await uploadFile(studentCardFile, `team/${user.uid}/leader/student_card.jpg`);
-      if (twibbonFile)
-        leaderUploads.twibbonUrl = await uploadFile(twibbonFile, `team/${user.uid}/leader/twibbon.jpg`);
-      if (followIgFile)
-        leaderUploads.followIgUrl = await uploadFile(followIgFile, `team/${user.uid}/leader/follow_ig.jpg`);
+      const teamDocuments = {};
+      for (const definition of TEAM_DOCUMENTS) {
+        teamDocuments[definition.field] = await uploadFile(
+          teamDocumentFiles[definition.field],
+          teamDocumentPath(user.uid, selectedCompetition, teamName, definition.suffix),
+          'application/pdf'
+        );
+      }
 
       // Siapkan data tim untuk Firestore
       const teamData = {
@@ -402,14 +391,14 @@ document.addEventListener("DOMContentLoaded", () => {
           university,
           phoneNo,
           idCard,
-          studentId,
-          ...leaderUploads // gunakan hasil upload (URL)
+          studentId
         },
         members: [],
         join_on: serverTimestamp(),
         status: "pending",
         payment_status: paymentProofUrl ? "pending_verification" : "unpaid"
       };
+      teamData.teamDocuments = teamDocuments;
 
       if (paymentProofUrl) {
         teamData.payment = {
@@ -446,18 +435,6 @@ document.addEventListener("DOMContentLoaded", () => {
           studentId: mStudentId,
           phoneNo: mPhoneNo
         };
-
-        // Upload file anggota (jika ada)
-        const studentCard = document.getElementById(`studentCardPhoto${i}`)?.files[0];
-        const twibbon = document.getElementById(`twibbon${i}`)?.files[0];
-        const followIg = document.getElementById(`follow-ig${i}`)?.files[0];
-
-        if (studentCard)
-          member.studentCardUrl = await uploadFile(studentCard, `team/${user.uid}/member${i}/student_card.jpg`);
-        if (twibbon)
-          member.twibbonUrl = await uploadFile(twibbon, `team/${user.uid}/member${i}/twibbon.jpg`);
-        if (followIg)
-          member.followIgUrl = await uploadFile(followIg, `team/${user.uid}/member${i}/follow_ig.jpg`);
 
         teamData.members.push(member);
       }

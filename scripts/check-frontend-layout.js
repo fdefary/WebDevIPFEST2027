@@ -40,6 +40,7 @@ const treasuryHtml = readFileSync(path.join(root, 'public/dashboard/treasury.htm
 const delegatesRelation = readFileSync(path.join(root, 'src/delegates-relation.js'), 'utf8');
 const delegatesRelationHtml = readFileSync(path.join(root, 'public/dashboard/delegates-relation.html'), 'utf8');
 const delegatesRelationCss = readFileSync(path.join(root, 'public/static/css/delegates-relation-grand.css'), 'utf8');
+const teamDocuments = readFileSync(path.join(root, 'src/shared/team-documents.js'), 'utf8');
 assert.match(treasury, /onSnapshot\(collection\(DB, 'Team'\)/);
 assert.match(delegatesRelation, /onSnapshot\(collection\(DB, 'Team'\)/);
 assert.doesNotMatch(treasury, /deleteField|data-delete-final/, 'Treasury may verify, not delete final payment records');
@@ -56,6 +57,19 @@ assert.match(delegatesRelationCss, /\.delrel-stage \.cm-help\s*\{/);
 assert.match(delegatesRelationCss, /\.delrel-stage \.cm-leader-tag\s*\{/);
 assert.match(delegatesRelationCss, /\.delrel-stage \.cm-badge-pending\s*\{/);
 assert.match(standardManagerHtml, /<th scope="col">Student Card<\/th>[\s\S]*?<th scope="col">Twibbon<\/th>[\s\S]*?<th scope="col">IG Following<\/th>/, 'Competition Manager database must show all participant document columns');
+for (const header of ['Student ID PDF', 'Twibbon PDF', 'Social Media Follow', 'Instagram Story Share', 'Like and Repost']) {
+  assert.ok(standardManagerHtml.includes(`<th scope="col">${header}</th>`), `Competition Manager database must include ${header}`);
+  assert.ok(delegatesRelationHtml.includes(`<th scope="col">${header}</th>`), `Delegates Relation database must include ${header}`);
+}
+for (const field of ['studentIdCardUrl', 'twibbonUrl', 'socialMediaFollowUrl', 'instagramStoryShareUrl', 'likeAndRepostUrl']) {
+  assert.ok(teamDocuments.includes(`field: '${field}'`), `Team document manifest must include ${field}`);
+}
+assert.match(competitionManager, /team\.teamDocuments\?\.\[field\]/, 'Competition Manager must link team document paths');
+assert.match(delegatesRelation, /team\.teamDocuments\?\.\[field\]/, 'Delegates Relation must link team document paths');
+assert.match(competitionManager, /teamDocumentCells\(team,\s*span\)/, 'Competition Manager team document links must span the team rows');
+assert.match(delegatesRelation, /teamDocumentCells\(team,\s*rows\)/, 'Delegates Relation team document links must span the team rows');
+assert.match(delegatesRelation, /showTableMessage\(delRelList,\s*21,/);
+assert.doesNotMatch(treasuryHtml, /<th scope="col">(?:Student ID PDF|Twibbon PDF|Social Media Follow|Instagram Story Share|Like and Repost)<\/th>/, 'Treasury columns must remain unchanged');
 assert.match(competitionManager, /twibbonCell\s*=\s*\(person = \{\}\)\s*=> privateStorageLink\(person\.twibbonUrl/);
 assert.match(competitionManager, /followIgCell\s*=\s*\(person = \{\}\)\s*=> privateStorageLink\(person\.followIgUrl/);
 assert.match(treasuryHtml, /<th scope="col">Early Bird<\/th>[\s\S]*?<th scope="col">Twibbon<\/th>[\s\S]*?<th scope="col">IG Following<\/th>[\s\S]*?<th scope="col">Proof Link<\/th>/, 'Treasury database must show participant document columns');
@@ -94,7 +108,7 @@ for (const [file, source] of [['compe-manager.js', competitionManager], ['compe-
 }
 assert.ok((competitionManager.match(/teamStudentCardCell\(team\)/g) || []).length >= 2, 'standard manager submission tables must show every team member card');
 assert.match(competitionManager, /a\.dataset\.privateStoragePath\s*\|\|/, 'standard manager exports must retain private object paths');
-assert.match(competitionManager, /const DB_COLS = 18/);
+assert.match(competitionManager, /const DB_COLS = 23/);
 assert.match(competitionManager, /const PRELIM_COLS = 9/);
 assert.match(competitionManager, /const FINAL_COLS = 6/);
 assert.match(scManager, /teamStudentCardCell\(teamData\)/, 'Smart Competition preliminary table must show team member cards');

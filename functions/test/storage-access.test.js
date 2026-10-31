@@ -45,6 +45,25 @@ test('competition managers can read team files only for their claimed competitio
   assert.equal(await authorizeStoragePath(bccManager, 'team/smart/leader/student_card.jpg', teamLookup), false)
 })
 
+test('team registration PDFs are private to their owner, matching manager, and Delegates Relation', async () => {
+  for (const suffix of ['StudentID', 'Twibbon', 'Follow', 'AddToStory', 'LikeRepost']) {
+    const path = `team/owner/documents/Business_Case_Team_${suffix}.pdf`
+    assert.equal(await authorizeStoragePath(owner, path, teamLookup), true, `owner: ${suffix}`)
+    assert.equal(await authorizeStoragePath(bccManager, path, teamLookup), true, `manager: ${suffix}`)
+    assert.equal(await authorizeStoragePath(delegatesRelation, path, teamLookup), true, `Delegates Relation: ${suffix}`)
+    assert.equal(await authorizeStoragePath(treasury, path, teamLookup), false, `Treasury: ${suffix}`)
+    assert.equal(await authorizeStoragePath({ ...bccManager, competition: 'smart competition' }, path, teamLookup), false, `wrong competition: ${suffix}`)
+    assert.equal(await authorizeStoragePath({ uid: 'other', role: 'participant' }, path, teamLookup), false, `unrelated: ${suffix}`)
+  }
+  for (const path of [
+    'team/owner/documents/Business_Case_Team_Extra.pdf',
+    'team/owner/documents/Business_Case_Team_StudentID.jpg',
+    'team/owner/documents/nested/Business_Case_Team_StudentID.pdf'
+  ]) {
+    assert.equal(await authorizeStoragePath(delegatesRelation, path, teamLookup), false, path)
+  }
+})
+
 test('Treasury can read only registered participant verification files', async () => {
   for (const name of ['student_card.jpg', 'twibbon.jpg', 'follow_ig.jpg']) {
     assert.equal(await authorizeStoragePath(treasury, `team/owner/leader/${name}`, teamLookup), true)

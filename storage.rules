@@ -24,6 +24,14 @@ service firebase.storage {
       return signedIn() && request.auth.token.get('ipfestRole', '') == 'treasury';
     }
 
+    function delegatesRelation() {
+      return signedIn() && request.auth.token.get('ipfestRole', '') == 'delegates_relation';
+    }
+
+    function validTeamDocument(fileName) {
+      return fileName.matches('^[A-Za-z0-9_-]+_(StudentID|Twibbon|Follow|AddToStory|LikeRepost)\\.pdf$');
+    }
+
     function canReadPaymentProofs(uid) {
       return signedIn() && (request.auth.uid == uid || (treasury() && team(uid).competition != null));
     }
@@ -60,13 +68,21 @@ service firebase.storage {
       allow create: if managerFor(competition) && validUpload();
     }
 
-    match /team/{uid}/{allPaths=**} {
-      allow read: if canReadTeamFiles(uid);
-      allow create: if signedIn() && request.auth.uid == uid && validUpload();
+    match /team/{uid}/{participant}/{fileName} {
+      allow read: if (participant in ['leader', 'member1', 'member2', 'member3', 'member4'] && canReadTeamFiles(uid))
+        || canReadParticipantDocument(uid, participant, fileName);
+      allow create: if signedIn() && request.auth.uid == uid
+        && participant in ['leader', 'member1', 'member2', 'member3', 'member4']
+        && validUpload();
     }
 
-    match /team/{uid}/{participant}/{fileName} {
-      allow read: if canReadParticipantDocument(uid, participant, fileName);
+    match /team/{uid}/documents/{fileName} {
+      allow read: if validTeamDocument(fileName)
+        && (request.auth.uid == uid || managerFor(team(uid).competition) || delegatesRelation());
+      allow create: if signedIn() && request.auth.uid == uid
+        && validTeamDocument(fileName)
+        && request.resource.contentType == 'application/pdf'
+        && validUpload();
     }
 
     match /payments/{uid}/{allPaths=**} {

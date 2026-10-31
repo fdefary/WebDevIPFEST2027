@@ -258,6 +258,9 @@ describe('Storage access', () => {
       ipfestRole: 'delegates_relation'
     }).storage()
     const other = env.authenticatedContext('other').storage()
+    await env.withSecurityRulesDisabled(async (context) => {
+      await uploadBytes(ref(context.storage(), 'team/bcc-team/documents/Business_Case_Team_Unknown.pdf'), new Uint8Array([1]), { contentType: 'application/pdf' })
+    })
     const files = [
       'team/bcc-team/leader/student_card.jpg',
       'team/bcc-team/leader/twibbon.jpg',
@@ -267,11 +270,16 @@ describe('Storage access', () => {
       'team/bcc-team/member1/follow_ig.jpg',
       'team/bcc-team/member2/twibbon.jpg',
       'team/bcc-team/leader/other.jpg',
+      'team/bcc-team/documents/Business_Case_Team_StudentID.pdf',
+      'team/bcc-team/documents/Business_Case_Team_Twibbon.pdf',
+      'team/bcc-team/documents/Business_Case_Team_Follow.pdf',
+      'team/bcc-team/documents/Business_Case_Team_AddToStory.pdf',
+      'team/bcc-team/documents/Business_Case_Team_LikeRepost.pdf',
       'payments/bcc-team/registration.jpg',
       'finalreg_submissions/bcc-team/leader_1'
     ]
     for (const path of files) {
-      await assertSucceeds(uploadBytes(ref(owner, path), new Uint8Array([1]), { contentType: 'image/jpeg' }))
+      await assertSucceeds(uploadBytes(ref(owner, path), new Uint8Array([1]), { contentType: path.endsWith('.pdf') ? 'application/pdf' : 'image/jpeg' }))
     }
 
     for (const path of files.slice(0, 6)) await assertSucceeds(getBytes(ref(treasury, path)))
@@ -282,6 +290,17 @@ describe('Storage access', () => {
     await assertFails(getBytes(ref(manager, 'payments/bcc-team/registration.jpg')))
     await assertFails(getBytes(ref(manager, 'finalreg_submissions/bcc-team/leader_1')))
     await assertSucceeds(getBytes(ref(manager, 'team/bcc-team/leader/twibbon.jpg')))
+    for (const suffix of ['StudentID', 'Twibbon', 'Follow', 'AddToStory', 'LikeRepost']) {
+      const path = `team/bcc-team/documents/Business_Case_Team_${suffix}.pdf`
+      await assertSucceeds(getBytes(ref(owner, path)))
+      await assertSucceeds(getBytes(ref(manager, path)))
+      await assertSucceeds(getBytes(ref(delegatesRelation, path)))
+      await assertFails(getBytes(ref(treasury, path)))
+      await assertFails(getBytes(ref(other, path)))
+    }
+    await assertFails(getBytes(ref(delegatesRelation, 'team/bcc-team/documents/Business_Case_Team_Unknown.pdf')))
+    await assertFails(getBytes(ref(manager, 'team/bcc-team/documents/Business_Case_Team_Unknown.pdf')))
+    await assertFails(uploadBytes(ref(owner, 'team/bcc-team/documents/Business_Case_Team_Unknown.pdf'), new Uint8Array([1]), { contentType: 'application/pdf' }))
     await assertFails(getBytes(ref(delegatesRelation, 'payments/bcc-team/registration.jpg')))
     await assertFails(getBytes(ref(delegatesRelation, 'finalreg_submissions/bcc-team/leader_1')))
     await assertFails(getBytes(ref(other, 'payments/bcc-team/registration.jpg')))

@@ -5,6 +5,7 @@ import { ref, uploadBytes } from 'firebase/storage'
 
 import { DB, AUTH, STORAGE, FUNCTIONS } from './index.js'
 import { privateStorageLink } from './shared/private-download.js'
+import { TEAM_DOCUMENTS } from './shared/team-documents.js'
 import { getRoleClaims } from './shared/role-claims.js'
 
 // =====================================================================
@@ -99,6 +100,9 @@ const followIgCell = (person = {}) => privateStorageLink(person.followIgUrl, 'VI
 const teamStudentCardCell = (team) => [team.leader, ...(Array.isArray(team.members) ? team.members : [])]
     .map((person, index) => `<div>${index === 0 ? 'Leader' : `Member ${index}`}: ${studentCardCell(person)}</div>`)
     .join('')
+const teamDocumentCells = (team, span) => TEAM_DOCUMENTS
+    .map(({ field }) => `<td rowspan="${span}">${fileCell(team.teamDocuments?.[field])}</td>`)
+    .join('')
 
 const submissionBadge = (submitted, overdue) => {
     if (!submitted) return `<span class="badge-ipfest cm-badge-empty">EMPTY</span>`
@@ -174,7 +178,7 @@ const el = {
     logoutBtn:          document.getElementById('logout-btn')
 }
 
-const DB_COLS = 18
+const DB_COLS = 23
 const PRELIM_COLS = 9
 const FINAL_COLS = 6
 
@@ -290,6 +294,7 @@ function renderDatabase(teams) {
             <td rowspan="${span}"><span class="badge-ipfest ${verified ? 'bg-success text-white' : 'cm-badge-pending'}">${verified ? 'Verified' : 'Pending'}</span></td>
             <td rowspan="${span}">${span}</td>
             ${personCells(team.leader, true)}
+            ${teamDocumentCells(team, span)}
         `
         fragment.appendChild(leaderRow)
 

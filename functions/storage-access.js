@@ -3,6 +3,15 @@ const TEAM_FILE_ROOTS = new Set([
 ])
 const PAYMENT_PROOF_ROOTS = new Set(['payments', 'finalreg_submissions'])
 const PARTICIPANT_DOCUMENTS = new Set(['student_card.jpg', 'twibbon.jpg', 'follow_ig.jpg'])
+const TEAM_DOCUMENT_SUFFIXES = ['StudentID', 'Twibbon', 'Follow', 'AddToStory', 'LikeRepost']
+
+function isTeamRegistrationDocument(path) {
+  const parts = path.split('/')
+  return parts.length === 4
+    && parts[0] === 'team'
+    && parts[2] === 'documents'
+    && TEAM_DOCUMENT_SUFFIXES.some(suffix => parts[3].endsWith(`_${suffix}.pdf`))
+}
 
 function validPath(path) {
   return typeof path === 'string'
@@ -18,6 +27,16 @@ async function authorizeStoragePath(user, path, teamLookup) {
   if (!user?.uid || !validPath(path) || typeof teamLookup !== 'function') return false
   const parts = path.split('/')
   const root = parts[0]
+
+  if (root === 'team' && parts[2] === 'documents') {
+    if (!isTeamRegistrationDocument(path)) return false
+    const ownerUid = parts[1]
+    if (user.uid === ownerUid) return true
+    if (!['competition_manager', 'delegates_relation'].includes(user.role)) return false
+    const team = await teamLookup(ownerUid)
+    if (!team) return false
+    return user.role === 'delegates_relation' || user.competition === team.competition
+  }
 
   if (PAYMENT_PROOF_ROOTS.has(root) && parts.length >= 3) {
     if (user.uid === parts[1]) return true

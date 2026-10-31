@@ -11,9 +11,11 @@ test('a registrant can create an account, upload proof, save a team, and log in 
   const auth = getAuth(app);
   const db = getFirestore(app);
   const storage = getStorage(app);
-  connectAuthEmulator(auth, 'http://127.0.0.1:9099', { disableWarnings: true });
-  connectFirestoreEmulator(db, '127.0.0.1', 8080);
-  connectStorageEmulator(storage, '127.0.0.1', 9199);
+  const [firestoreHost, firestorePort] = (process.env.FIRESTORE_EMULATOR_HOST || '127.0.0.1:8080').split(':');
+  const [storageHost, storagePort] = (process.env.FIREBASE_STORAGE_EMULATOR_HOST || '127.0.0.1:9199').split(':');
+  connectAuthEmulator(auth, `http://${process.env.FIREBASE_AUTH_EMULATOR_HOST || '127.0.0.1:9099'}`, { disableWarnings: true });
+  connectFirestoreEmulator(db, firestoreHost, Number(firestorePort));
+  connectStorageEmulator(storage, storageHost, Number(storagePort));
   try {
     const email = `register-${Date.now()}@example.com`;
     const password = 'testing-password-123';
