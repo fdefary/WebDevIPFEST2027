@@ -56,7 +56,12 @@ assert.match(delegatesRelation, /cm-badge-pending/);
 assert.match(delegatesRelationCss, /\.delrel-stage \.cm-help\s*\{/);
 assert.match(delegatesRelationCss, /\.delrel-stage \.cm-leader-tag\s*\{/);
 assert.match(delegatesRelationCss, /\.delrel-stage \.cm-badge-pending\s*\{/);
-assert.match(standardManagerHtml, /<th scope="col">Email<\/th>[\s\S]*?<th scope="col">Twibbon<\/th>[\s\S]*?<th scope="col">IG Following<\/th>/, 'Competition Manager database must retain the other participant document columns');
+for (const [file, html] of [
+  ['Competition Manager', standardManagerHtml],
+  ['Smart Competition Manager', readFileSync(path.join(root, 'public/dashboard/smart-competition/manager.html'), 'utf8')]
+]) {
+  assert.doesNotMatch(html, /<th scope="col">(?:Twibbon|IG Following)<\/th>/, `${file} must not show the obsolete Twibbon or IG Following columns`);
+}
 for (const header of ['Student ID PDF', 'Twibbon PDF', 'Social Media Follow', 'Instagram Story Share', 'Like and Repost']) {
   assert.ok(standardManagerHtml.includes(`<th scope="col">${header}</th>`), `Competition Manager database must include ${header}`);
   assert.ok(delegatesRelationHtml.includes(`<th scope="col">${header}</th>`), `Delegates Relation database must include ${header}`);
@@ -94,9 +99,8 @@ assert.match(scManager, /const SELECTION_PAGE_SIZE = 20/);
 assert.match(scManager, /selectionTeams\.slice\(start,\s*start \+ SELECTION_PAGE_SIZE\)/, 'Smart Competition preliminary rows must be limited to the current page');
 assert.match(delegatesRelation, /showTableMessage\(delRelList,\s*21,/);
 assert.doesNotMatch(treasuryHtml, /<th scope="col">(?:Student ID PDF|Twibbon PDF|Social Media Follow|Instagram Story Share|Like and Repost)<\/th>/, 'Treasury columns must remain unchanged');
-assert.match(competitionManager, /twibbonCell\s*=\s*\(person = \{\}\)\s*=> privateStorageLink\(person\.twibbonUrl, 'VIEW FILE', 'btn-view-file'\)/, 'Twibbon PDF button must use the same label and dimensions as other PDF buttons');
 assert.match(readFileSync(path.join(root, 'public/static/css/compe-manager-grand.css'), 'utf8'), /\.btn-view-file\s*\{[^}]*white-space:\s*nowrap/s, 'PDF buttons must keep their label on one line so their height stays consistent');
-assert.match(competitionManager, /followIgCell\s*=\s*\(person = \{\}\)\s*=> privateStorageLink\(person\.followIgUrl/);
+assert.doesNotMatch(competitionManager, /twibbonCell|followIgCell/, 'Competition Manager rows must not render the obsolete Twibbon or IG Following proofs');
 assert.match(treasuryHtml, /<th scope="col">Early Bird<\/th>[\s\S]*?<th scope="col">Twibbon<\/th>[\s\S]*?<th scope="col">IG Following<\/th>[\s\S]*?<th scope="col">Proof Link<\/th>/, 'Treasury database must show participant document columns');
 assert.match(treasury, /teamFileLinks\(t,\s*'twibbonUrl'\)/);
 assert.match(treasury, /teamFileLinks\(t,\s*'followIgUrl'\)/);
@@ -141,7 +145,7 @@ for (const [file, source] of [['compe-manager.js', competitionManager], ['compe-
   assert.doesNotMatch(source, /studentCardCell|teamStudentCardCell|studentCardUrl|studentCardURL/, `${file} must not render the removed Student Card column`);
 }
 assert.match(competitionManager, /a\.dataset\.privateStoragePath\s*\|\|/, 'standard manager exports must retain private object paths');
-assert.match(competitionManager, /const DB_COLS = 21/);
+assert.match(competitionManager, /const DB_COLS = 19/);
 assert.match(competitionManager, /const PRELIM_COLS = 8/);
 assert.match(competitionManager, /const FINAL_COLS = 5/);
 

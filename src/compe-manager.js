@@ -79,8 +79,6 @@ const fileCell = (url) => {
         : `<span class="badge-ipfest cm-badge-empty">NO FILE</span>`
 }
 
-const twibbonCell = (person = {}) => privateStorageLink(person.twibbonUrl, 'VIEW FILE', 'btn-view-file') || '-'
-const followIgCell = (person = {}) => privateStorageLink(person.followIgUrl, 'VIEW IG PROOF', 'btn-view-file') || '-'
 const teamDocumentCells = (team, span) => TEAM_DOCUMENTS
     .map(({ field }) => `<td rowspan="${span}">${fileCell(team.teamDocuments?.[field])}</td>`)
     .join('')
@@ -159,7 +157,7 @@ const el = {
     logoutBtn:          document.getElementById('logout-btn')
 }
 
-const DB_COLS = 21
+const DB_COLS = 19
 const PRELIM_COLS = 8
 const FINAL_COLS = 5
 
@@ -246,8 +244,6 @@ const personCells = (p = {}, isLeader = false) => `
     <td>${esc(p.studentId)}</td>
     <td>${esc(p.phoneNo)}</td>
     <td>${esc(p.email)}</td>
-    <td>${twibbonCell(p)}</td>
-    <td>${followIgCell(p)}</td>
 `
 
 function renderDatabase(teams) {
