@@ -94,6 +94,8 @@ const fileCell = (url) => {
 
 const studentCardCell = (person = {}) => privateStorageLink(person.studentCardUrl ?? person.studentCardURL, 'VIEW CARD', 'btn-view-file')
     || `<span class="badge-ipfest cm-badge-empty">NO FILE</span>`
+const twibbonCell = (person = {}) => privateStorageLink(person.twibbonUrl, 'VIEW TWIBBON', 'btn-view-file') || '-'
+const followIgCell = (person = {}) => privateStorageLink(person.followIgUrl, 'VIEW IG PROOF', 'btn-view-file') || '-'
 const teamStudentCardCell = (team) => [team.leader, ...(Array.isArray(team.members) ? team.members : [])]
     .map((person, index) => `<div>${index === 0 ? 'Leader' : `Member ${index}`}: ${studentCardCell(person)}</div>`)
     .join('')
@@ -172,7 +174,7 @@ const el = {
     logoutBtn:          document.getElementById('logout-btn')
 }
 
-const DB_COLS = 16
+const DB_COLS = 18
 const PRELIM_COLS = 9
 const FINAL_COLS = 6
 
@@ -260,6 +262,8 @@ const personCells = (p = {}, isLeader = false) => `
     <td>${esc(p.phoneNo)}</td>
     <td>${esc(p.email)}</td>
     <td>${studentCardCell(p)}</td>
+    <td>${twibbonCell(p)}</td>
+    <td>${followIgCell(p)}</td>
 `
 
 function renderDatabase(teams) {

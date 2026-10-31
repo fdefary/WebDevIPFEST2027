@@ -5,6 +5,7 @@ const { authorizeStoragePath, signedReadOptions } = require('../storage-access')
 const owner = { uid: 'owner', email: 'owner@example.com', emailVerified: true }
 const bccManager = { uid: 'manager', role: 'competition_manager', competition: 'business case' }
 const delegatesRelation = { uid: 'delegates', role: 'delegates_relation' }
+const treasury = { uid: 'treasury', role: 'treasury' }
 const teams = {
   owner: { competition: 'business case', leader: {}, members: [{}, {}] },
   smart: { competition: 'smart competition', leader: {}, members: [{}] }
@@ -42,6 +43,31 @@ test('authorizes Delegates Relation only for registered student cards', async ()
 test('competition managers can read team files only for their claimed competition', async () => {
   assert.equal(await authorizeStoragePath(bccManager, 'team/owner/leader/student_card.jpg', teamLookup), true)
   assert.equal(await authorizeStoragePath(bccManager, 'team/smart/leader/student_card.jpg', teamLookup), false)
+})
+
+test('Treasury can read only registered participant verification files', async () => {
+  for (const name of ['student_card.jpg', 'twibbon.jpg', 'follow_ig.jpg']) {
+    assert.equal(await authorizeStoragePath(treasury, `team/owner/leader/${name}`, teamLookup), true)
+    assert.equal(await authorizeStoragePath(treasury, `team/owner/member1/${name}`, teamLookup), true)
+    assert.equal(await authorizeStoragePath(treasury, `team/owner/member2/${name}`, teamLookup), true)
+  }
+  for (const path of [
+    'team/owner/member3/twibbon.jpg',
+    'team/owner/leader/other.jpg',
+    'team/missing/leader/student_card.jpg'
+  ]) {
+    assert.equal(await authorizeStoragePath(treasury, path, teamLookup), false, path)
+  }
+})
+
+test('only Treasury and the team owner can read registration payment proofs', async () => {
+  for (const path of ['payments/owner/proof.jpg', 'finalreg_submissions/owner/leader_1']) {
+    assert.equal(await authorizeStoragePath(treasury, path, teamLookup), true, path)
+    assert.equal(await authorizeStoragePath(owner, path, teamLookup), true, path)
+    assert.equal(await authorizeStoragePath(bccManager, path, teamLookup), false, path)
+    assert.equal(await authorizeStoragePath(delegatesRelation, path, teamLookup), false, path)
+    assert.equal(await authorizeStoragePath({ uid: 'other', role: null }, path, teamLookup), false, path)
+  }
 })
 
 test('rejects merchandise, unknown roots, and malformed object paths', async () => {

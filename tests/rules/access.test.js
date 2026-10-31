@@ -4,6 +4,7 @@ import { after, before, beforeEach, describe, it } from 'node:test'
 import { initializeTestEnvironment, assertFails, assertSucceeds } from '@firebase/rules-unit-testing'
 import { collection, doc, getDoc, getDocs, query, serverTimestamp, setDoc, updateDoc, where } from 'firebase/firestore'
 import { ref, deleteObject, getBytes, uploadBytes } from 'firebase/storage'
+import { registrationPriceAt } from '../../src/shared/registration-pricing.js'
 
 const projectId = 'demo-ipfest-p0'
 let env
@@ -24,6 +25,8 @@ const team = (uid, competition = 'business case') => ({
   teamName: `Team ${uid}`,
   status: 'pending',
   payment_status: 'unpaid',
+  join_on: serverTimestamp(),
+  payment_amount: registrationPriceAt(new Date()).amount,
   leader: { firstName: 'Test', email: `${uid}@example.com` },
   members: [],
   sub_preliminary: { status: false, final: null, rank: null, score: null }
@@ -239,5 +242,49 @@ describe('Storage access', () => {
     await assertFails(uploadBytes(ref(wrongManager, 'Case/business case/case.pdf'), new Uint8Array([1]), { contentType: 'application/pdf' }))
     await assertSucceeds(getBytes(ref(owner, 'Case/business case/case.pdf')))
     await assertFails(getBytes(ref(owner, 'Case/smart competition/case.pdf')))
+  })
+
+  it('limits Treasury to registered verification documents and team payment proofs', async () => {
+    await seedTeam('bcc-team', {
+      ...team('bcc-team'),
+      members: [{ firstName: 'Member' }]
+    })
+    const owner = env.authenticatedContext('bcc-team').storage()
+    const treasury = env.authenticatedContext('treasury', { ipfestRole: 'treasury' }).storage()
+    const manager = env.authenticatedContext('bcc-manager', {
+      ipfestRole: 'competition_manager', ipfestCompetition: 'business case'
+    }).storage()
+    const delegatesRelation = env.authenticatedContext('delegates-relation', {
+      ipfestRole: 'delegates_relation'
+    }).storage()
+    const other = env.authenticatedContext('other').storage()
+    const files = [
+      'team/bcc-team/leader/student_card.jpg',
+      'team/bcc-team/leader/twibbon.jpg',
+      'team/bcc-team/leader/follow_ig.jpg',
+      'team/bcc-team/member1/student_card.jpg',
+      'team/bcc-team/member1/twibbon.jpg',
+      'team/bcc-team/member1/follow_ig.jpg',
+      'team/bcc-team/member2/twibbon.jpg',
+      'team/bcc-team/leader/other.jpg',
+      'payments/bcc-team/registration.jpg',
+      'finalreg_submissions/bcc-team/leader_1'
+    ]
+    for (const path of files) {
+      await assertSucceeds(uploadBytes(ref(owner, path), new Uint8Array([1]), { contentType: 'image/jpeg' }))
+    }
+
+    for (const path of files.slice(0, 6)) await assertSucceeds(getBytes(ref(treasury, path)))
+    await assertFails(getBytes(ref(treasury, 'team/bcc-team/member2/twibbon.jpg')))
+    await assertFails(getBytes(ref(treasury, 'team/bcc-team/leader/other.jpg')))
+    await assertSucceeds(getBytes(ref(treasury, 'payments/bcc-team/registration.jpg')))
+    await assertSucceeds(getBytes(ref(treasury, 'finalreg_submissions/bcc-team/leader_1')))
+    await assertFails(getBytes(ref(manager, 'payments/bcc-team/registration.jpg')))
+    await assertFails(getBytes(ref(manager, 'finalreg_submissions/bcc-team/leader_1')))
+    await assertSucceeds(getBytes(ref(manager, 'team/bcc-team/leader/twibbon.jpg')))
+    await assertFails(getBytes(ref(delegatesRelation, 'payments/bcc-team/registration.jpg')))
+    await assertFails(getBytes(ref(delegatesRelation, 'finalreg_submissions/bcc-team/leader_1')))
+    await assertFails(getBytes(ref(other, 'payments/bcc-team/registration.jpg')))
+    await assertSucceeds(getBytes(ref(owner, 'payments/bcc-team/registration.jpg')))
   })
 })

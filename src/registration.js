@@ -12,6 +12,7 @@ import { ref, uploadBytes } from 'firebase/storage';
 // Import Firebase SDK initialization
 import { AUTH, STORAGE, DB } from './index.js';
 import { firstInvalidRegistrationStep } from './shared/registration-fields.js';
+import { registrationPriceAt } from './shared/registration-pricing.js';
 
 // Daftar kompetisi dan jumlah anggota yang valid
 const teamMemberCondition = {
@@ -76,11 +77,11 @@ function generateMemberEntry(entry, count) {
           <div class="col-md-6">
             <label for="batch${i}" class="form-label">Class year</label>
             <select name="batch${i}" id="batch${i}" class="form-select" required>
+              <option value="2026">2026</option>
               <option value="2025">2025</option>
               <option value="2024">2024</option>
               <option value="2023">2023</option>
               <option value="2022">2022</option>
-              <option value="2021">2021</option>
             </select>
             <div class="invalid-feedback">Select member ${i}'s class year.</div>
           </div>
@@ -273,11 +274,6 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Handle metode pembayaran
-  function earlybirdStatus() {
-    const earlybirdDeadline = new Date('Nov 17, 2025 00:00:00').getTime();
-    return Date.now() < earlybirdDeadline;
-  }
-
   const paymentMethods = [...document.querySelectorAll(".payment-method .nav-link")];
   const showPaymentMethod = (method) => {
       const payMethod = method.dataset.method;
@@ -293,19 +289,20 @@ document.addEventListener("DOMContentLoaded", () => {
         panel.hidden = panel !== targetPane;
       });
 
-      const isEarly = earlybirdStatus();
-      const indoPrice = isEarly ? "IDR 200.000" : "IDR 250.000";
-      const intlPrice = isEarly ? "USD 17" : "USD 20";
+      const price = registrationPriceAt(new Date());
+      const indoPrice = `IDR ${price.amount.toLocaleString('id-ID')}`;
+      const intlPrice = `USD ${Math.ceil(price.amount / 16000)}`;
+      const total = `<div class="payment-total"><span>Total payment — ${price.tier}</span><strong>${indoPrice}</strong></div>`;
 
       switch (payMethod) {
         case "Bank BCA":
-          targetPane.innerHTML = `<div class="payment-total"><span>Total payment</span><strong>${indoPrice}</strong></div><p>Transfer to BCA account <strong>2650508800</strong> under the name <strong>Mochammad Rafly Ghazany A</strong>.</p>`;
+          targetPane.innerHTML = `${total}<p>Transfer to BCA account <strong>2650508800</strong> under the name <strong>Mochammad Rafly Ghazany A</strong>.</p>`;
           break;
         case "Gopay":
-          targetPane.innerHTML = `<div class="payment-total"><span>Total payment</span><strong>${indoPrice}</strong></div><p>Send GoPay to <strong>085655226900</strong> under the name <strong>Rafly Ghazany</strong>.</p>`;
+          targetPane.innerHTML = `${total}<p>Send GoPay to <strong>085655226900</strong> under the name <strong>Rafly Ghazany</strong>.</p>`;
           break;
         case "Paypal":
-          targetPane.innerHTML = `<div class="payment-total"><span>Total payment</span><strong>${intlPrice}</strong></div><p>Pay through <a href="https://www.paypal.me/RaflyGhazany" target="_blank" rel="noopener noreferrer">paypal.me/RaflyGhazany</a>.</p>`;
+          targetPane.innerHTML = `<div class="payment-total"><span>Total payment — ${price.tier} (approx.)</span><strong>${intlPrice}</strong></div><p>Pay through <a href="https://www.paypal.me/RaflyGhazany" target="_blank" rel="noopener noreferrer">paypal.me/RaflyGhazany</a>.</p>`;
           break;
       }
   };
@@ -466,6 +463,9 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Simpan ke Firestore
+      const registrationPrice = registrationPriceAt(new Date());
+      if (!registrationPrice) throw new Error('Could not determine the registration fee. Please try again.');
+      teamData.payment_amount = registrationPrice.amount;
       await setDoc(doc(DB, "Team", user.uid), teamData);
 
       // Kirim verifikasi email

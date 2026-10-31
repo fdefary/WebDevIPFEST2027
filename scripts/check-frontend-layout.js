@@ -31,10 +31,12 @@ for (const file of htmlFiles(path.join(root, 'public'))) {
 }
 
 const competitionManager = readFileSync(path.join(root, 'src/compe-manager.js'), 'utf8');
+const standardManagerHtml = readFileSync(path.join(root, 'public/dashboard/compe-manager.html'), 'utf8');
 assert.match(competitionManager, /query\(collection\(DB, 'Team'\), where\('competition', '==', manager\.competition\)\)/);
 assert.match(competitionManager, /ref\(ref\(caseStorage, manager\.competition\), `\$\{Date\.now\(\)\}_\$\{file\.name\}`\)/);
 
 const treasury = readFileSync(path.join(root, 'src/treasury.js'), 'utf8');
+const treasuryHtml = readFileSync(path.join(root, 'public/dashboard/treasury.html'), 'utf8');
 const delegatesRelation = readFileSync(path.join(root, 'src/delegates-relation.js'), 'utf8');
 const delegatesRelationHtml = readFileSync(path.join(root, 'public/dashboard/delegates-relation.html'), 'utf8');
 const delegatesRelationCss = readFileSync(path.join(root, 'public/static/css/delegates-relation-grand.css'), 'utf8');
@@ -53,10 +55,19 @@ assert.match(delegatesRelation, /cm-badge-pending/);
 assert.match(delegatesRelationCss, /\.delrel-stage \.cm-help\s*\{/);
 assert.match(delegatesRelationCss, /\.delrel-stage \.cm-leader-tag\s*\{/);
 assert.match(delegatesRelationCss, /\.delrel-stage \.cm-badge-pending\s*\{/);
+assert.match(standardManagerHtml, /<th scope="col">Student Card<\/th>[\s\S]*?<th scope="col">Twibbon<\/th>[\s\S]*?<th scope="col">IG Following<\/th>/, 'Competition Manager database must show all participant document columns');
+assert.match(competitionManager, /twibbonCell\s*=\s*\(person = \{\}\)\s*=> privateStorageLink\(person\.twibbonUrl/);
+assert.match(competitionManager, /followIgCell\s*=\s*\(person = \{\}\)\s*=> privateStorageLink\(person\.followIgUrl/);
+assert.match(treasuryHtml, /<th scope="col">Early Bird<\/th>[\s\S]*?<th scope="col">Twibbon<\/th>[\s\S]*?<th scope="col">IG Following<\/th>[\s\S]*?<th scope="col">Proof Link<\/th>/, 'Treasury database must show participant document columns');
+assert.match(treasury, /teamFileLinks\(t,\s*'twibbonUrl'\)/);
+assert.match(treasury, /teamFileLinks\(t,\s*'followIgUrl'\)/);
+assert.match(treasury, /const REG_COLS = 10/);
 const delegatesSource = readFileSync(path.join(root, 'src/delegates.js'), 'utf8');
 assert.doesNotMatch(delegatesSource, /getDocs\(collection\(DB,\s*['"]Team['"]\)/, 'participants must not download all Team records for a fallback search');
 
 const registrationSource = readFileSync(path.join(root, 'src/registration.js'), 'utf8');
+const legacyLogin = readFileSync(path.join(root, 'src/login_ori.js'), 'utf8');
+assert.doesNotMatch(legacyLogin, /event@ipfest2026\.com/, 'legacy event account must not remain in executable login configuration');
 assert.match(registrationSource, /payments\/\$\{user\.uid\}\/\$\{Date\.now\(\)\}_/);
 assert.ok(registrationSource.indexOf('createUserWithEmailAndPassword(AUTH, email, password)') < registrationSource.indexOf('payments/${user.uid}/'), 'Payment upload must happen after Auth user creation');
 
@@ -67,7 +78,6 @@ const scManager = readFileSync(path.join(root, 'src/compe-manager-sc.js'), 'utf8
 assert.match(scManager, /escapeHTML\(/);
 assert.doesNotMatch(scManager, /\$\{(?:teamName|univ|compe|leader\.\w+|m\.\w+)\}/);
 
-const standardManagerHtml = readFileSync(path.join(root, 'public/dashboard/compe-manager.html'), 'utf8');
 for (const tableId of ['db-table', 'submission-table', 'submission-table-final']) {
   assert.match(standardManagerHtml, new RegExp(`<table id="${tableId}"[\\s\\S]*?<th scope="col">Student Card</th>`), `${tableId} must show the Student Card column`);
 }
@@ -84,7 +94,7 @@ for (const [file, source] of [['compe-manager.js', competitionManager], ['compe-
 }
 assert.ok((competitionManager.match(/teamStudentCardCell\(team\)/g) || []).length >= 2, 'standard manager submission tables must show every team member card');
 assert.match(competitionManager, /a\.dataset\.privateStoragePath\s*\|\|/, 'standard manager exports must retain private object paths');
-assert.match(competitionManager, /const DB_COLS = 16/);
+assert.match(competitionManager, /const DB_COLS = 18/);
 assert.match(competitionManager, /const PRELIM_COLS = 9/);
 assert.match(competitionManager, /const FINAL_COLS = 6/);
 assert.match(scManager, /teamStudentCardCell\(teamData\)/, 'Smart Competition preliminary table must show team member cards');

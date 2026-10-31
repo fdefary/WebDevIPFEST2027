@@ -4,6 +4,9 @@ import { readFileSync } from 'node:fs';
 const html = readFileSync('public/register.html', 'utf8');
 const css = readFileSync('public/static/css/register.css', 'utf8');
 const script = readFileSync('src/registration.js', 'utf8');
+const pricing = readFileSync('src/shared/registration-pricing.js', 'utf8');
+const treasury = readFileSync('src/treasury.js', 'utf8');
+const firestoreRules = readFileSync('firestore.rules', 'utf8');
 const adminHtml = readFileSync('public/dashboard/delegates-relation.html', 'utf8');
 const adminScript = readFileSync('src/delegates-relation.js', 'utf8');
 const validation = readFileSync('public/static/js/validation.js', 'utf8');
@@ -92,6 +95,17 @@ assert.match(css, /\.registration-navbar \.navbar-brand \{ gap:24px;/);
 assert.match(css, /\.registration-heading h1[^\n]*"Plus Jakarta Sans SemiBold"/);
 assert.match(css, /\.registration-step > h2[^\n]*"Plus Jakarta Sans SemiBold"/);
 assert.match(script, /teamMemberCondition/);
+assert.match(script, /registrationPriceAt\(new Date\(\)\)/);
+assert.match(script, /teamData\.payment_amount = registrationPrice\.amount/);
+assert.match(pricing, /2026-11-12T00:00:00\+07:00/);
+assert.match(pricing, /2026-12-05T00:00:00\+07:00/);
+assert.match(treasury, /if \(typeof t\.payment_amount === 'number'\) return t\.payment_amount/);
+assert.match(firestoreRules, /request\.resource\.data\.payment_amount == registrationAmount\(request\.time\)/);
+assert.match(firestoreRules, /request\.resource\.data\.join_on == request\.time/);
+for (const [source, description] of [[html, 'leader'], [script, 'generated member']]) {
+  assert.match(source, /<option value="2026"(?: selected)?>(?:2026)<\/option>/, `${description} Class Year must include 2026`);
+  assert.doesNotMatch(source, /<option value="2021">2021<\/option>/, `${description} Class Year must not include 2021`);
+}
 assert.match(html, /<button type="button" class="card-compe" data-value="smart competition" aria-pressed="false">[\s\S]*?<span class="card-title">Smart Competition<\/span>/, 'Smart Competition must be selectable');
 assert.doesNotMatch(html.match(/<button[^>]*data-value="smart competition"[^>]*>/)?.[0] ?? '', /\bdisabled\b/);
 assert.doesNotMatch(script, /selectedCompetition === ["']smart competition["']/);

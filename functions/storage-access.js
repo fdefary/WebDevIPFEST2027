@@ -1,6 +1,8 @@
 const TEAM_FILE_ROOTS = new Set([
   'team', 'payments', 'preliminary_submissions', 'final_submissions', 'finalreg_submissions'
 ])
+const PAYMENT_PROOF_ROOTS = new Set(['payments', 'finalreg_submissions'])
+const PARTICIPANT_DOCUMENTS = new Set(['student_card.jpg', 'twibbon.jpg', 'follow_ig.jpg'])
 
 function validPath(path) {
   return typeof path === 'string'
@@ -17,8 +19,16 @@ async function authorizeStoragePath(user, path, teamLookup) {
   const parts = path.split('/')
   const root = parts[0]
 
-  if (root === 'team' && user.role === 'delegates_relation') {
-    if (parts.length !== 4 || parts[3] !== 'student_card.jpg') return false
+  if (PAYMENT_PROOF_ROOTS.has(root) && parts.length >= 3) {
+    if (user.uid === parts[1]) return true
+    if (user.role !== 'treasury') return false
+    return Boolean(await teamLookup(parts[1]))
+  }
+
+  if (root === 'team' && (user.role === 'delegates_relation' || user.role === 'treasury')) {
+    if (parts.length !== 4) return false
+    const allowedFiles = user.role === 'treasury' ? PARTICIPANT_DOCUMENTS : new Set(['student_card.jpg'])
+    if (!allowedFiles.has(parts[3])) return false
     const team = await teamLookup(parts[1])
     if (!team) return false
     if (parts[2] === 'leader') return Boolean(team.leader)
