@@ -36,6 +36,8 @@ assert.match(competitionManager, /ref\(ref\(caseStorage, manager\.competition\),
 
 const treasury = readFileSync(path.join(root, 'src/treasury.js'), 'utf8');
 const delegatesRelation = readFileSync(path.join(root, 'src/delegates-relation.js'), 'utf8');
+const delegatesRelationHtml = readFileSync(path.join(root, 'public/dashboard/delegates-relation.html'), 'utf8');
+const delegatesRelationCss = readFileSync(path.join(root, 'public/static/css/delegates-relation-grand.css'), 'utf8');
 assert.match(treasury, /onSnapshot\(collection\(DB, 'Team'\)/);
 assert.match(delegatesRelation, /onSnapshot\(collection\(DB, 'Team'\)/);
 assert.doesNotMatch(treasury, /deleteField|data-delete-final/, 'Treasury may verify, not delete final payment records');
@@ -44,6 +46,13 @@ assert.match(competitionManager, /httpsCallable\(FUNCTIONS, 'updateCompetitionRe
 assert.match(competitionManager, /httpsCallable\(FUNCTIONS, 'publishCompetitionCase'\)/);
 assert.match(treasury, /getRoleClaims\(user\)/);
 assert.match(delegatesRelation, /getRoleClaims\(user\)/);
+assert.match(delegatesRelationHtml, /<p class="cm-help"><span class="cm-leader-tag">Leader<\/span> menandai ketua tim\. Baris di bawahnya adalah anggota tim yang sama\.<\/p>/);
+assert.match(delegatesRelation, /personCells\(leader,\s*fmt,\s*true\)/);
+assert.match(delegatesRelation, /cm-leader-tag/);
+assert.match(delegatesRelation, /cm-badge-pending/);
+assert.match(delegatesRelationCss, /\.delrel-stage \.cm-help\s*\{/);
+assert.match(delegatesRelationCss, /\.delrel-stage \.cm-leader-tag\s*\{/);
+assert.match(delegatesRelationCss, /\.delrel-stage \.cm-badge-pending\s*\{/);
 const delegatesSource = readFileSync(path.join(root, 'src/delegates.js'), 'utf8');
 assert.doesNotMatch(delegatesSource, /getDocs\(collection\(DB,\s*['"]Team['"]\)/, 'participants must not download all Team records for a fallback search');
 
@@ -57,6 +66,28 @@ assert.match(delegates, /preliminary_submissions\/\$\{currentUserID\}\//);
 const scManager = readFileSync(path.join(root, 'src/compe-manager-sc.js'), 'utf8');
 assert.match(scManager, /escapeHTML\(/);
 assert.doesNotMatch(scManager, /\$\{(?:teamName|univ|compe|leader\.\w+|m\.\w+)\}/);
+
+const standardManagerHtml = readFileSync(path.join(root, 'public/dashboard/compe-manager.html'), 'utf8');
+for (const tableId of ['db-table', 'submission-table', 'submission-table-final']) {
+  assert.match(standardManagerHtml, new RegExp(`<table id="${tableId}"[\\s\\S]*?<th scope="col">Student Card</th>`), `${tableId} must show the Student Card column`);
+}
+for (const [tableId, html] of [
+  ['db-table', readFileSync(path.join(root, 'public/dashboard/smart-competition/manager.html'), 'utf8')],
+  ['selection-table', readFileSync(path.join(root, 'public/dashboard/smart-competition/manager.html'), 'utf8')]
+]) {
+  assert.match(html, new RegExp(`<table id="${tableId}"[\\s\\S]*?<th scope="col">Student Card</th>`), `Smart Competition ${tableId} must show the Student Card column`);
+}
+for (const [file, source] of [['compe-manager.js', competitionManager], ['compe-manager-sc.js', scManager]]) {
+  assert.match(source, /privateStorageLink\(/, `${file} must use temporary private Storage links`);
+  assert.match(source, /studentCardUrl\s*\?\?\s*\w+\.studentCardURL/, `${file} must support both participant card field names`);
+  assert.match(source, /teamStudentCardCell\s*=\s*\(team\)\s*=>\s*\[team\.leader,\s*\.\.\./, `${file} team cells must include leader and members`);
+}
+assert.ok((competitionManager.match(/teamStudentCardCell\(team\)/g) || []).length >= 2, 'standard manager submission tables must show every team member card');
+assert.match(competitionManager, /a\.dataset\.privateStoragePath\s*\|\|/, 'standard manager exports must retain private object paths');
+assert.match(competitionManager, /const DB_COLS = 16/);
+assert.match(competitionManager, /const PRELIM_COLS = 9/);
+assert.match(competitionManager, /const FINAL_COLS = 6/);
+assert.match(scManager, /teamStudentCardCell\(teamData\)/, 'Smart Competition preliminary table must show team member cards');
 
 const merchManager = readFileSync(path.join(root, 'src/merchmanager.js'), 'utf8');
 assert.match(merchManager, /escapeHTML\(/);

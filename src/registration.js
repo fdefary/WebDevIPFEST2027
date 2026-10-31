@@ -249,13 +249,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const selectedCompetition = card.dataset.value;
 
-      // Disable Smart Competition
-      if (selectedCompetition === "smart competition") {
-        card.classList.add("disabled");
-        alert("Smart Competition registration is closed.");
-        return;
-      }
-
       document.querySelectorAll(".card-compe").forEach(c => {
         c.classList.remove('active');
         c.setAttribute("aria-pressed", "false");

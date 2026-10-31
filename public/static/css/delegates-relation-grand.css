@@ -193,6 +193,14 @@ body.delrel-page #logout-btn:hover {
 .delrel-stage .table tbody tr:nth-child(even) > td { background-color: rgba(248, 245, 242, .06) !important; }
 .delrel-stage .table tbody tr { transition: background-color .25s ease; }
 .delrel-stage .table tbody tr:hover > td { background-color: rgba(230, 199, 42, .16) !important; }
+.delrel-stage .cm-help { color: rgba(248, 245, 242, .75); font-size: .9rem; }
+.delrel-stage .cm-leader-tag {
+	display: inline-block; margin-left: .35rem; padding: .05rem .45rem;
+	border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: .05em;
+	color: #16213E; background: #E6C72A; vertical-align: middle;
+}
+.delrel-stage tr.cm-leader-row > td { border-top: 1px solid rgba(230, 199, 42, .45) !important; }
+.delrel-stage .cm-badge-pending { background: rgba(230, 199, 42, .15); color: #E6C72A; border: 1px solid rgba(230, 199, 42, .5); }
 .delrel-stage .table a,
 .delrel-stage .table .link-info {
 	color: var(--g-gold) !important;

@@ -13,6 +13,7 @@ import { DB, AUTH, STORAGE, FUNCTIONS } from './index.js'
 
 import { setToastAlert } from './shared/alert.js'
 import { getRoleClaims } from './shared/role-claims.js'
+import { privateStorageLink } from './shared/private-download.js'
 
 // =========================
 // Manager Mapping
@@ -36,6 +37,10 @@ let switchCompetition = null;
 const escapeHTML = (value) => String(value ?? "-").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[char]));
+const studentCardCell = (person = {}) => privateStorageLink(person.studentCardUrl ?? person.studentCardURL, 'VIEW CARD', 'btn-view-file') || '-'
+const teamStudentCardCell = (team) => [team.leader, ...(Array.isArray(team.members) ? team.members : [])]
+    .map((person, index) => `<div>${index === 0 ? 'Leader' : `Member ${index}`}: ${studentCardCell(person)}</div>`)
+    .join('')
 
 onAuthStateChanged(AUTH, async (user) => {
     if (!user) return (window.location.href = "../../login.html");
@@ -151,6 +156,7 @@ function createTeamList(rowNo, teamName, univ, compe, leader, members, paymentSt
         <td>${escapeHTML(leader.studentId)}</td>
         <td>${escapeHTML(leader.phoneNo)}</td>
         <td>${escapeHTML(leader.email)}</td>
+        <td>${studentCardCell(leader)}</td>
     `
     delRelList.appendChild(leaderRow)
 
@@ -167,6 +173,7 @@ function createTeamList(rowNo, teamName, univ, compe, leader, members, paymentSt
             <td>${escapeHTML(m.studentId)}</td>
             <td>${escapeHTML(m.phoneNo)}</td>
             <td>${escapeHTML(m.email)}</td>
+            <td>${studentCardCell(m)}</td>
         `
         delRelList.appendChild(mRow)
     })
@@ -208,6 +215,7 @@ function createPrelimSelectionRow(tableElement, teamId, rowNo, teamData, totalTe
             <div class="fw-bold text-primary">${escapeHTML(teamData.teamName || "No Name")}</div>
             <div class="small text-muted">${escapeHTML(teamData.leader?.university)}</div>
         </td>
+        <td>${teamStudentCardCell(teamData)}</td>
     `;
     row.innerHTML = staticCols;
 
