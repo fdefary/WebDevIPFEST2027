@@ -85,6 +85,20 @@ body.manager-page h1, body.manager-page h2, body.manager-page h3 {
 	border: 1px solid var(--g-slate);
 	color: var(--g-navy);
 }
+/* Teks input (mis. kolom Score) harus selalu kontras dengan latar terang */
+.manager-stage .table tbody td input.form-control,
+.manager-stage .table tbody td input.form-control.text-primary,
+.manager-stage .table tbody td input[type="number"] {
+	background-color: #F8F5F2 !important;
+	color: #16213E !important;
+	-webkit-text-fill-color: #16213E !important;
+	caret-color: #16213E;
+	opacity: 1 !important;
+}
+.manager-stage .table tbody td input.form-control::placeholder {
+	color: rgba(22, 33, 62, .45) !important;
+	-webkit-text-fill-color: rgba(22, 33, 62, .45) !important;
+}
 .manager-stage .form-control:focus,
 .manager-stage .form-select:focus {
 	border-color: var(--g-gold);
