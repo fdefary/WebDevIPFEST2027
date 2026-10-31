@@ -1,0 +1,395 @@
+/* ==========================================================================
+   dashboard-grand.css
+   Tema Grand untuk dashboard Delegates Relation IPFEST 2027.
+   Muat SETELAH bootstrap.min.css, style.css, dan grand-theme.css.
+
+   Palet: Midnight Navy #16213E · Warm Ivory #F8F5F2 · Slate Grey #6C677D
+          Burnt Orange #D97706 · Muted Gold #E6C72A
+   ========================================================================== */
+
+body.dashboard-theme {
+	--gd-navy: #16213e;
+	--gd-navy-2: #1d2a52;
+	--gd-ivory: #f8f5f2;
+	--gd-slate: #6c677d;
+	--gd-orange: #d97706;
+	--gd-gold: #e6c72a;
+	--gd-line: rgba(230, 199, 42, 0.28);
+	--gd-glass: linear-gradient(160deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
+
+	position: relative;
+	min-height: 100vh;
+	font-family: 'Poppins', sans-serif;
+	color: var(--gd-ivory);
+	background: linear-gradient(135deg, #16213e 0%, #1b2349 42%, #3d2c24 72%, #6a4416 100%) fixed;
+}
+
+/* garis-garis bergelombang halus di latar */
+body.dashboard-theme::before {
+	content: "";
+	position: fixed;
+	inset: 0;
+	z-index: 0;
+	pointer-events: none;
+	background:
+		radial-gradient(circle at 12% 18%, rgba(230, 199, 42, 0.10), transparent 38%),
+		radial-gradient(circle at 88% 82%, rgba(217, 119, 6, 0.16), transparent 42%),
+		repeating-linear-gradient(115deg, rgba(255, 255, 255, 0.045) 0 1px, transparent 1px 24px);
+	-webkit-mask-image: radial-gradient(ellipse at 20% 30%, #000 0%, rgba(0, 0, 0, 0.25) 70%, transparent 100%);
+	mask-image: radial-gradient(ellipse at 20% 30%, #000 0%, rgba(0, 0, 0, 0.25) 70%, transparent 100%);
+}
+
+body.dashboard-theme > * {
+	position: relative;
+	z-index: 1;
+}
+
+.dashboard-theme *,
+.dashboard-theme *::before,
+.dashboard-theme *::after {
+	box-sizing: border-box;
+}
+
+/* ------------------------------- Utility ---------------------------------- */
+
+.dashboard-theme .text-primary {
+	color: var(--gd-gold) !important;
+}
+
+.dashboard-theme .text-secondary {
+	color: rgba(248, 245, 242, 0.72) !important;
+}
+
+.dashboard-theme h1,
+.dashboard-theme h2,
+.dashboard-theme h3,
+.dashboard-theme h4,
+.dashboard-theme h5,
+.dashboard-theme h6 {
+	color: var(--gd-ivory);
+}
+
+/* ------------------------------- Spinner ---------------------------------- */
+
+.dashboard-theme #spinner {
+	background: var(--gd-navy) !important;
+	z-index: 2000;
+}
+
+/* ------------------------------- Navbar ----------------------------------- */
+
+.dashboard-theme .dashboard-navbar {
+	background: rgba(22, 33, 62, 0.88) !important;
+	-webkit-backdrop-filter: blur(14px);
+	backdrop-filter: blur(14px);
+	border-bottom: 1px solid var(--gd-line);
+	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.dashboard-theme .dashboard-navbar .navbar-brand img {
+	width: auto;
+	height: 52px;
+	max-width: none;
+}
+
+.dashboard-theme .dashboard-navbar .nav-tabs {
+	border: 0;
+	gap: 0.25rem;
+}
+
+.dashboard-theme .dashboard-navbar .nav-link {
+	position: relative;
+	padding: 1.7rem 1rem;
+	color: rgba(248, 245, 242, 0.85);
+	font-family: 'Poppins', sans-serif;
+	font-weight: 500;
+	background: transparent !important;
+	border: 0 !important;
+	border-radius: 0;
+	transition: color 0.2s ease;
+}
+
+.dashboard-theme .dashboard-navbar .nav-link::after {
+	content: "";
+	position: absolute;
+	left: 1rem;
+	right: 1rem;
+	bottom: 1.1rem;
+	height: 2px;
+	background: linear-gradient(90deg, var(--gd-gold), var(--gd-orange));
+	transform: scaleX(0);
+	transform-origin: left;
+	transition: transform 0.25s ease;
+}
+
+.dashboard-theme .dashboard-navbar .nav-link:hover,
+.dashboard-theme .dashboard-navbar .nav-link:focus-visible,
+.dashboard-theme .dashboard-navbar .nav-link.active {
+	color: var(--gd-gold);
+}
+
+.dashboard-theme .dashboard-navbar .nav-link:hover::after,
+.dashboard-theme .dashboard-navbar .nav-link.active::after {
+	transform: scaleX(1);
+}
+
+.dashboard-theme .dashboard-navbar .navbar-toggler {
+	border: 1px solid var(--gd-line);
+	border-radius: 10px;
+	color: var(--gd-gold);
+}
+
+.dashboard-theme .dashboard-navbar .navbar-toggler .fa-bars {
+	color: var(--gd-gold);
+}
+
+/* menu terbuka di layar kecil */
+@media (max-width: 991.98px) {
+	.dashboard-theme .dashboard-navbar .navbar-collapse {
+		margin-top: 0.75rem;
+		padding: 0.5rem 0 1rem;
+		border-top: 1px solid var(--gd-line);
+	}
+
+	.dashboard-theme .dashboard-navbar .nav-link {
+		padding: 0.75rem 0.5rem;
+	}
+
+	.dashboard-theme .dashboard-navbar .nav-link::after {
+		bottom: 0.4rem;
+		left: 0.5rem;
+		right: auto;
+		width: 2.5rem;
+	}
+}
+
+/* ----------------------- Tombol pill (Log Out / Download) ------------------ */
+
+.dashboard-theme .btn-light.rounded-pill {
+	font-weight: 600;
+	color: var(--gd-gold) !important;
+	background: transparent;
+	border: 1.5px solid var(--gd-gold) !important;
+	transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-theme .btn-light.rounded-pill:hover,
+.dashboard-theme .btn-light.rounded-pill:focus-visible {
+	color: var(--gd-navy) !important;
+	background: var(--gd-gold);
+	box-shadow: 0 8px 20px rgba(230, 199, 42, 0.28);
+	transform: translateY(-1px);
+}
+
+/* --------------------------------- Stage ---------------------------------- */
+
+.dashboard-theme .dashboard-stage {
+	padding-top: 6.5rem !important;
+	background: transparent;
+}
+
+/* panel utama tiap tab */
+.dashboard-theme .dashboard-panel {
+	width: 100%;
+	min-width: 0;
+	padding: 1.75rem;
+	background: linear-gradient(160deg, rgba(22, 33, 62, 0.82), rgba(22, 33, 62, 0.62));
+	border: 1px solid var(--gd-line);
+	border-radius: 18px;
+	box-shadow: 0 18px 40px rgba(0, 0, 0, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+	-webkit-backdrop-filter: blur(8px);
+	backdrop-filter: blur(8px);
+	animation: gd-panel-in 0.45s ease both;
+}
+
+@media (max-width: 575.98px) {
+	.dashboard-theme .dashboard-panel {
+		padding: 1.1rem;
+		border-radius: 14px;
+	}
+}
+
+/* ---------------------------------- Kartu --------------------------------- */
+
+.dashboard-theme .card {
+	position: relative;
+	color: var(--gd-ivory);
+	background: var(--gd-glass);
+	border: 1px solid var(--gd-line);
+	border-radius: 16px;
+	overflow: hidden;
+	box-shadow: 0 10px 26px rgba(0, 0, 0, 0.26), inset 0 1px 0 rgba(255, 255, 255, 0.07);
+	transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+/* aksen emas di sisi atas kartu statistik */
+.dashboard-theme .card.pt-3::before {
+	content: "";
+	position: absolute;
+	inset: 0 0 auto 0;
+	height: 3px;
+	background: linear-gradient(90deg, var(--gd-gold), var(--gd-orange));
+}
+
+.dashboard-theme .card:hover {
+	transform: translateY(-3px);
+	border-color: rgba(230, 199, 42, 0.55);
+	box-shadow: 0 16px 34px rgba(0, 0, 0, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.09);
+}
+
+.dashboard-theme .card .lead {
+	margin-bottom: 0;
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: rgba(248, 245, 242, 0.8) !important;
+}
+
+.dashboard-theme .card .card-title {
+	font-family: 'Playfair Display', serif;
+	font-weight: 700;
+	color: var(--gd-gold) !important;
+}
+
+.dashboard-theme .card .fas {
+	color: var(--gd-gold) !important;
+}
+
+/* kartu grafik: jangan ikut terangkat saat hover */
+.dashboard-theme .card.rounded:hover {
+	transform: none;
+}
+
+.dashboard-theme #total-teams-registered {
+	font-family: 'Playfair Display', serif;
+	font-weight: 600;
+	color: var(--gd-ivory) !important;
+}
+
+/* ---------------------------------- Tabel --------------------------------- */
+
+.dashboard-theme .table {
+	margin-bottom: 0;
+	color: var(--gd-ivory);
+	border-color: rgba(230, 199, 42, 0.2);
+}
+
+.dashboard-theme .table > :not(caption) > * > * {
+	color: var(--gd-ivory);
+	background-color: transparent;
+	border-color: rgba(230, 199, 42, 0.2);
+	box-shadow: none;
+}
+
+.dashboard-theme .table.border-primary,
+.dashboard-theme .table.border-primary > :not(caption) > * > * {
+	border-color: rgba(230, 199, 42, 0.28) !important;
+}
+
+.dashboard-theme .table thead th {
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	font-size: 0.75rem;
+	font-weight: 600;
+	letter-spacing: 0.1em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	color: var(--gd-gold) !important;
+	background-color: #1a2548 !important;
+	border-bottom: 2px solid var(--gd-gold);
+}
+
+.dashboard-theme .table tbody td {
+	font-size: 0.9rem;
+	vertical-align: middle;
+}
+
+.dashboard-theme .table-hover > tbody > tr:hover > * {
+	color: var(--gd-ivory);
+	background-color: rgba(230, 199, 42, 0.09);
+}
+
+.dashboard-theme .table a {
+	color: var(--gd-gold);
+}
+
+/* area tabel yang bisa di-scroll */
+.dashboard-theme .overflow-auto {
+	border: 1px solid rgba(230, 199, 42, 0.18);
+	border-radius: 12px;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(230, 199, 42, 0.55) rgba(255, 255, 255, 0.06);
+}
+
+.dashboard-theme .overflow-auto::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+
+.dashboard-theme .overflow-auto::-webkit-scrollbar-track {
+	background: rgba(255, 255, 255, 0.06);
+}
+
+.dashboard-theme .overflow-auto::-webkit-scrollbar-thumb {
+	background: rgba(230, 199, 42, 0.55);
+	border-radius: 8px;
+}
+
+/* ------------------------- Form di tab Final Payment ---------------------- */
+
+.dashboard-theme .form-control,
+.dashboard-theme .form-select {
+	color: var(--gd-navy);
+	background-color: var(--gd-ivory);
+	border: 1.5px solid transparent;
+	border-radius: 12px;
+}
+
+.dashboard-theme .form-control:focus,
+.dashboard-theme .form-select:focus {
+	background-color: #fff;
+	border-color: var(--gd-gold);
+	box-shadow: 0 0 0 0.25rem rgba(230, 199, 42, 0.25);
+}
+
+.dashboard-theme .form-check-input:checked {
+	background-color: var(--gd-gold);
+	border-color: var(--gd-gold);
+}
+
+/* --------------------------------- Tooltip -------------------------------- */
+
+.dashboard-theme .tooltip-inner {
+	font-family: 'Poppins', sans-serif;
+	font-size: 0.8rem;
+	color: var(--gd-ivory);
+	background: var(--gd-navy);
+	border: 1px solid var(--gd-line);
+	border-radius: 8px;
+}
+
+/* -------------------------------- Animasi --------------------------------- */
+
+@keyframes gd-panel-in {
+	from {
+		opacity: 0;
+		transform: translateY(14px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.dashboard-theme .dashboard-panel {
+		animation: none;
+	}
+
+	.dashboard-theme .card,
+	.dashboard-theme .btn-light.rounded-pill {
+		transition: none;
+	}
+}

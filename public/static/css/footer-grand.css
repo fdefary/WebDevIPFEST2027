@@ -1,0 +1,200 @@
+/* ===== Footer IPFEST 2027===== */
+html body footer.pt-5 {
+  background-color: #16213E !important;
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(230, 199, 42, .14), transparent 60%) !important;
+  border-top: 3px solid !important;
+  border-image: linear-gradient(90deg, transparent, #E6C72A, #D97706, #E6C72A, transparent) 1 !important;
+  font-family: "Poppins", sans-serif !important;
+}
+
+/* Semua teks non-link: ivory */
+html body footer.pt-5 *:not(a):not(.bi):not(.link-info) {
+  color: #F8F5F2 !important;
+  -webkit-text-fill-color: #F8F5F2 !important;
+}
+
+/* Base heading: Safira March (jabatan & nama kontak) */
+html body footer.pt-5 h5 {
+  font-family: "Safira March", "Playfair Display", serif !important;
+  font-weight: 400 !important;
+  letter-spacing: .06em !important;
+}
+
+/* Judul kolom: Playfair Display, emas */
+html body footer.pt-5 h5:not(.lead):not(.fs-6) {
+  font-family: "Playfair Display", serif !important;
+  color: #E6C72A !important;
+  -webkit-text-fill-color: #E6C72A !important;
+}
+
+/* IPFEST 2027: Dream Avenue, emas */
+html body footer.pt-5 h4 {
+  font-family: "Dream Avenue", "Playfair Display", serif !important;
+  font-weight: 400 !important;
+  letter-spacing: .05em !important;
+  color: #E6C72A !important;
+  -webkit-text-fill-color: #E6C72A !important;
+}
+
+/* Link */
+html body footer.pt-5 a {
+  font-family: "Poppins", sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: normal !important;
+  color: #F8F5F2 !important;
+}
+html body footer.pt-5 a:hover,
+html body footer.pt-5 a.link-info,
+html body footer.pt-5 .bi:hover {
+  color: #E6C72A !important;
+}
+
+/* Garis + copyright */
+html body footer.pt-5 .border-top {
+  border-color: rgba(230, 199, 42, .35) !important;
+}
+html body footer.pt-5 p {
+  font-family: "Poppins", sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: normal !important;
+}
+
+/* Logo: biarkan img-fluid saja seperti homepage */
+html body footer.pt-5 img.img-fluid {
+  max-height: none !important;
+  width: auto !important;
+  max-width: 100% !important;
+}
+
+/* Nomor telepon: emas (target lewat href WhatsApp) */
+html body footer.pt-5 a[href*="wa.me"],
+html body footer.pt-5 a[href*="wa.me"]:link,
+html body footer.pt-5 a[href*="wa.me"]:visited,
+html body footer.pt-5 li a[href*="wa.me"] {
+  color: #E6C72A !important;
+  -webkit-text-fill-color: #E6C72A !important;
+  font-family: "Poppins", sans-serif !important;
+  font-weight: 400 !important;
+  letter-spacing: normal !important;
+  text-decoration: none !important;
+}
+html body footer.pt-5 a[href*="wa.me"]:hover {
+  color: #F8F5F2 !important;
+  -webkit-text-fill-color: #F8F5F2 !important;
+}
+
+
+html body footer.pt-5 h5.lead {
+  font-size: 1.25rem !important;
+  font-weight: 300 !important;
+  line-height: 1.5 !important;
+  margin-bottom: .5rem !important;
+}
+html body footer.pt-5 h5.fs-6 {
+  font-size: 1rem !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  margin-bottom: .5rem !important;
+}
+
+
+html body footer.pt-5 h5.text-light:not(.lead):not(.fs-6) {
+  font-size: 1.25rem !important;
+  line-height: 1.2 !important;
+  margin-bottom: .5rem !important;
+}
+
+/* Nomor telepon */
+html body footer.pt-5 a[href*="wa.me"] {
+  font-size: 1rem !important;
+  line-height: 1.5 !important;
+}
+
+
+#site-footer h5.text-light:not(.lead):not(.fs-6) {
+  font-size: 20px !important;
+  line-height: 1.2 !important;
+}
+#site-footer h5.lead {
+  font-size: 20px !important;
+  font-weight: 300 !important;
+  line-height: 1.5 !important;
+}
+#site-footer h5.fs-6 {
+  font-size: 16px !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+}
+#site-footer a[href*="wa.me"] {
+  font-size: 16px !important;
+}
+#site-footer .compe-anchor,
+#site-footer .event-anchor {
+  font-size: 16px !important;
+}
+#site-footer h4 {
+  font-size: 24px !important;
+}
+#site-footer p {
+  font-size: 16px !important;
+}
+
+#site-footer h5.lead.contact-long {
+  font-size: 17px !important;
+  letter-spacing: .02em !important;
+  white-space: nowrap !important;
+}
+
+@media (min-width: 768px) {
+  #site-footer h5.lead {
+    white-space: nowrap !important;
+  }
+}
+
+#map-itb {
+  filter: none !important;
+  transform: none !important;
+  opacity: 1 !important;
+  mix-blend-mode: normal !important;
+  backdrop-filter: none !important;
+  background: #e5e3df !important;
+}
+
+.footer-list {
+	list-style: none;
+	padding-left: 0;
+}
+
+.footer-list .dropdown-item {
+	padding-left: 0;
+	color: #fff;
+	white-space: normal;   /* hanya wrap kalau layar benar-benar sempit */
+}
+
+.footer-list .dropdown-item:hover {
+	background: transparent;
+	color: #d4af37;        /* sesuaikan dengan warna gold tema */
+}
+
+#site-footer a.compe-anchor:hover,
+#site-footer a.event-anchor:hover,
+footer.pt-5 a.compe-anchor:hover,
+footer.pt-5 a.event-anchor:hover {
+	color: #E6C72A !important;
+	-webkit-text-fill-color: #E6C72A !important;
+}
+
+#site-footer a.compe-anchor,
+#site-footer a.event-anchor,
+footer.pt-5 a.compe-anchor,
+footer.pt-5 a.event-anchor {
+	text-decoration: none !important;
+}
+
+#site-footer a.compe-anchor:hover,
+#site-footer a.event-anchor:hover,
+footer.pt-5 a.compe-anchor:hover,
+footer.pt-5 a.event-anchor:hover {
+	text-decoration: none !important;
+	text-decoration-color: transparent !important;
+}

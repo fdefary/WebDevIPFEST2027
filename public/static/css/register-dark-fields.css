@@ -1,0 +1,165 @@
+/* =====================================================================
+   Registrasi IPFEST 2027 — kolom & dropdown gelap (tema Grand)
+   Muat file ini PALING AKHIR, setelah register-members.css.
+   Berlaku juga untuk form member yang dibuat script di #entry.
+   ===================================================================== */
+:root {
+	--rf-navy: #16213E;
+	--rf-navy-deep: #0B1328;
+	--rf-ivory: #F8F5F2;
+	--rf-muted: rgba(248, 245, 242, .55);
+	--rf-gold: #E6C72A;
+	--rf-orange: #D97706;
+	--rf-red: #fca5a5;
+	--rf-green: #4ade80;
+}
+
+/* ---------- Input teks & dropdown ---------- */
+html body #registration-form .form-control,
+html body #registration-form .form-select {
+	background-color: rgba(8, 14, 32, .88) !important;
+	color: var(--rf-ivory) !important;
+	-webkit-text-fill-color: var(--rf-ivory) !important;
+	border: 1px solid rgba(230, 199, 42, .45) !important;
+	border-radius: 14px;
+	min-height: 52px;
+	font-weight: 500;
+	caret-color: var(--rf-gold);
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04) !important;
+	transition: border-color .25s ease, box-shadow .25s ease, background-color .25s ease;
+}
+html body #registration-form .form-control::placeholder {
+	color: var(--rf-muted) !important;
+	-webkit-text-fill-color: var(--rf-muted) !important;
+	opacity: 1;
+}
+html body #registration-form .form-control:hover,
+html body #registration-form .form-select:hover:not(:disabled) {
+	background-color: rgba(22, 33, 62, .95) !important;
+	border-color: rgba(230, 199, 42, .8) !important;
+}
+html body #registration-form .form-control:focus,
+html body #registration-form .form-select:focus {
+	background-color: rgba(22, 33, 62, .95) !important;
+	border-color: var(--rf-gold) !important;
+	box-shadow: 0 0 0 .25rem rgba(230, 199, 42, .22) !important;
+	outline: none;
+}
+
+/* Panah dropdown emas (panah bawaan Bootstrap hitam) */
+html body #registration-form .form-select {
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23E6C72A' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+	background-repeat: no-repeat !important;
+	background-position: right 1rem center !important;
+	background-size: 14px 10px !important;
+	padding-right: 2.75rem;
+	cursor: pointer;
+	color-scheme: dark;          /* daftar pilihan ikut gelap di Chrome/Edge/Firefox */
+}
+
+/* Daftar pilihan saat dropdown dibuka */
+html body #registration-form .form-select option {
+	background-color: var(--rf-navy-deep);
+	color: var(--rf-ivory);
+}
+html body #registration-form .form-select option:checked,
+html body #registration-form .form-select option:hover {
+	background-color: var(--rf-gold);
+	color: var(--rf-navy);
+}
+/* Pilihan placeholder ("Select sex") tampil redup */
+html body #registration-form .form-select option[value=""],
+html body #registration-form .form-select option:disabled {
+	color: var(--rf-muted);
+}
+/* Selama placeholder masih terpilih, teks kolom ikut redup */
+html body #registration-form .form-select:has(option[value=""]:checked) {
+	color: var(--rf-muted) !important;
+	-webkit-text-fill-color: var(--rf-muted) !important;
+}
+
+/* Kolom terkunci */
+html body #registration-form .form-control:disabled,
+html body #registration-form .form-select:disabled {
+	background-color: rgba(108, 103, 125, .22) !important;
+	color: var(--rf-muted) !important;
+	-webkit-text-fill-color: var(--rf-muted) !important;
+	border-style: dashed !important;
+	cursor: not-allowed;
+}
+
+/* Isian otomatis browser (autofill) biasanya memaksa latar putih/kuning */
+html body #registration-form .form-control:-webkit-autofill,
+html body #registration-form .form-control:-webkit-autofill:hover,
+html body #registration-form .form-control:-webkit-autofill:focus {
+	-webkit-text-fill-color: var(--rf-ivory) !important;
+	-webkit-box-shadow: 0 0 0 1000px #0E1730 inset !important;
+	box-shadow: 0 0 0 1000px #0E1730 inset !important;
+	caret-color: var(--rf-gold);
+	transition: background-color 9999s ease-in-out 0s;
+}
+
+/* ---------- Input file ---------- */
+html body #registration-form input[type="file"].form-control {
+	padding: 0 !important;
+	line-height: 50px;
+	overflow: hidden;
+	cursor: pointer;
+	color: var(--rf-muted) !important;
+	-webkit-text-fill-color: var(--rf-muted) !important;
+}
+html body #registration-form input[type="file"]::file-selector-button {
+	height: 100%;
+	padding: 0 1.2rem;
+	margin-right: 1rem;
+	border: none;
+	border-right: 1px solid rgba(230, 199, 42, .5);
+	background: rgba(230, 199, 42, .14);
+	color: var(--rf-gold);
+	-webkit-text-fill-color: var(--rf-gold);
+	font-weight: 600;
+	cursor: pointer;
+	transition: background .25s ease, color .25s ease;
+}
+html body #registration-form input[type="file"]::file-selector-button:hover {
+	background: var(--rf-gold);
+	color: var(--rf-navy);
+	-webkit-text-fill-color: var(--rf-navy);
+}
+
+/* ---------- Validasi Bootstrap (.was-validated) ---------- */
+html body #registration-form.was-validated .form-control:invalid,
+html body #registration-form.was-validated .form-select:invalid,
+html body #registration-form .form-control.is-invalid,
+html body #registration-form .form-select.is-invalid {
+	border-color: var(--rf-red) !important;
+	box-shadow: 0 0 0 .2rem rgba(252, 165, 165, .15) !important;
+}
+html body #registration-form.was-validated .form-control:valid,
+html body #registration-form.was-validated .form-select:valid,
+html body #registration-form .form-control.is-valid,
+html body #registration-form .form-select.is-valid {
+	border-color: rgba(74, 222, 128, .7) !important;
+}
+/* Ikon validasi Bootstrap menimpa panah emas; kembalikan panahnya */
+html body #registration-form.was-validated .form-select:valid,
+html body #registration-form.was-validated .form-select:invalid,
+html body #registration-form .form-select.is-valid,
+html body #registration-form .form-select.is-invalid {
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23E6C72A' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+	background-position: right 1rem center !important;
+	background-size: 14px 10px !important;
+}
+html body #registration-form .invalid-feedback { color: var(--rf-red); }
+
+/* ---------- Checkbox persetujuan ---------- */
+html body #registration-form .form-check-input {
+	background-color: transparent;
+	border: 2px solid var(--rf-gold);
+	cursor: pointer;
+}
+html body #registration-form .form-check-input:checked {
+	background-color: var(--rf-gold);
+	border-color: var(--rf-gold);
+}
+html body #registration-form .form-check-input:focus { box-shadow: 0 0 0 .2rem rgba(230, 199, 42, .3); }

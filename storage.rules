@@ -2,54 +2,69 @@ rules_version = '2';
 
 service firebase.storage {
   match /b/{bucket}/o {
-    // Case files per competition (restricted to authenticated users)
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function managerFor(competition) {
+      return signedIn()
+        && request.auth.token.get('ipfestRole', '') == 'competition_manager'
+        && request.auth.token.get('ipfestCompetition', '') == competition;
+    }
+
+    function team(uid) {
+      return firestore.get(/databases/(default)/documents/Team/$(uid)).data;
+    }
+
+    function canReadTeamFiles(uid) {
+      return signedIn() && (request.auth.uid == uid || managerFor(team(uid).competition));
+    }
+
+    function participantIn(competition) {
+      return signedIn() && team(request.auth.uid).competition == competition;
+    }
+
+    function validUpload() {
+      return request.resource != null
+        && resource == null
+        && request.resource.size <= 20 * 1024 * 1024
+        && request.resource.contentType.matches(
+          'image/(jpeg|png|webp|heic|heif)|application/(pdf|zip|x-zip-compressed|vnd.rar|x-rar-compressed|msword|vnd.ms-powerpoint|vnd.ms-excel|vnd.openxmlformats-officedocument\\.(wordprocessingml\\.document|presentationml\\.presentation|spreadsheetml\\.sheet))'
+        );
+    }
+
     match /Case/{competition}/{allPaths=**} {
-      allow read, write: if request.auth != null;
+      allow read: if managerFor(competition) || participantIn(competition);
+      allow create: if managerFor(competition) && validUpload();
     }
 
-    // Preliminary submissions - authenticated users only
-    match /preliminary_submissions/{allPaths=**} {
-      allow read, write: if request.auth != null;
+    match /team/{uid}/{allPaths=**} {
+      allow read: if canReadTeamFiles(uid);
+      allow create: if signedIn() && request.auth.uid == uid && validUpload();
     }
 
-    // Payments (adjust if you want to restrict)
-    match /payments/{allPaths=**} {
-      allow read, write: if request.auth != null;
+    match /payments/{uid}/{allPaths=**} {
+      allow read: if canReadTeamFiles(uid);
+      allow create: if signedIn() && request.auth.uid == uid && validUpload();
     }
 
-    // Final submissions - allow users to write only into their own folder
-    match /final_submissions/{userId}/{allPaths=**} {
-      allow write: if request.auth != null && request.auth.uid == userId;
-      allow read: if request.auth != null;
+    match /preliminary_submissions/{uid}/{allPaths=**} {
+      allow read: if canReadTeamFiles(uid);
+      allow create: if signedIn() && request.auth.uid == uid && validUpload();
     }
 
-    // Also allow older/alternate path used by other code paths
-    match /finalreg_submissions/{userId}/{allPaths=**} {
-      allow write: if request.auth != null && request.auth.uid == userId;
-      allow read: if request.auth != null;
+    match /final_submissions/{uid}/{allPaths=**} {
+      allow read: if canReadTeamFiles(uid);
+      allow create: if signedIn() && request.auth.uid == uid && validUpload();
     }
 
-    // Team folder - authenticated users (consider stricter admin rules if needed)
-    match /team/{allPaths=**} {
-      allow read, write: if request.auth != null;
+    match /finalreg_submissions/{uid}/{allPaths=**} {
+      allow read: if canReadTeamFiles(uid);
+      allow create: if signedIn() && request.auth.uid == uid && validUpload();
     }
 
-    // Merchandise folder - public get/create allowed, but listing/deleting restricted to official emails
-    match /Merch/{allPaths=**} {
-      allow get, create: if true;
-      allow read: if true;
-      allow list, delete: if request.auth != null && request.auth.token.email in [
-        "officialdelegates.ipfest2026@gmail.com",
-        "treasury.ipfest2026@gmail.com",
-        "entrepreneurship.ipfest2026@gmail.com",
-        "event@ipfest2026.com"
-      ];
-    }
-
-    // Default: deny everything else
     match /{allPaths=**} {
-      allow read: if false;
-      allow write: if false;
+      allow read, write: if false;
     }
   }
 }

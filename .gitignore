@@ -71,3 +71,5 @@ node_modules/
 
 # Build outputs
 public/dist/
+
+docs/superpowers/

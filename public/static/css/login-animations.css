@@ -1,0 +1,272 @@
+/* ===== Login page animations: IPFEST 2027 ===== */
+:root {
+  --lg-gold: #E6C72A;
+  --lg-orange: #D97706;
+  --lg-navy: #16213E;
+  --lg-ease: cubic-bezier(.22, 1, .36, 1);
+}
+
+/* ---------- Keyframes ---------- */
+@keyframes lg-fade-up {
+  from { opacity: 0; transform: translateY(26px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes lg-drop-in {
+  from { opacity: 0; transform: translateY(-22px) scale(.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+@keyframes lg-reveal-image {
+  from { opacity: 0; clip-path: inset(0 0 0 100%); }
+  to   { opacity: 1; clip-path: inset(0 0 0 0); }
+}
+@keyframes lg-shimmer {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+@keyframes lg-float {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+@keyframes lg-glow-pulse {
+  0%, 100% { opacity: .55; }
+  50%      { opacity: 1; }
+}
+@keyframes lg-sparkle-rise {
+  0%   { transform: translateY(0); opacity: 0; }
+  20%  { opacity: .9; }
+  100% { transform: translateY(-110vh); opacity: 0; }
+}
+
+/* ---------- Entrance: panel form (muncul berurutan) ---------- */
+.login-brand {
+  animation: lg-drop-in .8s var(--lg-ease) both;
+}
+.login-brand img:first-child {
+  animation: lg-float 5s ease-in-out 1s infinite;
+}
+.login-heading h1 {
+  animation: lg-fade-up .8s var(--lg-ease) .15s both;
+}
+.login-heading p {
+  animation: lg-fade-up .8s var(--lg-ease) .25s both;
+}
+.login-field:nth-of-type(1) { animation: lg-fade-up .8s var(--lg-ease) .35s both; }
+.login-field:nth-of-type(2) { animation: lg-fade-up .8s var(--lg-ease) .45s both; }
+.login-links  { animation: lg-fade-up .8s var(--lg-ease) .55s both; }
+.login-submit { animation: lg-fade-up .8s var(--lg-ease) .65s both; }
+
+/* ---------- Kata "folks!" berkilau emas ---------- */
+.login-heading h1 span {
+  background: linear-gradient(100deg, var(--lg-gold) 0%, #fff3b0 25%, var(--lg-orange) 50%, var(--lg-gold) 75%, #fff3b0 100%);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  /* background-clip:text only paints inside the box and Great Vibes glyphs overhang it
+     (the "f" got cut). Pad the box and cancel it with a negative margin. */
+  padding: .2em .3em;
+  margin: 0 -.3em;
+  animation: lg-shimmer 5s linear infinite;
+}
+
+/* ---------- Input: glow emas saat fokus ---------- */
+.login-field .form-control {
+  transition: border-color .3s ease, box-shadow .3s ease, transform .3s var(--lg-ease);
+}
+.login-field .form-control:focus {
+  border-color: var(--lg-gold) !important;
+  box-shadow: 0 0 0 .2rem rgba(230, 199, 42, .22), 0 8px 24px rgba(230, 199, 42, .12) !important;
+  transform: translateY(-2px);
+}
+
+/* ---------- Link: garis bawah emas bergerak ---------- */
+.login-links a {
+  position: relative;
+  text-decoration: none;
+  transition: color .3s ease;
+}
+.login-links a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -3px;
+  width: 100%;
+  height: 1px;
+  background: var(--lg-gold);
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform .4s var(--lg-ease);
+}
+.login-links a:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ---------- Tombol Sign in: kilau menyapu + naik saat hover ---------- */
+.login-submit {
+  position: relative;
+  overflow: hidden;
+  transition: transform .3s var(--lg-ease), box-shadow .3s ease;
+}
+.login-submit::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255, 255, 255, .45), transparent);
+  transform: skewX(-20deg);
+}
+.login-submit:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 30px rgba(230, 199, 42, .35);
+}
+.login-submit:hover::after {
+  left: 130%;
+  transition: left .9s var(--lg-ease);
+}
+.login-submit:active {
+  transform: translateY(0) scale(.98);
+}
+
+/* ---------- Panel gambar: terbuka dari kanan + kilau emas ---------- */
+.login-image {
+  position: relative;
+  overflow: hidden;
+  animation: lg-reveal-image 1.2s var(--lg-ease) both;
+}
+.login-image::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 20% 80%, rgba(230, 199, 42, .28), transparent 45%),
+    radial-gradient(circle at 80% 20%, rgba(217, 119, 6, .2), transparent 45%);
+  animation: lg-glow-pulse 6s ease-in-out infinite;
+}
+
+/* Partikel emas naik  */
+.login-image::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -10px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(circle, rgba(230, 199, 42, .95), rgba(230, 199, 42, 0) 70%);
+  box-shadow:
+    12vw 0 0 1px rgba(230, 199, 42, .7),
+    24vw -40px 0 3px rgba(230, 199, 42, .6),
+    8vw -120px 0 0 rgba(248, 245, 242, .5),
+    30vw -200px 0 2px rgba(230, 199, 42, .6),
+    18vw -300px 0 0 rgba(248, 245, 242, .5);
+  animation: lg-sparkle-rise 12s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-brand, .login-brand img:first-child,
+  .login-heading h1, .login-heading p,
+  .login-field, .login-links, .login-submit,
+  .login-image, .login-image::before, .login-image::after,
+  .login-heading h1 span {
+    animation: none !important;
+  }
+}
+
+/* ===== Tekstur panel form login ===== */
+.login-form-panel {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+/* Lapisan 1: grain / noise halus */
+.login-form-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: .22;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 .9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
+}
+
+/* Lapisan 2: pola kisi berlian emas tipis + kilau lembut di sudut */
+.login-form-panel::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse at 0% 0%, rgba(230, 199, 42, .14), transparent 50%),
+    radial-gradient(ellipse at 100% 100%, rgba(217, 119, 6, .10), transparent 50%),
+    repeating-linear-gradient(45deg,  rgba(230, 199, 42, .045) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(-45deg, rgba(230, 199, 42, .045) 0 1px, transparent 1px 22px);
+}
+
+/* Pastikan isi form tetap di atas tekstur */
+.login-form-panel > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Garis emas tipis di tepi panel yang menghadap gambar */
+@media (min-width: 992px) {
+  .login-form-panel {
+    box-shadow: inset -1px 0 0 rgba(230, 199, 42, .35), 8px 0 40px rgba(0, 0, 0, .35);
+  }
+}
+
+/* ===== Logo/maskot "Oii lompat" di sisi kanan panel form ===== */
+@keyframes lg-jump {
+  0%, 100% { transform: translateY(0) scaleY(1); }
+  15%      { transform: translateY(0) scaleY(.95); }          /* menekuk sebelum lompat */
+  45%      { transform: translateY(-28px) scaleY(1.04); }     /* di udara */
+  70%      { transform: translateY(0) scaleY(.97); }          /* mendarat */
+  85%      { transform: translateY(-6px) scaleY(1); }         /* memantul kecil */
+}
+@keyframes lg-mascot-in {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+.login-form-panel > .login-mascot {
+  position: absolute;
+  right: clamp(12px, 3vw, 48px);
+  bottom: clamp(24px, 6vh, 72px);
+  width: clamp(110px, 14vw, 210px);
+  height: auto;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
+  filter: drop-shadow(0 14px 18px rgba(22, 33, 62, .28));
+  transform-origin: bottom center;
+  animation:
+    lg-mascot-in 1s var(--lg-ease) .8s both,
+    lg-jump 3.2s ease-in-out 2s infinite;
+}
+
+/* Layar kecil: kecilkan dan geser agar tidak menutupi form */
+@media (max-width: 991.98px) {
+  .login-form-panel > .login-mascot {
+    width: 100px;
+    right: 12px;
+    bottom: 12px;
+    opacity: .9;
+  }
+}
+@media (max-width: 575.98px) {
+  .login-form-panel > .login-mascot { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .login-form-panel > .login-mascot { animation: none !important; }
+}

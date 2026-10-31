@@ -1,0 +1,106 @@
+/* ==========================================================================
+   dashboard-extra.css
+   Pelengkap competition-manager.css untuk dashboard Delegates Relation:
+   kartu statistik, grafik, panel luar, dan spinner.
+   Muat SETELAH grand-theme.css dan competition-manager.css.
+   ========================================================================== */
+
+.manager-page #spinner {
+	background: #16213e !important;
+}
+
+.manager-page *,
+.manager-page *::before,
+.manager-page *::after {
+	box-sizing: border-box;
+}
+
+/* panel luar (kaca) yang membungkus panel isi, seperti halaman compe manager */
+.manager-stage .tab-content {
+	padding: 1.5rem;
+	background: rgba(248, 245, 242, 0.07);
+	border: 1px solid rgba(248, 245, 242, 0.14);
+	border-radius: 18px;
+	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+}
+
+@media (max-width: 575.98px) {
+	.manager-stage .tab-content {
+		padding: 0.75rem;
+	}
+
+	.manager-stage .dashboard-panel {
+		padding: 1.1rem;
+	}
+}
+
+/* ----------------------------- Kartu statistik ---------------------------- */
+
+.manager-stage .dashboard-panel .card {
+	color: #f8f5f2;
+	background: rgba(248, 245, 242, 0.06);
+	border: 1px solid rgba(230, 199, 42, 0.3);
+	border-top: 3px solid #e6c72a;
+	border-radius: 14px;
+	box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+	transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.manager-stage .dashboard-panel .card:hover {
+	transform: translateY(-3px);
+	border-color: #e6c72a;
+	box-shadow: 0 16px 30px rgba(230, 199, 42, 0.18);
+}
+
+/* kartu grafik tidak ikut terangkat */
+.manager-stage .dashboard-panel .card.rounded:hover {
+	transform: none;
+	box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+}
+
+.manager-stage .dashboard-panel .card .fas {
+	color: #e6c72a !important;
+}
+
+.manager-stage .dashboard-panel .card .lead {
+	font-size: 0.8rem;
+	font-weight: 600;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: rgba(248, 245, 242, 0.85) !important;
+}
+
+.manager-stage .dashboard-panel .card .card-title {
+	font-family: "Playfair Display", serif;
+	font-weight: 700;
+	color: #e6c72a !important;
+}
+
+.manager-stage #total-teams-registered {
+	font-family: "Playfair Display", serif;
+	font-weight: 600;
+	color: #f8f5f2 !important;
+}
+
+/* ------------------------- Tab Database & Final Payment ------------------- */
+
+.manager-stage .dashboard-panel h6 {
+	font-family: "Poppins", sans-serif;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+/* tabel Final Payment: lebar mengikuti layar kecil */
+@media (max-width: 767.98px) {
+	.manager-stage #treasury-history > .overflow-auto {
+		width: 100% !important;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.manager-stage .dashboard-panel .card {
+		transition: none;
+	}
+}

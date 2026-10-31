@@ -1,0 +1,314 @@
+/* ===== Final Payment: tema Grand IPFEST 2027 ===== */
+:root {
+	--g-navy: #16213E; --g-navy-deep: #0F1830; --g-ivory: #F8F5F2;
+	--g-slate: #6C677D; --g-orange: #D97706; --g-gold: #E6C72A;
+}
+
+body.fp-page {
+	font-family: "Poppins", sans-serif;
+	color: var(--g-ivory);
+}
+
+/* ---------- Navbar & Log Out ---------- */
+body.fp-page #logout-btn {
+	background: transparent !important;
+	color: var(--g-gold) !important;
+	border: 1px solid var(--g-gold) !important;
+	transition: all .3s ease;
+}
+body.fp-page #logout-btn:hover {
+	background: var(--g-gold) !important;
+	color: var(--g-navy) !important;
+	transform: translateY(-2px);
+}
+
+/* ---------- Judul ---------- */
+.fp-stage { padding-top: 6rem !important; }
+.fp-hero { margin-bottom: 2rem; animation: fpFadeUp .7s ease both; }
+.fp-eyebrow {
+	font-family: "Great Vibes", cursive;
+	font-size: 1.9rem;
+	color: var(--g-gold);
+}
+.fp-title {
+	font-family: "Playfair Display", serif;
+	font-weight: 700;
+	font-size: clamp(2.2rem, 5vw, 3.2rem);
+	color: var(--g-ivory);
+	letter-spacing: .02em;
+	margin: .1rem 0 .4rem;
+}
+.fp-subtitle { color: rgba(248, 245, 242, .75); margin-bottom: 1rem; }
+.fp-divider {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: .75rem;
+	color: var(--g-gold);
+}
+.fp-divider span {
+	display: block;
+	height: 1px;
+	width: 0;
+	background: linear-gradient(90deg, transparent, var(--g-gold), transparent);
+	animation: fpLine .9s ease .3s forwards;
+}
+@keyframes fpLine { to { width: 90px; } }
+
+/* ---------- Panel ---------- */
+.fp-stage .fp-panel {
+	background: rgba(22, 33, 62, .86) !important;
+	background-image: none !important;
+	backdrop-filter: blur(8px);
+	border: 1px solid rgba(230, 199, 42, .35);
+	border-top: 3px solid var(--g-gold);
+	border-radius: 18px;
+	padding: 2rem;
+	box-shadow: 0 20px 50px rgba(0, 0, 0, .35);
+	animation: fpFadeUp .7s ease .15s both;
+}
+@keyframes fpFadeUp {
+	from { opacity: 0; transform: translateY(26px); }
+	to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---------- Kartu leader & member ---------- */
+.fp-stage .fp-card,
+.fp-stage .members-final-pay-form > * {
+	background: rgba(15, 24, 48, .75);
+	border: 1px solid rgba(230, 199, 42, .3);
+	border-radius: 16px;
+	padding: 1.5rem;
+	margin-bottom: 1rem;
+	transition: border-color .35s ease, box-shadow .35s ease, transform .35s ease;
+	animation: fpFadeUp .6s ease .3s both;
+}
+.fp-stage .fp-card:hover,
+.fp-stage .members-final-pay-form > *:hover,
+.fp-stage .fp-card:focus-within,
+.fp-stage .members-final-pay-form > *:focus-within {
+	border-color: var(--g-gold);
+	box-shadow: 0 14px 32px rgba(230, 199, 42, .16);
+	transform: translateY(-3px);
+}
+.fp-stage .members-final-pay-form > *:nth-child(1) { animation-delay: .4s; }
+.fp-stage .members-final-pay-form > *:nth-child(2) { animation-delay: .5s; }
+.fp-stage .members-final-pay-form > *:nth-child(3) { animation-delay: .6s; }
+.fp-stage .members-final-pay-form > *:nth-child(4) { animation-delay: .7s; }
+
+.fp-card-head {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	padding-bottom: 1rem;
+	margin-bottom: 1.25rem;
+	border-bottom: 1px solid rgba(230, 199, 42, .25);
+}
+.fp-avatar {
+	width: 52px; height: 52px;
+	flex: 0 0 52px;
+	display: grid;
+	place-items: center;
+	border-radius: 50%;
+	font-size: 1.4rem;
+	color: var(--g-navy);
+	background: linear-gradient(135deg, var(--g-gold), var(--g-orange));
+	box-shadow: 0 0 0 4px rgba(230, 199, 42, .15);
+	animation: fpGlow 2.8s ease-in-out infinite;
+}
+@keyframes fpGlow {
+	0%, 100% { box-shadow: 0 0 0 4px rgba(230, 199, 42, .15); }
+	50%      { box-shadow: 0 0 0 9px rgba(230, 199, 42, .05); }
+}
+.fp-role {
+	display: block;
+	font-size: .75rem;
+	letter-spacing: .15em;
+	text-transform: uppercase;
+	color: var(--g-gold);
+}
+.fp-card-title {
+	font-family: "Playfair Display", serif;
+	color: var(--g-ivory);
+	margin: 0;
+}
+
+/* Judul yang mungkin dibuat script untuk member */
+.fp-stage .members-final-pay-form h4,
+.fp-stage .members-final-pay-form h5 {
+	font-family: "Playfair Display", serif;
+	color: var(--g-gold) !important;
+}
+
+/* ---------- Form ---------- */
+.fp-stage .form-label {
+	color: rgba(248, 245, 242, .85);
+	font-size: .85rem;
+	font-weight: 500;
+	letter-spacing: .03em;
+}
+/* Input & dropdown gelap: latar navy, teks ivory, garis emas.
+   Selector panjang + !important supaya menang atas style.css / grand-theme.css */
+html body.fp-page .fp-stage .form-control,
+html body.fp-page .fp-stage .form-select,
+html body.fp-page .fp-stage .members-final-pay-form input,
+html body.fp-page .fp-stage .members-final-pay-form select {
+	background-color: rgba(8, 14, 32, .9) !important;
+	color: var(--g-ivory) !important;
+	-webkit-text-fill-color: var(--g-ivory) !important;
+	opacity: 1 !important;
+	border: 1px solid rgba(230, 199, 42, .55) !important;
+	border-radius: 10px;
+	font-weight: 500;
+	min-height: 46px;
+	box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04) !important;
+	transition: border-color .25s ease, box-shadow .25s ease, background-color .25s ease;
+}
+html body.fp-page .fp-stage .form-control:hover,
+html body.fp-page .fp-stage .form-select:hover:not(:disabled) {
+	background-color: rgba(22, 33, 62, .95) !important;
+	border-color: var(--g-gold) !important;
+}
+html body.fp-page .fp-stage .form-control:focus,
+html body.fp-page .fp-stage .form-select:focus {
+	background-color: rgba(22, 33, 62, .95) !important;
+	border-color: var(--g-gold) !important;
+	box-shadow: 0 0 0 .22rem rgba(230, 199, 42, .25) !important;
+}
+
+/* Panah dropdown jadi emas (bawaan Bootstrap berwarna gelap) */
+html body.fp-page .fp-stage .form-select {
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23E6C72A' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
+	background-repeat: no-repeat !important;
+	background-position: right .9rem center !important;
+	background-size: 14px 10px !important;
+	padding-right: 2.5rem;
+	cursor: pointer;
+}
+
+/* Daftar pilihan saat dropdown dibuka */
+html body.fp-page .fp-stage .form-select option {
+	background-color: var(--g-navy-deep);
+	color: var(--g-ivory);
+}
+html body.fp-page .fp-stage .form-select option:checked {
+	background-color: var(--g-gold);
+	color: var(--g-navy);
+}
+
+/* Dropdown terkunci (Category) */
+html body.fp-page .fp-stage .form-select:disabled {
+	background-color: rgba(108, 103, 125, .25) !important;
+	color: rgba(248, 245, 242, .55) !important;
+	-webkit-text-fill-color: rgba(248, 245, 242, .55) !important;
+	border-style: dashed !important;
+	border-color: rgba(230, 199, 42, .3) !important;
+	cursor: not-allowed;
+}
+
+/* Input file: teks "No file chosen" ivory, tombol "Choose File" emas */
+html body.fp-page .fp-stage input[type="file"] {
+	cursor: pointer;
+	padding: 0 !important;
+	overflow: hidden;
+	line-height: 44px;
+	color: rgba(248, 245, 242, .7) !important;
+	-webkit-text-fill-color: rgba(248, 245, 242, .7) !important;
+}
+html body.fp-page .fp-stage input[type="file"]::file-selector-button {
+	height: 100%;
+	background: rgba(230, 199, 42, .15);
+	color: var(--g-gold);
+	-webkit-text-fill-color: var(--g-gold);
+	border: none;
+	border-right: 1px solid rgba(230, 199, 42, .55);
+	padding: 0 1.1rem;
+	margin-right: .9rem;
+	font-family: "Poppins", sans-serif;
+	font-weight: 600;
+	cursor: pointer;
+	transition: all .3s ease;
+}
+html body.fp-page .fp-stage input[type="file"]::file-selector-button:hover {
+	background: var(--g-gold);
+	color: var(--g-navy);
+	-webkit-text-fill-color: var(--g-navy);
+}
+.fp-file-name {
+	display: block;
+	margin-top: .35rem;
+	color: #4ade80;
+	font-size: .8rem;
+	animation: fpFadeUp .35s ease both;
+}
+
+/* ---------- Persetujuan ---------- */
+.fp-stage .fp-agree {
+	padding: 1rem 1rem 1rem 2.6rem;
+	border-radius: 12px;
+	background: rgba(230, 199, 42, .08);
+	border: 1px dashed rgba(230, 199, 42, .45);
+}
+.fp-stage .form-check-input {
+	background-color: var(--g-ivory);
+	border: 2px solid var(--g-gold);
+	cursor: pointer;
+}
+.fp-stage .form-check-input:checked {
+	background-color: var(--g-gold);
+	border-color: var(--g-gold);
+	background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%2316213E' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+}
+.fp-stage .form-check-input:focus { box-shadow: 0 0 0 .2rem rgba(230, 199, 42, .3); }
+.fp-stage .form-check-label { color: var(--g-ivory); cursor: pointer; }
+.fp-stage .fp-link {
+	color: var(--g-gold) !important;
+	text-decoration: underline;
+	text-underline-offset: 4px;
+	transition: color .25s ease;
+}
+.fp-stage .fp-link:hover { color: var(--g-ivory) !important; }
+.fp-stage .invalid-feedback { color: #fca5a5; }
+
+/* ---------- Tombol Submit ---------- */
+.fp-stage .fp-submit {
+	position: relative;
+	overflow: hidden;
+	background: linear-gradient(135deg, var(--g-gold), var(--g-orange)) !important;
+	color: var(--g-navy) !important;
+	border: none !important;
+	font-weight: 700;
+	letter-spacing: .05em;
+	box-shadow: 0 10px 24px rgba(217, 119, 6, .35);
+	transition: transform .3s ease, box-shadow .3s ease;
+}
+.fp-stage .fp-submit i { font-size: 1.3rem; vertical-align: middle; transition: transform .3s ease; }
+.fp-stage .fp-submit:hover:not(:disabled) {
+	transform: translateY(-3px);
+	box-shadow: 0 16px 32px rgba(230, 199, 42, .45);
+}
+.fp-stage .fp-submit:hover:not(:disabled) i { transform: translateX(4px); }
+/* Kilau melintas */
+.fp-stage .fp-submit::after {
+	content: "";
+	position: absolute;
+	top: 0; left: -75%;
+	width: 50%; height: 100%;
+	background: linear-gradient(115deg, transparent, rgba(255, 255, 255, .45), transparent);
+	transform: skewX(-20deg);
+	transition: left .7s ease;
+}
+.fp-stage .fp-submit:hover:not(:disabled)::after { left: 130%; }
+.fp-stage .fp-submit:disabled { opacity: .5; cursor: not-allowed; box-shadow: none; }
+
+/* ---------- Mobile & aksesibilitas ---------- */
+@media (max-width: 576px) {
+	.fp-stage .fp-panel { padding: 1.25rem; }
+	.fp-stage .fp-card,
+	.fp-stage .members-final-pay-form > * { padding: 1.1rem; }
+	.fp-stage .fp-submit { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+	.fp-stage *, .fp-stage *::after, .fp-avatar { animation: none !important; transition: none !important; }
+	.fp-divider span { width: 90px; }
+}

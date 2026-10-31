@@ -1,0 +1,148 @@
+@font-face {
+	font-family: "Poppins";
+	src: url("../fonts/poppins.regular.ttf") format("truetype");
+	font-display: swap;
+}
+
+:root {
+	color-scheme: dark;
+	--navy: #16213e;
+	--cream: #f8f5f2;
+	--gold: #e6c72a;
+}
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+}
+
+.coming-soon-page {
+	min-height: 100vh;
+	background: linear-gradient(90deg, rgba(16, 25, 48, .94) 0%, rgba(16, 25, 48, .82) 52%, rgba(16, 25, 48, .38) 100%), url("../images/ipfest-background.jpg") center / cover fixed no-repeat;
+	color: var(--cream);
+	font: 400 1rem/1.6 "Poppins", sans-serif;
+}
+
+.coming-soon {
+	display: grid;
+	width: min(1180px, calc(100% - 3rem));
+	min-height: 100vh;
+	grid-template-columns: 1.1fr .9fr;
+	align-items: center;
+	gap: 2rem;
+	margin-inline: auto;
+	padding-block: 3rem;
+}
+
+.coming-soon-copy {
+	position: relative;
+	z-index: 1;
+}
+
+.coming-soon-eyebrow {
+	margin: 0 0 1rem;
+	color: var(--gold);
+	font-size: .78rem;
+	font-weight: 700;
+	letter-spacing: .16em;
+}
+
+.coming-soon h1 {
+	max-width: 10ch;
+	margin: 0;
+	font-size: clamp(3rem, 7vw, 6rem);
+	font-weight: 700;
+	letter-spacing: -.055em;
+	line-height: .98;
+	text-wrap: balance;
+}
+
+.coming-soon-description {
+	max-width: 39ch;
+	margin: 1.5rem 0 2rem;
+	color: rgba(248, 245, 242, .86);
+	font-size: clamp(1rem, 1.5vw, 1.15rem);
+}
+
+.coming-soon-link {
+	display: inline-flex;
+	min-height: 48px;
+	align-items: center;
+	gap: .75rem;
+	padding: .65rem 1.15rem;
+	border: 1px solid var(--gold);
+	border-radius: 999px;
+	background: var(--gold);
+	color: var(--navy);
+	font-weight: 700;
+	text-decoration: none;
+	transition: background-color .18s ease, color .18s ease;
+}
+
+.coming-soon-link:hover {
+	background: transparent;
+	color: var(--cream);
+}
+
+.coming-soon-link:focus-visible {
+	outline: 3px solid var(--cream);
+	outline-offset: 4px;
+}
+
+.coming-soon-mascot {
+	display: block;
+	width: min(100%, 420px);
+	max-height: min(78vh, 700px);
+	justify-self: center;
+	object-fit: contain;
+	filter: drop-shadow(0 24px 44px rgba(0, 0, 0, .28));
+}
+
+@media (max-width: 700px) {
+	.coming-soon-page {
+		background-image: linear-gradient(180deg, rgba(16, 25, 48, .8), rgba(16, 25, 48, .94) 58%), url("../images/ipfest-background.jpg");
+		background-attachment: scroll;
+	}
+
+	.coming-soon {
+		width: min(100% - 2rem, 520px);
+		min-height: 100svh;
+		grid-template-columns: 1fr;
+		gap: .5rem;
+		padding-block: 3rem 1.5rem;
+		text-align: center;
+	}
+
+	.coming-soon-copy {
+		grid-row: 2;
+	}
+
+	.coming-soon-eyebrow {
+		font-size: .68rem;
+	}
+
+	.coming-soon h1 {
+		max-width: 12ch;
+		margin-inline: auto;
+		font-size: clamp(2.8rem, 13vw, 4.5rem);
+	}
+
+	.coming-soon-description {
+		margin: 1rem auto 1.5rem;
+	}
+
+	.coming-soon-mascot {
+		grid-row: 1;
+		width: min(65vw, 300px);
+		max-height: 38svh;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.coming-soon-link {
+		transition: none;
+	}
+}

@@ -1,0 +1,135 @@
+/* =====================================================================
+   IPFEST 2027 - Unified navbar STYLE (source of truth: index.html).
+   Only the look is shared; the links/content of each page's navbar stay
+   as they are. Load this file LAST in <head>.
+   ===================================================================== */
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) {
+  --nu-navy: #16213E;
+  --nu-ivory: #F8F5F2;
+  --nu-gold: #E6C72A;
+  --nu-orange: #D97706;
+  position: fixed !important;
+  top: 0; left: 0; right: 0;
+  width: 100%;
+  min-height: 96px !important;
+  padding-top: 20px !important; padding-bottom: 20px !important;
+  z-index: 1050 !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--nu-navy) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 0 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .35) !important;
+}
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav)::before { display: none !important; }
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav)::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; pointer-events: none;
+  background: linear-gradient(90deg, var(--nu-navy), var(--nu-gold) 30%, var(--nu-orange) 50%, var(--nu-gold) 70%, var(--nu-navy));
+}
+
+/* Brand */
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-brand {
+  display: flex !important; align-items: center; margin: 0 16px 0 0; padding: 0 !important; gap: 0;
+}
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-brand img {
+  display: block; width: auto !important; height: auto !important; max-height: 50px !important;
+  margin: 0 !important; filter: drop-shadow(0 0 8px rgba(248, 245, 242, .35));
+}
+
+/* Links */
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-nav .nav-link {
+  margin: 0 25px 0 0 !important; padding: .5rem 1.25rem !important; border-radius: 999px !important;
+  color: var(--nu-ivory) !important; background: transparent !important;
+  font: 600 16px/1.5 "Poppins", sans-serif !important; transition: .5s;
+}
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-nav .nav-link:hover,
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-nav .nav-link:focus,
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-nav .nav-link.active {
+  background: var(--nu-gold) !important; color: var(--nu-navy) !important;
+}
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-toggle::after {
+  border: none; content: "\f107"; font-family: "Font Awesome 5 Free"; font-weight: 600;
+  vertical-align: middle; margin-left: 8px;
+}
+
+/* Dropdown */
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-menu {
+  background: var(--nu-navy) !important; border: 1px solid rgba(230, 199, 42, .6); border-radius: 10px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .45);
+}
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-item { color: var(--nu-ivory) !important; }
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-item:hover,
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-item:focus,
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-item.active {
+  background: var(--nu-gold) !important; color: var(--nu-navy) !important;
+}
+
+/* Log In: gold pill */
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) #btn-login-status .btn-light,
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) #logout-btn {
+  background: linear-gradient(135deg, var(--nu-gold), var(--nu-orange)) !important;
+  color: var(--nu-navy) !important; border: 0 !important; border-radius: 999px;
+  box-shadow: 0 6px 20px rgba(230, 199, 42, .25);
+}
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) #btn-login-status .btn-light:hover,
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) #logout-btn:hover {
+  background: var(--nu-ivory) !important; color: var(--nu-navy) !important;
+}
+
+/* Hamburger: ONE icon (Font Awesome bars), never the Bootstrap SVG */
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-toggler {
+  padding: 10px 20px !important; border: 1px solid var(--nu-gold) !important; border-color: var(--nu-gold) !important; border-radius: 10px;
+  color: var(--nu-ivory) !important; background: transparent !important; box-shadow: none !important;
+}
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-toggler .navbar-toggler-icon { display: none !important; }
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-toggler .fa-bars {
+  display: inline-block; font-size: 1.25rem; line-height: 1; color: var(--nu-ivory) !important; -webkit-text-fill-color: var(--nu-ivory);
+}
+@media (min-width: 992px) {
+  html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-toggler { display: none !important; }
+  html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-collapse { display: flex !important; flex-basis: auto; padding-top: 0 !important; padding-bottom: 0 !important; }
+}
+@media (max-width: 991.98px) {
+  html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) { min-height: 0 !important; padding-top: 14px !important; padding-bottom: 14px !important; }
+  html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-collapse {
+    flex-basis: 100%; width: 100%; margin: 15px 0 0 !important; padding: 0 !important;
+    background: transparent !important; border: 0; border-top: 1px solid rgba(230, 199, 42, .4);
+    border-radius: 0; box-shadow: none;
+  }
+  html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-collapse:not(.show) { display: none !important; }
+  html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .navbar-nav { align-items: stretch; }
+  html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-menu { position: static; float: none; }
+  html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) #btn-login-status { padding: 10px 0; }
+}
+
+/* Yellow outline on the clicked dropdown toggle / item */
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-toggle:focus,
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-toggle.show,
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-toggle:active {
+  outline: 2px solid var(--nu-gold) !important; outline-offset: 2px;
+}
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-item:focus,
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-item:active {
+  outline: 2px solid var(--nu-gold) !important; outline-offset: -2px;
+}
+/* Yellow outline on the dropdown panel that appears after click */
+html body :is(nav.navbar.fixed-top, nav#site-navbar, nav#master-nav) .dropdown-menu.show {
+  border: 2px solid var(--nu-gold) !important;
+}
+/* =====================================================================
+   Index Hero spacing under fixed navbar
+   ===================================================================== */
+.hero-header {
+  margin-top: 0 !important;
+  padding-top: clamp(150px, 13vw, 185px) !important;
+}
+
+@media (max-width: 991.98px) {
+  .hero-header {
+    margin-top: 0 !important;
+    padding-top: 115px !important;
+  }
+}
