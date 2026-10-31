@@ -1,0 +1,424 @@
+/* =====================================================================
+   IPFEST 2027 — Unified Reusable Navbar, Footer & Modal Design System
+   Shared across Home, Competitions, Events, Auth (Register/Reset),
+   Merchandise, and Dashboards.
+   ===================================================================== */
+
+:root {
+  --ipf-navy: #16213E;
+  --ipf-navy-deep: #0B1328;
+  --ipf-navy-card: #1E2D4F;
+  --ipf-ivory: #F8F5F2;
+  --ipf-slate: #6C677D;
+  --ipf-gold: #E6C72A;
+  --ipf-orange: #D97706;
+  --ipf-text-muted: rgba(248, 245, 242, 0.72);
+  --ipf-border-gold: rgba(230, 199, 42, 0.42);
+  --ipf-nav-height: 84px;
+}
+
+/* =====================================================================
+   2. UNIFIED REUSABLE FOOTER (#site-footer)
+   ===================================================================== */
+html body footer#site-footer,
+html body footer.pt-5 {
+  background-color: var(--ipf-navy) !important;
+  background-image: radial-gradient(ellipse at 50% 0%, rgba(230, 199, 42, 0.14), transparent 60%) !important;
+  border-top: 3px solid transparent !important;
+  border-image: linear-gradient(90deg, transparent, var(--ipf-gold), var(--ipf-orange), var(--ipf-gold), transparent) 1 !important;
+  font-family: "Poppins", sans-serif !important;
+  color: var(--ipf-ivory) !important;
+  position: relative;
+  z-index: 2;
+}
+
+html body footer#site-footer ul {
+  list-style: none !important;
+  padding-left: 0 !important;
+  margin-bottom: 1rem !important;
+}
+
+@media (max-width: 767.98px) {
+  html body footer#site-footer .footer-logo-col {
+    margin-bottom: 2rem !important;
+    margin-inline: auto !important;
+  }
+  html body footer#site-footer h5.lead,
+  html body footer#site-footer h5.lead.contact-long {
+    white-space: normal !important;
+    font-size: 1.05rem !important;
+  }
+}
+
+/* =====================================================================
+   3. UNIFIED MODAL SYSTEM (BOOTSTRAP & CUSTOM MODALS)
+   ===================================================================== */
+
+/* Fix broken fixed-overlay wrapper in delegates.css / delegates-sc.css */
+html body #final-payment-wrapper {
+  position: static !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  display: block !important;
+}
+
+/* Standard Grand Modal Content across ALL pages */
+html body .modal .modal-content,
+html body #sponsorModal .modal-content,
+html body #editConfirmModal .modal-content,
+html body #merch-modal .modal-content,
+html body #finalPaymentModal .modal-content,
+html body #final-payment-wrapper .modal-content,
+html body #encourage-modal-card {
+  width: 100% !important;
+  max-width: 100% !important;
+  max-height: none !important;
+  margin: 0 !important;
+  background: linear-gradient(160deg, rgba(22, 33, 62, 0.98) 0%, rgba(11, 19, 40, 0.99) 100%) !important;
+  color: var(--ipf-ivory) !important;
+  border: 1px solid rgba(230, 199, 42, 0.55) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 40px rgba(230, 199, 42, 0.14) !important;
+  font-family: "Poppins", sans-serif !important;
+  overflow: hidden !important;
+}
+
+/* Outer #finalPaymentModal wrapper should not double-render border when inner .modal-content is injected */
+html body #finalPaymentModal > .modal-dialog > .modal-content:has(#final-payment-wrapper > .modal-content) {
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+html body .modal .modal-header,
+html body #final-payment-wrapper .modal-header {
+  background: rgba(11, 19, 40, 0.85) !important;
+  border-bottom: 1px solid rgba(230, 199, 42, 0.32) !important;
+  padding: 1.15rem 1.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+}
+
+html body .modal .modal-title,
+html body #final-payment-wrapper .modal-title,
+html body #modalTitle,
+html body #encourage-title {
+  color: var(--ipf-gold) !important;
+  -webkit-text-fill-color: var(--ipf-gold) !important;
+  font-family: "Playfair Display", serif !important;
+  font-weight: 700 !important;
+  font-size: 1.25rem !important;
+  letter-spacing: 0.03em !important;
+  margin: 0 !important;
+}
+
+html body .modal .btn-close,
+html body #final-payment-wrapper .btn-close,
+html body #encourage-close-icon {
+  filter: invert(1) brightness(200%) !important;
+  opacity: 0.85 !important;
+  background-color: transparent !important;
+}
+
+html body .modal .btn-close:hover,
+html body #final-payment-wrapper .btn-close:hover,
+html body #encourage-close-icon:hover {
+  opacity: 1 !important;
+}
+
+html body .modal .modal-body,
+html body #final-payment-wrapper .modal-body {
+  padding: 1.5rem !important;
+  color: var(--ipf-ivory) !important;
+  background: transparent !important;
+  max-height: 74vh;
+  overflow-y: auto !important;
+}
+
+html body .modal .modal-footer,
+html body #final-payment-wrapper .modal-footer {
+  background: rgba(11, 19, 40, 0.85) !important;
+  border-top: 1px solid rgba(230, 199, 42, 0.32) !important;
+  padding: 1rem 1.5rem !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 0.75rem !important;
+  flex-wrap: wrap !important;
+}
+
+/* Final Payment Modal Cards (Leader & Member) */
+html body #leader-final-pay-form,
+html body .member-final-pay-form {
+  background: rgba(30, 45, 79, 0.65) !important;
+  border: 1px solid rgba(230, 199, 42, 0.38) !important;
+  border-left: 4px solid var(--ipf-gold) !important;
+  border-radius: 16px !important;
+  padding: 1.35rem !important;
+  margin-bottom: 1.15rem !important;
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28) !important;
+  color: var(--ipf-ivory) !important;
+}
+
+html body #leader-final-pay-form::before,
+html body .member-final-pay-form::before,
+html body #leader-final-pay-form h5::before,
+html body .member-final-pay-form h5::before {
+  display: none !important;
+}
+
+html body #leader-final-pay-form .role-label,
+html body #leader-final-pay-form .role-label-small,
+html body .member-final-pay-form .role-label,
+html body .member-final-pay-form .role-label-small {
+  color: var(--ipf-gold) !important;
+  -webkit-text-fill-color: var(--ipf-gold) !important;
+  font-size: 0.75rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.08em !important;
+  text-transform: uppercase !important;
+}
+
+html body #leader-final-pay-form .name-label,
+html body #leader-final-pay-form .member-name-large,
+html body .member-final-pay-form .name-label,
+html body .member-final-pay-form .member-name-large {
+  color: var(--ipf-ivory) !important;
+  -webkit-text-fill-color: var(--ipf-ivory) !important;
+  font-family: "Playfair Display", serif !important;
+  font-size: 1.2rem !important;
+  font-weight: 600 !important;
+  margin: 0 !important;
+}
+
+html body .price-display-box {
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  background: rgba(11, 19, 40, 0.85) !important;
+  border: 1px solid rgba(230, 199, 42, 0.45) !important;
+  padding: 0.85rem 1.15rem !important;
+  border-radius: 12px !important;
+  margin: 0.75rem 0 1rem !important;
+  box-shadow: none !important;
+}
+
+html body .price-display-box .price-label {
+  color: var(--ipf-text-muted) !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.06em !important;
+  text-transform: uppercase !important;
+}
+
+html body .price-display-box .price-value,
+html body #final-payment-price,
+html body [id^="member-price-"] {
+  background: rgba(230, 199, 42, 0.16) !important;
+  color: var(--ipf-gold) !important;
+  -webkit-text-fill-color: var(--ipf-gold) !important;
+  border: 1px solid rgba(230, 199, 42, 0.45) !important;
+  font-family: "Poppins", sans-serif !important;
+  font-weight: 700 !important;
+  font-size: 0.95rem !important;
+  padding: 0.3rem 0.9rem !important;
+  border-radius: 999px !important;
+  margin: 0 !important;
+}
+
+html body #final-payment-wrapper .form-label {
+  color: var(--ipf-ivory) !important;
+  -webkit-text-fill-color: var(--ipf-ivory) !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.04em !important;
+  margin-bottom: 0.4rem !important;
+}
+
+html body #final-payment-wrapper .form-control,
+html body #final-payment-wrapper .form-select {
+  background-color: rgba(11, 19, 40, 0.92) !important;
+  color: var(--ipf-ivory) !important;
+  -webkit-text-fill-color: var(--ipf-ivory) !important;
+  border: 1px solid rgba(230, 199, 42, 0.45) !important;
+  border-radius: 10px !important;
+  padding: 0.6rem 0.9rem !important;
+  font-size: 0.9rem !important;
+}
+
+html body #final-payment-wrapper input[type="file"].form-control {
+  padding: 0 !important;
+  line-height: 40px !important;
+}
+
+html body #final-payment-wrapper input[type="file"]::file-selector-button {
+  background: rgba(230, 199, 42, 0.18) !important;
+  color: var(--ipf-gold) !important;
+  -webkit-text-fill-color: var(--ipf-gold) !important;
+  border: 0 !important;
+  border-right: 1px solid rgba(230, 199, 42, 0.45) !important;
+  border-radius: 0 !important;
+  padding: 0 1rem !important;
+  margin-right: 0.85rem !important;
+  font-weight: 600 !important;
+}
+
+html body .custom-rules-box {
+  background: rgba(230, 199, 42, 0.1) !important;
+  border: 1px solid rgba(230, 199, 42, 0.4) !important;
+  border-radius: 12px !important;
+  padding: 0.9rem 1.1rem !important;
+}
+
+html body .custom-rules-label {
+  color: var(--ipf-ivory) !important;
+  font-size: 0.88rem !important;
+}
+
+html body .custom-rules-label a {
+  color: var(--ipf-gold) !important;
+  font-weight: 600 !important;
+}
+
+/* Modal Buttons */
+html body #final-payment-submit-btn,
+html body .btn-submit-custom,
+html body #encourage-btn-action,
+html body .modal .btn-primary {
+  background: linear-gradient(135deg, var(--ipf-gold), var(--ipf-orange)) !important;
+  color: var(--ipf-navy) !important;
+  -webkit-text-fill-color: var(--ipf-navy) !important;
+  border: 0 !important;
+  border-radius: 999px !important;
+  padding: 0.65rem 1.6rem !important;
+  font-weight: 700 !important;
+  font-size: 0.92rem !important;
+  box-shadow: 0 6px 18px rgba(230, 199, 42, 0.3) !important;
+  flex: 0 1 auto !important;
+  width: auto !important;
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+}
+
+html body .btn-cancel-custom,
+html body #final-payment-wrapper .modal-footer button[data-bs-dismiss="modal"],
+html body .modal .btn-danger[data-bs-dismiss="modal"] {
+  background: transparent !important;
+  color: var(--ipf-ivory) !important;
+  -webkit-text-fill-color: var(--ipf-ivory) !important;
+  border: 1px solid rgba(248, 245, 242, 0.45) !important;
+  border-radius: 999px !important;
+  padding: 0.65rem 1.4rem !important;
+  font-weight: 600 !important;
+  font-size: 0.92rem !important;
+  box-shadow: none !important;
+  flex: 0 1 auto !important;
+  width: auto !important;
+}
+
+html body .btn-cancel-custom:hover,
+html body #final-payment-wrapper .modal-footer button[data-bs-dismiss="modal"]:hover {
+  border-color: var(--ipf-gold) !important;
+  color: var(--ipf-gold) !important;
+  -webkit-text-fill-color: var(--ipf-gold) !important;
+}
+
+/* Encouragement Modal Elements */
+html body #encourage-icon-wrapper {
+  background: rgba(230, 199, 42, 0.16) !important;
+  border: 2px solid var(--ipf-gold) !important;
+}
+
+html body #encourage-quote-box {
+  background: rgba(30, 45, 79, 0.75) !important;
+  border: 1px solid rgba(230, 199, 42, 0.4) !important;
+  border-left: 4px solid var(--ipf-gold) !important;
+}
+
+html body #encourage-quote-text {
+  color: var(--ipf-ivory) !important;
+}
+
+html body #encourage-quote-author {
+  color: var(--ipf-gold) !important;
+}
+
+/* Custom Leaderboard Modal (#prelim-leaderboard-modal-wrapper) */
+html body #prelim-leaderboard-modal-wrapper {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  padding: 1rem !important;
+  background: rgba(8, 14, 32, 0.76) !important;
+  backdrop-filter: blur(6px) !important;
+  z-index: 1065 !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+html body #prelim-leaderboard-modal-wrapper.custom-modal-hidden {
+  display: none !important;
+}
+
+html body #prelim-leaderboard-modal-wrapper .custom-modal-box {
+  width: min(100%, 880px) !important;
+  max-height: 85vh !important;
+  background: linear-gradient(160deg, rgba(22, 33, 62, 0.98), rgba(11, 19, 40, 0.99)) !important;
+  border: 1px solid rgba(230, 199, 42, 0.55) !important;
+  border-radius: 20px !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65) !important;
+  overflow: hidden !important;
+}
+
+html body #prelim-leaderboard-modal-wrapper .custom-modal-header {
+  background: rgba(11, 19, 40, 0.92) !important;
+  border-bottom: 2px solid var(--ipf-gold) !important;
+  padding: 1.15rem 1.5rem !important;
+}
+
+html body #prelim-leaderboard-modal-wrapper .custom-modal-header h5 {
+  color: var(--ipf-gold) !important;
+  font-family: "Playfair Display", serif !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+}
+
+html body #prelim-leaderboard-modal-wrapper .custom-modal-body {
+  overflow-x: auto !important;
+  overflow-y: auto !important;
+}
+
+html body #prelim-leaderboard-modal-wrapper .custom-table {
+  width: 100% !important;
+  min-width: 560px;
+}
+
+@media (max-width: 575.98px) {
+  html body .modal .modal-dialog {
+    margin: 0.75rem !important;
+  }
+  html body .modal .modal-body,
+  html body #final-payment-wrapper .modal-body {
+    padding: 1rem !important;
+  }
+  html body .modal .modal-footer,
+  html body #final-payment-wrapper .modal-footer {
+    flex-direction: column-reverse !important;
+    align-items: stretch !important;
+  }
+  html body #final-payment-submit-btn,
+  html body .btn-cancel-custom,
+  html body #final-payment-wrapper .modal-footer button[data-bs-dismiss="modal"] {
+    width: 100% !important;
+    text-align: center !important;
+  }
+}
