@@ -10,8 +10,6 @@ const STAFF = {
   'hc.ipfest2027@gmail.com': ['competition_manager', 'hackaton'],
   'treasury.ipfest2027@gmail.com': ['treasury'],
   'officialdelegates.ipfest2027@gmail.com': ['delegates_relation'],
-  'entrepreneurship.ipfest2026@gmail.com': ['merch_manager'],
-  'event@ipfest2026.com': ['event_staff']
 }
 
 function resolveRoleClaims(email) {

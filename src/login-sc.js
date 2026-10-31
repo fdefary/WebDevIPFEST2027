@@ -105,6 +105,7 @@ loginForm?.addEventListener('submit', async (e) => {
             'auth/wrong-password',
             'auth/invalid-email',
             'auth/invalid-credential',
+            'auth/invalid-login-credentials',
             'auth/user-not-found',
             'auth/missing-password'
         ]

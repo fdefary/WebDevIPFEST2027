@@ -11,6 +11,7 @@ import { ref, uploadBytes } from 'firebase/storage';
 
 // Import Firebase SDK initialization
 import { AUTH, STORAGE, DB } from './index.js';
+import { firstInvalidRegistrationStep } from './shared/registration-fields.js';
 
 // Daftar kompetisi dan jumlah anggota yang valid
 const teamMemberCondition = {
@@ -164,14 +165,13 @@ function showError(message) {
 }
 
 // Validasi password
-let passwordIsValid = false;
 const pass = document.querySelector("input[name='password']");
 const confirmPass = document.querySelector("input[name='confirmPassword']");
 
 if (confirmPass) {
   confirmPass.addEventListener("input", () => {
     if (pass && confirmPass) {
-      passwordIsValid = pass.value === confirmPass.value && pass.value.length >= 8;
+      const passwordIsValid = pass.value === confirmPass.value && pass.value.length >= 8;
       const feedback = confirmPass.parentNode.querySelector('.invalid-feedback');
       if (feedback) {
           feedback.textContent = passwordIsValid ? "" : "Passwords must match and be at least 8 characters long.";
@@ -223,6 +223,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const validateStep = () => {
     if (currentStep === 0 && !compeInput.value) {
       showError("Please select a competition first.");
+      return false;
+    }
+    if (firstInvalidRegistrationStep([steps[currentStep]]) !== -1) {
+      registrationForm.classList.add('was-validated');
+      showError('Please complete all fields on this step.');
+      steps[currentStep].querySelector(':invalid')?.focus();
       return false;
     }
     return true;
@@ -318,9 +324,12 @@ document.addEventListener("DOMContentLoaded", () => {
   // Handle submit form
   registrationForm.addEventListener('submit', async (e) => {
     e.preventDefault();
-    if (!paymentForm.checkValidity()) {
+    const invalidStep = firstInvalidRegistrationStep(steps);
+    if (invalidStep !== -1) {
       registrationForm.classList.add("was-validated");
-      paymentForm.querySelector(":invalid")?.focus();
+      showStep(invalidStep);
+      showError('Please complete all fields before registering.');
+      steps[invalidStep].querySelector(':invalid')?.focus();
       return;
     }
     const submitBtn = registrationForm.querySelector("button[type='submit']");
@@ -336,7 +345,7 @@ document.addEventListener("DOMContentLoaded", () => {
     submitBtn.innerText = 'Processing...';
 
     try {
-      if (!passwordIsValid) {
+      if (pass?.value !== confirmPass?.value || pass.value.length < 8) {
         throw new Error("Passwords must match and be at least 8 characters long.");
       }
 

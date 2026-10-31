@@ -20,16 +20,17 @@ const sponsorData = {
         <strong>Website:</strong> <a href="https://www.exxonmobil.co.id" target="_blank" style="color: #4da6ff; text-decoration: underline;">www.exxonmobil.co.id</a>`
     },
     
-    // ID: benvors
-    "benvors": {
-        title: "Benvors",
-        img: "static/images/sponsor/6. Benvors (Gold).png",
-        desc: `Established in 2007, PT Benvors Sarana Utama has grown into a trusted and leading partner in the Oil, Gas, and Geothermal Industry. We specialize in delivering high-quality wellhead solutions, supported by experienced professionals, proven operational excellence, and strict adherence to international standards. 
+    // ID: PHR (Sesuai HTML data-id="PHR")
+    "PHR": {
+        title: "Pertamina Hulu Energi (PHE)",
+        img: "static/images/sponsor/PHR.PNG",
+        desc: `PT Pertamina Hulu Energi (PHE) is the Upstream Subholding of PT Pertamina (Persero), responsible for managing Pertamina's upstream oil and gas business.
         <br><br>
-        With a strong commitment to efficiency, reliability, and competitive pricing, we provide end-to-end services designed to meet the evolving needs of our clients. Our ability to deliver flexible, customized solutions—combined with fast lead times and uncompromising quality—has positioned us as a preferred service provider across various upstream operations. 
+        Through its subsidiaries and affiliates, PHE carries out exploration and production activities across Indonesia and internationally. The company supports Indonesia's energy security through safe, reliable, and responsible upstream operations.
         <br><br>
-        Through continuous innovation and strong industry partnerships, PT Benvors Sarana Utama remains dedicated to supporting sustainable energy development while creating long-term value for our clients and stakeholders We welcome strategic collaborations and sponsorship opportunities to drive mutual growth, brand visibility, and industry advancement.
-` 
+        PHE is also committed to developing its business sustainably while contributing to the long-term availability of energy for Indonesia.
+        <br><br>
+        <strong>Website:</strong> <a href="https://phe.pertamina.com" target="_blank" rel="noopener noreferrer" style="color: #4da6ff; text-decoration: underline;">phe.pertamina.com</a>`
     },
 
     // ID: emp
@@ -97,7 +98,7 @@ if (sponsorModal) {
         // A. Tangkap elemen yang memicu modal (yaitu Gambar Logo yang diklik)
         const button = event.relatedTarget;
         
-        // B. Ambil nilai 'data-id' dari gambar tersebut (contoh: "exxon", "benvors")
+        // B. Ambil nilai 'data-id' dari gambar tersebut (contoh: "exxon", "PHR")
         const id = button.getAttribute('data-id');
         
         // C. Cari data yang cocok di dalam variable 'sponsorData'

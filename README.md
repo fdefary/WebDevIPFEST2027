@@ -47,26 +47,57 @@ npm run build
 npm test
 ```
 
-`npm test` memeriksa entry Webpack, import lokal frontend, dan agar halaman tidak memuat source JS langsung dari luar bundle.
+`npm test` juga menjalankan pengujian aturan Firebase dan alur pendaftaran melalui emulator Auth, Firestore, dan Storage. Pastikan Java tersedia dan porta emulator pada `firebase.json` tidak sedang dipakai.
 
-## Cloud Functions dan email secret
+## Deployment produksi (`ipfest-2027`)
 
-Pasang dependensi backend dari `functions/` dengan `npm ci`, lalu jalankan `npm test` di folder tersebut untuk memeriksa binding secret dan konfigurasi trigger. Perintah emulator, deploy, dan log juga tersedia di `functions/package.json`.
-
-Certificate trigger membutuhkan Firebase Secret Manager secret bernama `MAILGUN_SMTP_PASSWORD`. Siapkan atau rotasi kredensial di provider email, lalu set nilainya secara interaktif (jangan masukkan nilainya ke Git, chat, atau log):
+Jalankan dari root repo. Pastikan akun Firebase CLI memiliki akses ke proyek **`ipfest-2027`**, lalu periksa target dan hasil pengujian sebelum deploy:
 
 ```sh
-firebase functions:secrets:set MAILGUN_SMTP_PASSWORD
+firebase login
+firebase projects:list
+npm ci
+npm --prefix functions ci
+npm test
+npm --prefix functions test
+npm run build
+```
+
+Untuk perubahan frontend (HTML, CSS, atau JavaScript), **build ulang sebelum deploy Hosting** agar `public/dist/` berisi bundel terbaru:
+
+```sh
+npm run build
+firebase deploy --only hosting --project ipfest-2027
+```
+
+Hanya bila aturan atau indeks berubah, deploy secara terpisah:
+
+```sh
+firebase deploy --only firestore:rules,firestore:indexes,storage --project ipfest-2027
+```
+
+Hanya bila backend inti berubah, deploy **empat Function yang memang digunakan**:
+
+```sh
+firebase deploy --only functions:createPrivateDownloadUrl,functions:updatePaymentVerifications,functions:updateCompetitionResult,functions:publishCompetitionCase --project ipfest-2027
+```
+
+Periksa rencana perubahan yang ditampilkan CLI sebelum mengonfirmasi, terutama jika ada penghapusan Function. **Jangan jalankan `firebase deploy` tanpa `--only`, `firebase deploy --only functions`, atau `npm --prefix functions run deploy`**: perintah tersebut dapat menerbitkan Function penerbitan sertifikat dan pemicu email yang masih ditunda. Deploy Hosting tidak mengubah Firestore Rules, Storage Rules, akun, klaim manager, ataupun data peserta. Setelah deploy, buka `https://ipfest-2027.web.app`, uji login, pendaftaran, dan dashboard terkait dengan akun uji yang disetujui.
+
+**GitHub Actions:** workflow di `.github/workflows/` membangun dan men-deploy Hosting ke `ipfest-2027` saat ada push ke `main` (termasuk merge); PR dari repo yang sama membuat preview (PR dari fork dilewati agar secret tidak terekspos). Sebelum workflow dapat berjalan, pemilik repo harus menambahkan repository secret **`FIREBASE_SERVICE_ACCOUNT_IPFEST_2027`** di GitHub → Settings → Secrets and variables → Actions, berisi kredensial service account khusus proyek 2027 dengan akses deploy Firebase Hosting. Jangan gunakan ulang secret proyek lama atau simpan kunci service account di repo. Perubahan workflow ini baru aktif setelah di-merge; tidak men-deploy Functions atau Rules.
+
+Petunjuk penyiapan awal, klaim akun staf, serta pemeriksaan pascadeploy ada di [`docs/firebase-production-setup.md`](docs/firebase-production-setup.md). Proyek 2027 **tidak memigrasikan** akun, dokumen Firestore, atau berkas Storage dari 2026.
+
+## Cloud Functions dan secret email (sertifikat ditunda)
+
+Function sertifikat memerlukan secret Firebase Secret Manager bernama `MAILGUN_SMTP_PASSWORD`. **Jangan deploy Function sertifikat saat ini.** Jika fitur tersebut nantinya disetujui, rotasi kredensial di penyedia email dan set secret melalui prompt interaktif; jangan masukkan nilainya ke Git, chat, atau log:
+
+```sh
+firebase functions:secrets:set MAILGUN_SMTP_PASSWORD --project ipfest-2027
 ```
 
 Untuk emulator lokal, simpan secret hanya di `functions/.secret.local` dengan format `MAILGUN_SMTP_PASSWORD=...`. File `*.local` di folder Functions diabaikan Git; jangan menghapus aturan tersebut atau membagikan file ini.
 
-Setelah secret tersedia, deploy Functions secara terpisah:
-
-```sh
-firebase deploy --only functions
-```
-
-Trigger sertifikat menggunakan Cloud Functions generasi kedua agar dapat mengikat Secret Manager. Jika fungsi generasi pertama dengan nama yang sama sudah terdeploy, periksa rencana perubahan Firebase CLI; penggantian generasi dapat memerlukan penghapusan fungsi lama sebelum deploy dan menimbulkan jeda layanan. Deploy tidak dijalankan otomatis oleh perubahan kode ini.
+Trigger sertifikat menggunakan Cloud Functions generasi kedua. Sebelum mengaktifkannya kelak, pastikan template PDF, pengirim email, secret, dan dampak perubahan generasi Function sudah ditinjau. Secret yang tersedia **tidak berarti** Function sertifikat boleh dideploy.
 
 **Penting:** password SMTP sebelumnya tertulis di source dan riwayat Git. Anggap telah terekspos: rotasi/revoke kredensial lama di provider email, lalu simpan kredensial baru sebagai secret di atas. Menghapusnya dari file saat ini tidak menghapus nilai lama dari riwayat Git.

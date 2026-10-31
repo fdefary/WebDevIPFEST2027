@@ -11,13 +11,13 @@ import { getFunctions } from "firebase/functions";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyD43AzGJgHhtw_EBP11SktAGwAQBtDR3po",
-  authDomain: "ipfest-2026.firebaseapp.com",
-  projectId: "ipfest-2026",
-  storageBucket: "ipfest-2026.firebasestorage.app",
-  messagingSenderId: "549421075173",
-  appId: "1:549421075173:web:98807aea4151379616a20c",
-  measurementId: "G-7PTFK31CE0"
+  apiKey: "AIzaSyCaAWAHqMdgDSfsSoEq2fVldksii1_vA18",
+  authDomain: "ipfest-2027.firebaseapp.com",
+  projectId: "ipfest-2027",
+  storageBucket: "ipfest-2027.firebasestorage.app",
+  messagingSenderId: "997727130659",
+  appId: "1:997727130659:web:10902420888d916f398d96",
+  measurementId: "G-MP3S9DH01H"
 };
 
 // Initialize Firebase
