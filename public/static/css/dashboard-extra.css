@@ -1,8 +1,8 @@
 /* ==========================================================================
    dashboard-extra.css
-   Pelengkap competition-manager.css untuk dashboard Delegates Relation:
+   Pelengkap grand-theme.css untuk dashboard Delegates Relation:
    kartu statistik, grafik, panel luar, dan spinner.
-   Muat SETELAH grand-theme.css dan competition-manager.css.
+   Muat setelah grand-theme.css.
    ========================================================================== */
 
 .manager-page #spinner {

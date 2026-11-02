@@ -26,7 +26,9 @@ Website IPFEST 2027: landing page, pendaftaran, acara, kompetisi, absensi, dan d
 
 - `src/` berisi source JavaScript yang dibangun Webpack, termasuk integrasi Firebase Web SDK dan modul UI bersama.
 - `public/` berisi HTML dan aset yang harus tetap tersedia melalui URL situs. Susunan halaman dan aset mempertahankan URL publik yang sudah ada.
-- `public/dist/` adalah output build yang dimuat oleh halaman. Edit source di `src/`, lalu jalankan build.
+- `public/dist/` adalah output build yang dimuat oleh halaman. Isinya dibersihkan dan dibuat ulang saat build; edit source di `src/`, bukan bundle di `dist/`.
+- `npm run check:public` memeriksa referensi lokal pada HTML, CSS, dan SCSS agar pemindahan aset tidak meninggalkan URL rusak.
+- `public/static/images/` mengelompokkan gambar berdasarkan fungsi; lihat `docs/public-image-assets.json` untuk manifest aset yang sudah diorganisasi.
 - `functions/` adalah backend; `functions/index.js` menjadi entry point, sedangkan `functions/package.json` mengelola dependensi dan perintahnya sendiri.
 - `design/` untuk referensi desain. `static/` di root tidak dipublikasikan oleh Hosting kecuali disalin ke `public/` atau konfigurasi Hosting diubah.
 - `firebase.json`, `.firebaserc`, `firestore.rules`, `firestore.indexes.json`, dan `storage.rules` mengatur Firebase. `webpack.config.babel.js` mengatur entry frontend dan output build.

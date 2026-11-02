@@ -109,16 +109,13 @@ The current theme stylesheet references `DreamAvenue.ttf` and `SafiraMarch.ttf`;
 
 ## Layout
 
-Use the existing Bootstrap container and grid as the responsive foundation. Keep desktop compositions spacious and editorial, then stack content into a single readable column on narrow screens. Use `public/static/images/ipfest-background.jpg` as the **only page background**: centered and cover the viewport. Do not add gradients, color washes, patterns, or other images behind the page. Keep content on distinct surfaces where needed for contrast.
+Use the existing Bootstrap container and grid as the responsive foundation. Keep desktop compositions spacious and editorial, then stack content into a single readable column on narrow screens. Use `public/static/images/brand/backgrounds/ipfest-background.jpg` as the **only page background**: centered and cover the viewport. Do not add gradients, color washes, patterns, or other images behind the page. Keep content on distinct surfaces where needed for contrast.
 
 Use the supplied visual assets as a coherent kit:
-- `public/static/images/ipfest-background.jpg` — full-page wave background.
-- `public/static/images/ipfest_2027_logo.png`, `ipfest_2027_text.png`, and `ipfest_2027_logo_footer.png` — official brand lockups for header and footer contexts.
-- `public/static/images/ipfest_2027_mascot.png` — mascot moments; keep clear space around the mark.
-- `public/static/images/Elements/Lines/` — orbit and movement motifs.
-- `public/static/images/Elements/Nodes/` — connection points and luminous nodes.
-- `public/static/images/Elements/Other/` — supporting decorative assets; use selectively.
-- `public/static/images/Grand Design Board.webp` — visual reference board, not a page background.
+- `public/static/images/brand/backgrounds/ipfest-background.jpg` — full-page wave background.
+- `public/static/images/brand/logos/ipfest_2027_logo.png`, `ipfest_2027_text.png`, and `ipfest_2027_logo_footer.png` — official brand lockups for header and footer contexts.
+- `public/static/images/brand/mascot/ipfest_2027_mascot.png` — mascot moments; keep clear space around the mark.
+- `public/static/images/events/archive/Grand Design Board.webp` — visual reference board, not a page background.
 
 ## Elevation & Depth
 
@@ -128,7 +125,7 @@ Depth is layered and luminous: the wave image and navy veil form the base, while
 
 ## Shapes
 
-Use clean rounded rectangles for content panels (the existing feature-card treatment uses `28px`) and small controls with modest corners (Bootstrap-sized, approximately `6px`). Circular nodes and organic flowing silhouettes belong to the supplied celestial graphic language. Avoid turning large content areas into pills or adding unrelated geometric decoration.
+Use clean rounded rectangles for content panels (the existing feature-card treatment uses `28px`) and small controls with modest corners (Bootstrap-sized, approximately `6px`). Avoid turning large content areas into pills or adding unrelated geometric decoration.
 
 ## Components
 
@@ -154,9 +151,6 @@ Use clean rounded rectangles for content panels (the existing feature-card treat
 - **Style:** Use the official logo lockup; active, hover, and focus states use Muted Gold against the navy/ivory navigation surface.
 - **Responsive:** Preserve the existing Bootstrap collapse behavior and generous touch targets.
 
-### Celestial Elements
-- Use the supplied Lines and Nodes assets to frame or connect content, not to compete with it. Keep decorative assets non-interactive and hide them from assistive technology when they convey no information.
-
 ### Section Headings
 - Keep section headings short and direct, such as “Pilih Kompetisi”, “Ketua Tim”, and “Pembuatan Akun”.
 - Put instructions and context in a brief supporting sentence below the heading, not inside a long heading.
@@ -165,7 +159,7 @@ Use clean rounded rectangles for content panels (the existing feature-card treat
 
 ### Do:
 - **Do** use the exact palette and the supplied Grand Design Board as the visual authority.
-- **Do** source official logos, mascot, background, and decorative elements from `public/static/images/` rather than redrawing them.
+- **Do** source official logos, mascot, and background from `public/static/images/` rather than redrawing them.
 - **Do** pair expressive display typography with Poppins for readable interface copy.
 - **Do** preserve contrast over the image background with a navy overlay or a solid content panel.
 - **Do** ensure local font URLs match the supplied filenames.

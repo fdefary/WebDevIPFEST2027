@@ -51,7 +51,7 @@ body.dashboard-theme::after {
     content: "";
     position: fixed;
     inset: 0;
-    background-image: url("../images/dotted-halftone.svg");
+    background-image: url("../images/brand/decorative/dotted-halftone.svg");
     background-repeat: no-repeat;
     background-position: center top;
     background-size: cover;
@@ -770,7 +770,7 @@ body.dashboard-theme .dashboard-panel a {
     bottom: 100px;
     width: 58px;
     height: 50px;
-    background: url(../img/sty-1.png) center center no-repeat;
+    background: url(../images/ui/sty-1.png) center center no-repeat;
     animation: RotateMoveSty-3 45s linear infinite;
     transition: 0.5s;
     z-index: -1;
