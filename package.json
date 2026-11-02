@@ -1,5 +1,5 @@
 {
-  "name": "ipfest25web",
+  "name": "ipfest2027-web",
   "version": "1.0.0",
   "description": "Ini adalah repository untuk pengembangan website IPFEST 2026. Laman website terdiri dari home/landing page, login page, registration page, events page, dan competitions page.",
   "main": "index.js",
