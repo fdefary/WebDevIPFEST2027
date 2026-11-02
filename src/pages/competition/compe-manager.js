@@ -3,10 +3,10 @@ import { onSnapshot, collection, query, where } from 'firebase/firestore'
 import { httpsCallable } from 'firebase/functions'
 import { ref, uploadBytes } from 'firebase/storage'
 
-import { DB, AUTH, STORAGE, FUNCTIONS } from './index.js'
-import { privateStorageLink } from './shared/private-download.js'
-import { TEAM_DOCUMENTS } from './shared/team-documents.js'
-import { getRoleClaims } from './shared/role-claims.js'
+import { DB, AUTH, STORAGE, FUNCTIONS } from '../../app/index.js'
+import { privateStorageLink } from '../../shared/private-download.js'
+import { TEAM_DOCUMENTS } from '../../shared/team-documents.js'
+import { getRoleClaims } from '../../shared/role-claims.js'
 
 // =====================================================================
 //   IPFEST 2027 CONFIG

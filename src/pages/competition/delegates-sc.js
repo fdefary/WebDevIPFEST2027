@@ -4,9 +4,9 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 
 import { ref, uploadBytes } from 'firebase/storage'
 
-import { DB, AUTH, STORAGE } from './index.js'
-import { setToastAlert } from './shared/alert.js'
-import { SC_TEST_WINDOW, scTestStatus } from './shared/sc-schedule.js'
+import { DB, AUTH, STORAGE } from '../../app/index.js'
+import { setToastAlert } from '../../shared/alert.js'
+import { SC_TEST_WINDOW, scTestStatus } from '../../shared/sc-schedule.js'
 
 // =========================
 // START TEST BUTTON

@@ -1,8 +1,8 @@
 import { doc, serverTimestamp, setDoc } from 'firebase/firestore'
 
-import { DB } from './index.js'
+import { DB } from '../../app/index.js'
 
-import { setToastAlert } from './shared/alert.js'
+import { setToastAlert } from '../../shared/alert.js'
 
 const attendanceForm = document.querySelector('#ct-start')
 const formBtn = attendanceForm.querySelector('button')

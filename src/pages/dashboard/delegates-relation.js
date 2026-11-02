@@ -1,10 +1,10 @@
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { onSnapshot, collection } from 'firebase/firestore'
 
-import { DB, AUTH } from './index.js'
-import { privateStorageLink } from './shared/private-download.js'
-import { TEAM_DOCUMENTS } from './shared/team-documents.js'
-import { getRoleClaims } from './shared/role-claims.js'
+import { DB, AUTH } from '../../app/index.js'
+import { privateStorageLink } from '../../shared/private-download.js'
+import { TEAM_DOCUMENTS } from '../../shared/team-documents.js'
+import { getRoleClaims } from '../../shared/role-claims.js'
 
 // ===============================
 //   IPFEST 2027 CONFIG
@@ -34,7 +34,7 @@ const COMPETITION_ALIASES = {
     'hackathon': 'hackaton'
 }
 
-// Data pembayaran final ditulis src/delegates.js ke Team/{id}.final_reg:
+// Data pembayaran final ditulis src/pages/competition/delegates.js ke Team/{id}.final_reg:
 //   paymentStatus : "pending" | "down_payment_verified" | "verified"
 //   paymentScheme : "Full" | "DP"     dpCategory : "First" | "Last" | "-"
 //   leader / members[] : { hospitality, paymentMethod, paymentProof, lastPayment }

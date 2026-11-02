@@ -1,8 +1,8 @@
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, query, onSnapshot, getDocs, doc, updateDoc, orderBy } from "firebase/firestore";
-import { DB, AUTH } from "./index.js";
-import { privateStorageLink } from "./shared/private-download.js";
-import { getRoleClaims } from "./shared/role-claims.js";
+import { DB, AUTH } from "../../app/index.js";
+import { privateStorageLink } from "../../shared/private-download.js";
+import { getRoleClaims } from "../../shared/role-claims.js";
 
 const escapeHTML = (value) => String(value ?? "-").replace(/[&<>"']/g, (char) => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"

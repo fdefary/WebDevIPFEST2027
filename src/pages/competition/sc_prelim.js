@@ -1,8 +1,8 @@
 import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 
-import { DB, AUTH } from './index.js'
-import { SC_TEST_WINDOW, scTestStatus } from './shared/sc-schedule.js'
+import { DB, AUTH } from '../../app/index.js'
+import { SC_TEST_WINDOW, scTestStatus } from '../../shared/sc-schedule.js'
 
 // =====================================================================
 //   KONFIGURASI TES

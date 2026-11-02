@@ -1,8 +1,8 @@
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
 import { getDoc, setDoc, doc } from 'firebase/firestore'
 
-import { AUTH, DB } from './index.js'
-import { failedLogin } from './shared/alert.js'
+import { AUTH, DB } from '../../app/index.js'
+import { failedLogin } from '../../shared/alert.js'
 
 // =====================================================================
 //   CONFIG

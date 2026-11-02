@@ -6,7 +6,7 @@ import {
     writeBatch
 } from 'firebase/firestore'
 
-import { DB, AUTH } from './index.js'
+import { DB, AUTH } from '../app/index.js'
 
 // check auth
 onAuthStateChanged(AUTH, (user) => {

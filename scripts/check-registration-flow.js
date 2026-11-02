@@ -3,12 +3,12 @@ import { readFileSync } from 'node:fs';
 
 const html = readFileSync('public/register.html', 'utf8');
 const css = readFileSync('public/static/css/register.css', 'utf8');
-const script = readFileSync('src/registration.js', 'utf8');
+const script = readFileSync('src/pages/auth/registration.js', 'utf8');
 const pricing = readFileSync('src/shared/registration-pricing.js', 'utf8');
-const treasury = readFileSync('src/treasury.js', 'utf8');
+const treasury = readFileSync('src/pages/dashboard/treasury.js', 'utf8');
 const firestoreRules = readFileSync('firestore.rules', 'utf8');
 const adminHtml = readFileSync('public/dashboard/delegates-relation.html', 'utf8');
-const adminScript = readFileSync('src/delegates-relation.js', 'utf8');
+const adminScript = readFileSync('src/pages/dashboard/delegates-relation.js', 'utf8');
 const validation = readFileSync('public/static/js/validation.js', 'utf8');
 const teamDocuments = readFileSync('src/shared/team-documents.js', 'utf8');
 

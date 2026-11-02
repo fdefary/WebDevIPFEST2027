@@ -1,7 +1,7 @@
 // ==== Import Firebase SDK ====
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
-import { AUTH, DB} from "./index.js";
-import { emailNotVerified, accountCreated, failedLogin } from "./shared/alert.js";
+import { AUTH, DB} from "../app/index.js";
+import { emailNotVerified, accountCreated, failedLogin } from "../shared/alert.js";
 
 // ==== Wait for DOM ====
 window.addEventListener("DOMContentLoaded", () => {

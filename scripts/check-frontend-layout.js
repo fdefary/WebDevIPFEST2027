@@ -4,20 +4,29 @@ import path from 'node:path';
 
 const root = process.cwd();
 const config = readFileSync(path.join(root, 'webpack.config.babel.js'), 'utf8');
-const bootstrap = readFileSync(path.join(root, 'src/bootstrap.js'), 'utf8');
+const srcRoot = path.join(root, 'src');
+const bootstrap = readFileSync(path.join(srcRoot, 'app/bootstrap.js'), 'utf8');
 const entries = [...config.matchAll(/:\s*['"](\.\/[^'"]+\.js)['"]/g)].map((match) => match[1]);
 
 assert(entries.length > 0, 'Webpack must declare frontend entry points');
+assert.deepEqual(readdirSync(srcRoot).filter((name) => name.endsWith('.js')), [], 'JavaScript source files must be grouped into subdirectories');
 assert.match(config, /splitChunks:\s*\{\s*chunks:\s*['"]all['"],\s*maxSize:\s*200_000/s, 'Dynamic page imports must split oversized dependency chunks');
 assert(!entries.some((entry) => entry.startsWith('./public/src/')), 'Webpack sources belong outside public/');
 for (const entry of entries) {
   assert(statSync(path.resolve(root, entry)).isFile(), `Missing Webpack entry: ${entry}`);
 }
 
-for (const file of readdirSync(path.join(root, 'src')).filter((name) => name.endsWith('.js'))) {
-  const source = readFileSync(path.join(root, 'src', file), 'utf8');
+function sourceFiles(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const fullPath = path.join(directory, entry.name);
+    return entry.isDirectory() ? sourceFiles(fullPath) : entry.name.endsWith('.js') ? [fullPath] : [];
+  });
+}
+
+for (const file of sourceFiles(srcRoot)) {
+  const source = readFileSync(file, 'utf8');
   for (const [, imported] of source.matchAll(/from\s+['"](\.\.?\/[^'"]+)['"]/g)) {
-    assert(statSync(path.resolve(root, 'src', imported)).isFile(), `Missing import in src/${file}: ${imported}`);
+    assert(statSync(path.resolve(path.dirname(file), imported)).isFile(), `Missing import in ${path.relative(root, file)}: ${imported}`);
   }
 }
 
@@ -44,17 +53,17 @@ for (const file of htmlFiles(path.join(root, 'public'))) {
   }
 }
 
-const competitionManager = readFileSync(path.join(root, 'src/compe-manager.js'), 'utf8');
+const competitionManager = readFileSync(path.join(srcRoot, 'pages/competition/compe-manager.js'), 'utf8');
 const standardManagerHtml = readFileSync(path.join(root, 'public/dashboard/compe-manager.html'), 'utf8');
 assert.match(competitionManager, /query\(collection\(DB, 'Team'\), where\('competition', '==', manager\.competition\)\)/);
 assert.match(competitionManager, /ref\(ref\(caseStorage, manager\.competition\), `\$\{Date\.now\(\)\}_\$\{file\.name\}`\)/);
 
-const treasury = readFileSync(path.join(root, 'src/treasury.js'), 'utf8');
+const treasury = readFileSync(path.join(srcRoot, 'pages/dashboard/treasury.js'), 'utf8');
 const treasuryHtml = readFileSync(path.join(root, 'public/dashboard/treasury.html'), 'utf8');
-const delegatesRelation = readFileSync(path.join(root, 'src/delegates-relation.js'), 'utf8');
+const delegatesRelation = readFileSync(path.join(srcRoot, 'pages/dashboard/delegates-relation.js'), 'utf8');
 const delegatesRelationHtml = readFileSync(path.join(root, 'public/dashboard/delegates-relation.html'), 'utf8');
 const delegatesRelationCss = readFileSync(path.join(root, 'public/static/css/delegates-relation-grand.css'), 'utf8');
-const teamDocuments = readFileSync(path.join(root, 'src/shared/team-documents.js'), 'utf8');
+const teamDocuments = readFileSync(path.join(srcRoot, 'shared/team-documents.js'), 'utf8');
 assert.match(treasury, /onSnapshot\(collection\(DB, 'Team'\)/);
 assert.match(delegatesRelation, /onSnapshot\(collection\(DB, 'Team'\)/);
 assert.doesNotMatch(treasury, /deleteField|data-delete-final/, 'Treasury may verify, not delete final payment records');
@@ -87,7 +96,7 @@ assert.match(competitionManager, /team\.teamDocuments\?\.\[field\]/, 'Competitio
 assert.match(delegatesRelation, /team\.teamDocuments\?\.\[field\]/, 'Delegates Relation must link team document paths');
 assert.match(competitionManager, /teamDocumentCells\(team,\s*span\)/, 'Competition Manager team document links must span the team rows');
 assert.match(delegatesRelation, /teamDocumentCells\(team,\s*rows\)/, 'Delegates Relation team document links must span the team rows');
-const scManager = readFileSync(path.join(root, 'src/compe-manager-sc.js'), 'utf8');
+const scManager = readFileSync(path.join(srcRoot, 'pages/competition/compe-manager-sc.js'), 'utf8');
 const scManagerHtml = readFileSync(path.join(root, 'public/dashboard/smart-competition/manager.html'), 'utf8');
 assert.match(competitionManager, /class="cm-team-cell" rowspan="\$\{span\}"/, 'Common Competition Manager columns must be grouped for hover');
 assert.match(scManager, /class="cm-team-cell" rowspan="\$\{totalMembers\}"/, 'Common Smart Competition columns must be grouped for hover');
@@ -119,16 +128,16 @@ assert.match(treasuryHtml, /<th scope="col">Early Bird<\/th>[\s\S]*?<th scope="c
 assert.match(treasury, /teamFileLinks\(t,\s*'twibbonUrl'\)/);
 assert.match(treasury, /teamFileLinks\(t,\s*'followIgUrl'\)/);
 assert.match(treasury, /const REG_COLS = 10/);
-const delegatesSource = readFileSync(path.join(root, 'src/delegates.js'), 'utf8');
+const delegatesSource = readFileSync(path.join(srcRoot, 'pages/competition/delegates.js'), 'utf8');
 assert.doesNotMatch(delegatesSource, /getDocs\(collection\(DB,\s*['"]Team['"]\)/, 'participants must not download all Team records for a fallback search');
 
-const registrationSource = readFileSync(path.join(root, 'src/registration.js'), 'utf8');
-const legacyLogin = readFileSync(path.join(root, 'src/login_ori.js'), 'utf8');
+const registrationSource = readFileSync(path.join(srcRoot, 'pages/auth/registration.js'), 'utf8');
+const legacyLogin = readFileSync(path.join(srcRoot, 'legacy/login_ori.js'), 'utf8');
 assert.doesNotMatch(legacyLogin, /event@ipfest2026\.com/, 'legacy event account must not remain in executable login configuration');
 assert.match(registrationSource, /payments\/\$\{user\.uid\}\/\$\{Date\.now\(\)\}_/);
 assert.ok(registrationSource.indexOf('createUserWithEmailAndPassword(AUTH, email, password)') < registrationSource.indexOf('payments/${user.uid}/'), 'Payment upload must happen after Auth user creation');
 
-const delegates = readFileSync(path.join(root, 'src/delegates.js'), 'utf8');
+const delegates = readFileSync(path.join(srcRoot, 'pages/competition/delegates.js'), 'utf8');
 assert.match(delegates, /preliminary_submissions\/\$\{currentUserID\}\//);
 
 assert.match(scManagerHtml, /<p class="cm-help"><span class="cm-leader-tag">Leader<\/span> menandai ketua tim\. Baris di bawahnya adalah anggota tim yang sama\.<\/p>/, 'Smart Competition manager legend must match the standard manager');
@@ -163,37 +172,38 @@ assert.match(competitionManager, /const DB_COLS = 19/);
 assert.match(competitionManager, /const PRELIM_COLS = 8/);
 assert.match(competitionManager, /const FINAL_COLS = 5/);
 
-const merchManager = readFileSync(path.join(root, 'src/merchmanager.js'), 'utf8');
+const merchManager = readFileSync(path.join(srcRoot, 'pages/merchandise/merchmanager.js'), 'utf8');
 assert.match(merchManager, /escapeHTML\(/);
 assert.match(merchManager, /privateStorageLink\(/);
 assert.doesNotMatch(merchManager, /\$\{data\.customer_info\?\.\w+\s*\|\|\s*"-"\}/);
 assert.doesNotMatch(merchManager, /href="\$\{data\.files\?\./);
 
-const eventAttendance = readFileSync(path.join(root, 'src/event-attendance.js'), 'utf8');
+const eventAttendance = readFileSync(path.join(srcRoot, 'pages/attendance/event-attendance.js'), 'utf8');
 assert.match(eventAttendance, /cell\.textContent\s*=/);
 assert.doesNotMatch(eventAttendance, /\$\{(?:name|univ|major|batch|nim|email|checkin|checkout)\}/);
 assert.doesNotMatch(eventAttendance, /issueAttendanceCertificate|Issue certificate/);
 assert.doesNotMatch(readFileSync(path.join(root, 'public/dashboard/event.html'), 'utf8'), /<th[^>]*>\s*Certificate\s*<\/th>/i);
 
 for (const file of [
-  'registration.js', 'delegates.js', 'delegates-sc.js', 'compe-manager.js', 'merchandise.js',
-  'merchmanager.js', 'treasury.js', 'delegates-relation.js'
+  'pages/auth/registration.js', 'pages/competition/delegates.js', 'pages/competition/delegates-sc.js',
+  'pages/competition/compe-manager.js', 'pages/merchandise/merchandise.js', 'pages/merchandise/merchmanager.js',
+  'pages/dashboard/treasury.js', 'pages/dashboard/delegates-relation.js'
 ]) {
-  const source = readFileSync(path.join(root, 'src', file), 'utf8');
+  const source = readFileSync(path.join(srcRoot, file), 'utf8');
   assert.doesNotMatch(source, /getDownloadURL\(/, `${file} must not mint persistent bearer URLs`);
 }
-for (const file of ['registration.js', 'delegates.js', 'delegates-sc.js', 'compe-manager.js', 'merchandise.js']) {
-  assert.match(readFileSync(path.join(root, 'src', file), 'utf8'), /privateStorageLink|privateStoragePathOf|\.fullPath/);
+for (const file of ['pages/auth/registration.js', 'pages/competition/delegates.js', 'pages/competition/delegates-sc.js', 'pages/competition/compe-manager.js', 'pages/merchandise/merchandise.js']) {
+  assert.match(readFileSync(path.join(srcRoot, file), 'utf8'), /privateStorageLink|privateStoragePathOf|\.fullPath/);
 }
-for (const file of ['ct-start.js', 'ct-finish.js', 'gi-start.js', 'gi-finish.js']) {
-  assert.doesNotMatch(readFileSync(path.join(root, 'src', file), 'utf8'), /getDoc\(docRef\)/, `${file} must rely on bounded attendance Rules, not expose public reads`);
+for (const file of ['pages/attendance/ct-start.js', 'pages/attendance/ct-finish.js', 'pages/attendance/gi-start.js', 'pages/attendance/gi-finish.js']) {
+  assert.doesNotMatch(readFileSync(path.join(srcRoot, file), 'utf8'), /getDoc\(docRef\)/, `${file} must rely on bounded attendance Rules, not expose public reads`);
 }
 
-for (const file of ['login.js', 'login-sc.js']) {
-  const script = readFileSync(path.join(root, 'src', file), 'utf8');
+for (const file of ['pages/auth/login.js', 'pages/auth/login-sc.js']) {
+  const script = readFileSync(path.join(srcRoot, file), 'utf8');
   assert.match(script, /auth\/invalid-login-credentials/, `${file} must treat auth/invalid-login-credentials as a credential error instead of redirecting to 400.html`);
 }
-assert.match(readFileSync(path.join(root, 'src', 'login.js'), 'utf8'), /auth\/too-many-requests/, 'login.js must handle auth/too-many-requests');
+assert.match(readFileSync(path.join(srcRoot, 'pages/auth/login.js'), 'utf8'), /auth\/too-many-requests/, 'login.js must handle auth/too-many-requests');
 
 for (const [file, code] of [['400.html', '400'], ['404.html', '404']]) {
   const html = readFileSync(path.join(root, 'public', file), 'utf8');

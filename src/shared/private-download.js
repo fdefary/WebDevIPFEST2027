@@ -1,5 +1,5 @@
 import { httpsCallable } from 'firebase/functions'
-import { FUNCTIONS } from '../index.js'
+import { FUNCTIONS } from '../app/index.js'
 import { parseStorageObjectPath } from './storage-path.js'
 
 const createPrivateDownloadUrl = httpsCallable(FUNCTIONS, 'createPrivateDownloadUrl')

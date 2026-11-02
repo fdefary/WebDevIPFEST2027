@@ -4,13 +4,13 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 
 import { ref, uploadBytes, uploadBytesResumable } from 'firebase/storage'
 
-import { DB, AUTH, STORAGE } from './index.js'
+import { DB, AUTH, STORAGE } from '../../app/index.js'
 
-import { showProgressUI } from './shared/alert.js'
-import { privateStorageLink, privateStoragePathOf } from './shared/private-download.js'
+import { showProgressUI } from '../../shared/alert.js'
+import { privateStorageLink, privateStoragePathOf } from '../../shared/private-download.js'
 
 // =====================================================================
-//   IPFEST 2027 TIMELINE — samakan dengan src/compe-manager.js
+//   IPFEST 2027 TIMELINE — samakan dengan src/pages/competition/compe-manager.js
 //   TODO: sesuaikan dengan timeline resmi IPFEST 2027
 // =====================================================================
 const TIMELINE = {

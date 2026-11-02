@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 const projectId = 'ipfest-2027';
 const firebaserc = JSON.parse(readFileSync('.firebaserc', 'utf8'));
 const firebase = JSON.parse(readFileSync('firebase.json', 'utf8'));
-const webConfig = readFileSync('src/index.js', 'utf8');
+const webConfig = readFileSync('src/app/index.js', 'utf8');
 const functions = JSON.parse(readFileSync('functions/package.json', 'utf8'));
 
 assert.equal(firebaserc.projects.default, projectId);

@@ -1,6 +1,6 @@
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
-import { DB } from "./index.js"; 
+import { DB } from "../../app/index.js"; 
 
 // 1. Inisialisasi Global
 let cart = [];

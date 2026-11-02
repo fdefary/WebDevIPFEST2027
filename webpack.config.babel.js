@@ -2,8 +2,8 @@ import path from 'path';
 
 export default {
   entry: {
-    bootstrap: './src/bootstrap.js',
-    sponsor: './src/sponsor.js'
+    bootstrap: './src/app/bootstrap.js',
+    sponsor: './src/pages/public/sponsor.js'
   },
   output: {
     filename: '[name].bundle.js',

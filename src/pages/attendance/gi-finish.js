@@ -1,8 +1,8 @@
 import { doc, serverTimestamp, updateDoc } from 'firebase/firestore'
 
-import { DB } from './index.js'
+import { DB } from '../../app/index.js'
 
-import { setToastAlert } from './shared/alert.js'
+import { setToastAlert } from '../../shared/alert.js'
 
 const attendanceForm = document.querySelector('#ct-start')
 const formBtn = attendanceForm.querySelector('button')
@@ -16,6 +16,11 @@ const attendanceBatch = document.querySelector('#attendance-batch')
 attendanceForm.addEventListener('submit', async (e) => {
 	e.preventDefault()
 
+	if (!attendanceForm.checkValidity()) {
+		setToastAlert('warning', 'Please fill in all the fields properly!')
+		return
+	}
+
 	formBtn.innerText = 'Loading...'
 	formBtn.disabled = true
 
@@ -26,7 +31,7 @@ attendanceForm.addEventListener('submit', async (e) => {
 	const studentNumber = attendanceStudentNumber.value
 	const batch = attendanceBatch.value
 
-	const docRef = doc(DB, 'Career_Talk', email)
+	const docRef = doc(DB, 'Grand_IPCONVEX', email)
 
 	try {
 		await updateDoc(docRef, { checkout: serverTimestamp() })

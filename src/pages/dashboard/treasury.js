@@ -2,10 +2,10 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { onSnapshot, collection } from 'firebase/firestore'
 import { httpsCallable } from 'firebase/functions'
 
-import { DB, AUTH, FUNCTIONS } from './index.js'
-import { privateStorageLink } from './shared/private-download.js'
-import { getRoleClaims } from './shared/role-claims.js'
-import { registrationPriceAt } from './shared/registration-pricing.js'
+import { DB, AUTH, FUNCTIONS } from '../../app/index.js'
+import { privateStorageLink } from '../../shared/private-download.js'
+import { getRoleClaims } from '../../shared/role-claims.js'
+import { registrationPriceAt } from '../../shared/registration-pricing.js'
 
 // =====================================================================
 //   IPFEST 2027 CONFIG — cek dan isi bagian bertanda TODO
@@ -14,7 +14,7 @@ import { registrationPriceAt } from './shared/registration-pricing.js'
 // TODO: kurs untuk pembayaran Paypal (USD) agar bisa dijumlah dalam Rupiah
 const USD_TO_IDR = 16000
 
-// Harga final per orang — SALINAN dari PRICE_TABLE di src/delegates.js.
+// Harga final per orang — SALINAN dari PRICE_TABLE di src/pages/competition/delegates.js.
 // Kalau harga di delegates.js berubah, ubah juga di sini.
 const FINAL_PRICE_TABLE = {
     'Full Hospitality': {

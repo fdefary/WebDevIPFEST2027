@@ -9,12 +9,12 @@ import {
 import { ref, uploadBytesResumable } from 'firebase/storage'
 import { httpsCallable } from 'firebase/functions'
 
-import { DB, AUTH, STORAGE, FUNCTIONS } from './index.js'
+import { DB, AUTH, STORAGE, FUNCTIONS } from '../../app/index.js'
 
-import { setToastAlert } from './shared/alert.js'
-import { getRoleClaims } from './shared/role-claims.js'
-import { privateStorageLink } from './shared/private-download.js'
-import { TEAM_DOCUMENTS } from './shared/team-documents.js'
+import { setToastAlert } from '../../shared/alert.js'
+import { getRoleClaims } from '../../shared/role-claims.js'
+import { privateStorageLink } from '../../shared/private-download.js'
+import { TEAM_DOCUMENTS } from '../../shared/team-documents.js'
 
 // =========================
 // Manager Mapping

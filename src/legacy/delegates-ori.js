@@ -4,9 +4,9 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 
 // import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
 
-import { DB, AUTH, STORAGE } from './index.js'
+import { DB, AUTH, STORAGE } from '../app/index.js'
 
-import { showProgressUI, setToastAlert } from './shared/alert.js'
+import { showProgressUI, setToastAlert } from '../shared/alert.js'
 
 // Check User ID
 let currentUserID
@@ -1457,9 +1457,9 @@ async function fetchUserData(){
 
 // import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
 
-// import { DB, AUTH, STORAGE } from './index.js'
+// import { DB, AUTH, STORAGE } from '../app/index.js'
 
-// import { showProgressUI, setToastAlert } from './shared/alert.js'
+// import { showProgressUI, setToastAlert } from '../shared/alert.js'
 
 // // =========================
 // // AUTH STATE
@@ -3230,9 +3230,9 @@ async function fetchUserData(){
 
 // import { ref, uploadBytes, getDownloadURL, uploadBytesResumable } from 'firebase/storage'
 
-// import { DB, AUTH, STORAGE } from './index.js'
+// import { DB, AUTH, STORAGE } from '../app/index.js'
 
-// import { showProgressUI, setToastAlert } from './shared/alert.js'
+// import { showProgressUI, setToastAlert } from '../shared/alert.js'
 
 // // =========================
 // // AUTH STATE

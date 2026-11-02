@@ -1,9 +1,9 @@
 // ==== Import Firebase SDK ====
 import { signInWithEmailAndPassword, signOut, sendEmailVerification } from "firebase/auth";
-import { AUTH, DB } from "./index.js";
-import { emailNotVerified, accountCreated, failedLogin } from "./shared/alert.js";
+import { AUTH, DB } from "../../app/index.js";
+import { emailNotVerified, accountCreated, failedLogin } from "../../shared/alert.js";
 import { doc, getDoc } from "firebase/firestore";
-import { getRoleClaims } from "./shared/role-claims.js";
+import { getRoleClaims } from "../../shared/role-claims.js";
 
 // ==== Wait for DOM ====
 window.addEventListener("DOMContentLoaded", () => {

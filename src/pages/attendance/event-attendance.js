@@ -2,10 +2,10 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 
 import { onSnapshot, collection } from 'firebase/firestore'
 
-import { DB, AUTH } from './index.js'
+import { DB, AUTH } from '../../app/index.js'
 
-import { setToastAlert } from './shared/alert.js'
-import { getRoleClaims } from './shared/role-claims.js'
+import { setToastAlert } from '../../shared/alert.js'
+import { getRoleClaims } from '../../shared/role-claims.js'
 
 // Check auth
 onAuthStateChanged(AUTH, async (user) => {

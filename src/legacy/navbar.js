@@ -1,4 +1,4 @@
-import { AUTH } from "./index.js"
+import { AUTH } from "../app/index.js"
 import { onAuthStateChanged } from "firebase/auth"
 
 onAuthStateChanged(AUTH, (user) => {

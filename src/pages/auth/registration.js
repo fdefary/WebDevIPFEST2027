@@ -10,10 +10,10 @@ import {
 import { ref, uploadBytes } from 'firebase/storage';
 
 // Import Firebase SDK initialization
-import { AUTH, STORAGE, DB } from './index.js';
-import { firstInvalidRegistrationStep } from './shared/registration-fields.js';
-import { registrationPriceAt } from './shared/registration-pricing.js';
-import { TEAM_DOCUMENTS, isValidTeamDocumentFile, teamDocumentPath } from './shared/team-documents.js';
+import { AUTH, STORAGE, DB } from '../../app/index.js';
+import { firstInvalidRegistrationStep } from '../../shared/registration-fields.js';
+import { registrationPriceAt } from '../../shared/registration-pricing.js';
+import { TEAM_DOCUMENTS, isValidTeamDocumentFile, teamDocumentPath } from '../../shared/team-documents.js';
 
 // Daftar kompetisi dan jumlah anggota yang valid
 const teamMemberCondition = {

@@ -10,9 +10,9 @@ import {
 
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage'
 
-import { DB, AUTH, STORAGE } from './index.js'
+import { DB, AUTH, STORAGE } from '../app/index.js'
 
-import { setToastAlert } from './shared/alert.js'
+import { setToastAlert } from '../shared/alert.js'
 
 // check auth
 let switchCompetition
