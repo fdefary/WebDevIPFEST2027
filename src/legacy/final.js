@@ -1,4 +1,4 @@
-// Get signed url from ../functions/index.js
+// Get signed URL from functions/src/index.js
 async function getSignedUrl(file) {
 	const response = await fetch('https://generatesignedurl-xn2wpuh7nq-et.a.run.app', {
 		method: 'POST',

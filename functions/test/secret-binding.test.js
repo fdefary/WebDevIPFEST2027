@@ -2,7 +2,7 @@ const assert = require('node:assert/strict')
 const fs = require('node:fs')
 const path = require('node:path')
 
-const source = fs.readFileSync(path.join(__dirname, '..', 'index.js'), 'utf8')
+const source = fs.readFileSync(path.join(__dirname, '..', 'src', 'index.js'), 'utf8')
 
 assert.equal(/\bpass\s*:\s*['"][^'"]{8,}['"]/i.test(source), false, 'SMTP password must not be hard-coded')
 assert.match(source, /defineSecret\(['"]MAILGUN_SMTP_PASSWORD['"]\)/, 'SMTP password must use Firebase Secret Manager')

@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict')
 const { test } = require('node:test')
-const { authorizeStoragePath, signedReadOptions } = require('../storage-access')
+const { authorizeStoragePath, signedReadOptions } = require('../src/security/storage-access')
 
 const owner = { uid: 'owner', email: 'owner@example.com', emailVerified: true }
 const bccManager = { uid: 'manager', role: 'competition_manager', competition: 'business case' }

@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict')
 const { test } = require('node:test')
-const { certificateId, validateCertificateAttendance } = require('../security-policy')
+const { certificateId, validateCertificateAttendance } = require('../src/security/security-policy')
 
 test('certificate requests use stable IDs scoped to an attendance source', () => {
   assert.equal(certificateId('Career_Talk', 'a+b@example.com'), 'Career_Talk_e8d87b42fd25944d484b1a12df866232e6a25c0551a50e84d8f9d2103b16f1db')
