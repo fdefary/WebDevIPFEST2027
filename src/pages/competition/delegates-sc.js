@@ -527,8 +527,7 @@ function generateFinalModal(teamData) {
                         <div class="col-6">
                             <label class="form-label">PAYMENT METHOD</label>
                             <select class="form-select" id="member-payment-method-${i}" name="member-payment-method-${i}" required>
-                                <option value="Gopay">Gopay</option>
-                                <option value="Bank BCA">Bank BCA</option>
+                                <option value="Bank Mandiri">Bank Mandiri</option>
                                 <option value="Paypal">Paypal</option>
                             </select>
                         </div>
@@ -593,8 +592,7 @@ function generateFinalModal(teamData) {
                                 <div class="col-6">
                                     <label class="form-label">PAYMENT METHOD</label>
                                     <select id="leader-payment-method" name="leader-payment-method" class="form-select" required>
-                                        <option value="Gopay">Gopay</option>
-                                        <option value="Bank BCA">Bank BCA</option>
+                                        <option value="Bank Mandiri">Bank Mandiri</option>
                                         <option value="Paypal">Paypal</option>
                                     </select>
                                 </div>
@@ -668,17 +666,17 @@ function generateFinalModal(teamData) {
 // =====================================
 const PRICE_TABLE = {
     "Full Hospitality": {
-        Full: { "Bank BCA": 700000, "Gopay": 700000, "Paypal": 50 },
+        Full: { "Bank Mandiri": 700000, "Paypal": 55 },
         DP: {
-            First: { "Bank BCA": 400000, "Gopay": 400000, "Paypal": 30 },
-            Last: { "Bank BCA": 300000, "Gopay": 300000, "Paypal": 20 }
+            First: { "Bank Mandiri": 400000, "Paypal": 30 },
+            Last: { "Bank Mandiri": 300000, "Paypal": 20 }
         }
     },
     "Excluding Accommodation": {
-        Full: { "Bank BCA": 450000, "Gopay": 450000, "Paypal": 32 },
+        Full: { "Bank Mandiri": 400000, "Paypal": 30 },
         DP: {
-            First: { "Bank BCA": 300000, "Gopay": 300000, "Paypal": 20 },
-            Last: { "Bank BCA": 150000, "Gopay": 150000, "Paypal": 12 }
+            First: { "Bank Mandiri": 300000, "Paypal": 20 },
+            Last: { "Bank Mandiri": 150000, "Paypal": 12 }
         }
     }
 };
@@ -709,8 +707,7 @@ function initFinalPaymentBindings(teamData) {
     function updatePaymentMethodInfo(infoBox, method) {
         let text = "";
         switch (method) {
-            case "Bank BCA": text = "<strong>BCA</strong> — 2650508800 (Mochammad Rafly Ghazany A)"; break;
-            case "Gopay": text = "085655226900 (Rafly Ghazany)"; break;
+            case "Bank Mandiri": text = "<strong>Bank Mandiri</strong> — 1300028653809 (ALDWIN ZACHARRY)"; break;
             case "Paypal": text = `<a href="https://www.paypal.me/RaflyGhazany" target="_blank" class="text-primary">paypal.me/RaflyGhazany</a>`; break;
         }
         infoBox.innerHTML = `<small>${text}</small>`;

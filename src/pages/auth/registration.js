@@ -29,6 +29,8 @@ const teamMemberCondition = {
   "hackaton": [3]
 };
 
+const registrationClosedMessage = (competition) => `Registration is closed. The last day to register was ${competition === 'smart competition' ? 'December 8' : 'December 11'}, 2026.`;
+
 function generateTeamMemberOption(competition, container) {
   if (!container || !teamMemberCondition[competition]) return;
   const selected = container.value || teamMemberCondition[competition][0];
@@ -218,6 +220,10 @@ document.addEventListener("DOMContentLoaded", () => {
       showError("Please select a competition first.");
       return false;
     }
+    if (currentStep === 0 && !registrationPriceAt(new Date(), compeInput.value)) {
+      showError(registrationClosedMessage(compeInput.value));
+      return false;
+    }
     if (firstInvalidRegistrationStep([steps[currentStep]]) !== -1) {
       registrationForm.classList.add('was-validated');
       showError('Please complete all fields on this step.');
@@ -256,6 +262,8 @@ document.addEventListener("DOMContentLoaded", () => {
       card.setAttribute("aria-pressed", "true");
 
       compeInput.value = selectedCompetition;
+      const activePayment = document.querySelector('.payment-method .nav-link.active');
+      if (activePayment) showPaymentMethod(activePayment);
       competitionForm.querySelector("[data-next]").disabled = false;
 
       generateTeamMemberOption(selectedCompetition, memberCount);
@@ -286,17 +294,18 @@ document.addEventListener("DOMContentLoaded", () => {
         panel.hidden = panel !== targetPane;
       });
 
-      const price = registrationPriceAt(new Date());
+      const price = registrationPriceAt(new Date(), compeInput.value);
+      if (!price) {
+        targetPane.innerHTML = `<p>${registrationClosedMessage(compeInput.value)}</p>`;
+        return;
+      }
       const indoPrice = `IDR ${price.amount.toLocaleString('id-ID')}`;
-      const intlPrice = `USD ${Math.ceil(price.amount / 16000)}`;
+      const intlPrice = `USD ${price.usd}`;
       const total = `<div class="payment-total"><span>Total payment — ${price.tier}</span><strong>${indoPrice}</strong></div>`;
 
       switch (payMethod) {
-        case "Bank BCA":
-          targetPane.innerHTML = `${total}<p>Transfer to BCA account <strong>2650508800</strong> under the name <strong>Mochammad Rafly Ghazany A</strong>.</p>`;
-          break;
-        case "Gopay":
-          targetPane.innerHTML = `${total}<p>Send GoPay to <strong>085655226900</strong> under the name <strong>Rafly Ghazany</strong>.</p>`;
+        case "Bank Mandiri":
+          targetPane.innerHTML = `${total}<p>Transfer to Bank Mandiri account <strong>1300028653809</strong> under the name <strong>ALDWIN ZACHARRY</strong>.</p>`;
           break;
         case "Paypal":
           targetPane.innerHTML = `<div class="payment-total"><span>Total payment — ${price.tier} (approx.)</span><strong>${intlPrice}</strong></div><p>Pay through <a href="https://www.paypal.me/RaflyGhazany" target="_blank" rel="noopener noreferrer">paypal.me/RaflyGhazany</a>.</p>`;
@@ -381,6 +390,9 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!emailRegex.test(email)) throw new Error("Invalid email address");
       if (password.length < 8) throw new Error("Password must be at least 8 characters");
 
+      // Tolak sebelum akun dibuat jika pendaftaran sudah ditutup.
+      if (!registrationPriceAt(new Date(), selectedCompetition)) throw new Error(registrationClosedMessage(selectedCompetition));
+
       // Buat user terlebih dahulu agar unggahan bisa disimpan di folder pemilik.
       const { user } = await createUserWithEmailAndPassword(AUTH, email, password);
 
@@ -463,8 +475,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       // Simpan ke Firestore
-      const registrationPrice = registrationPriceAt(new Date());
-      if (!registrationPrice) throw new Error('Could not determine the registration fee. Please try again.');
+      const registrationPrice = registrationPriceAt(new Date(), selectedCompetition);
+      if (!registrationPrice) throw new Error(registrationClosedMessage(selectedCompetition));
       teamData.payment_amount = registrationPrice.amount;
       await setDoc(doc(DB, "Team", user.uid), teamData);
 

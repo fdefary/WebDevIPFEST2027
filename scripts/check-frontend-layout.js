@@ -215,7 +215,7 @@ for (const [file, code] of [['400.html', '400'], ['404.html', '404']]) {
 }
 
 const registration = readFileSync(path.join(root, 'public/register.html'), 'utf8');
-for (const bank of ['bca', 'gopay', 'paypal']) {
+for (const bank of ['paypal']) {
   assert.match(registration, new RegExp(`static/images/banks-logo/${bank}\\.webp`), `register.html should use the updated ${bank} logo path`);
   assert(statSync(path.join(root, 'public/static/images/banks-logo', `${bank}.webp`)).isFile(), `Missing ${bank} bank logo`);
 }

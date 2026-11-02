@@ -49,9 +49,7 @@ assert.match(script, /firstInvalidRegistrationStep\(steps\)/);
 assert.match(script, /const validateStep = \(\) => \{[\s\S]*?return true;/);
 assert.doesNotMatch(script, /step\.checkValidity\(\)/);
 assert.doesNotMatch(script, /const invalidField = step\.querySelector\(":invalid"\)/);
-assert.match(html, /data-method="Bank BCA"[\s\S]*data-method="Gopay"[\s\S]*data-method="Paypal"/);
-assert.match(html, /banks-logo\/bca\.webp/);
-assert.match(html, /banks-logo\/gopay\.webp/);
+assert.match(html, /data-method="Bank Mandiri"[\s\S]*data-method="Paypal"/);
 assert.match(html, /banks-logo\/paypal\.webp/);
 assert.match(html, /class="payment-panel[^"]*"[^>]*role="tabpanel"/);
 assert.match(script, /setAttribute\("aria-selected", String\(selected\)\)/);
@@ -69,7 +67,7 @@ assert.doesNotMatch(script, /<legend>Required Documents<\/legend>/);
 for (const copy of [
   'Choose one competition', 'Prepare Your Twibbon Proof', 'Team Members', 'Account Setup',
   'Upload payment proof', 'I agree to the terms and conditions', 'Please select a competition first.',
-  'Total payment', 'Transfer to BCA account', 'Send GoPay to', 'Pay through',
+  'Total payment', 'Transfer to Bank Mandiri account', 'Pay through',
   'Personal &amp; Academic Details', 'Class year', "Enter member ${i}'s first name."
 ]) {
   assert(html.includes(copy) || script.includes(copy), `Missing English registration copy: ${copy}`);
@@ -84,7 +82,7 @@ assert.match(css, /\.form-control, \.form-select \{[^\n]*min-height:42px/);
 assert.match(css, /ipfest-background\.webp/);
 assert.match(css, /\.registration-shell[^\n]*max-width:1320px[^\n]*margin:2rem auto 4rem/);
 assert.match(css, /grid-template-columns:repeat\(auto-fit,minmax\(min\(100%,480px\),1fr\)\)/);
-assert.match(css, /\.card-compe \{[^\n]*grid-template-columns:4rem minmax\(0,1fr\)/);
+assert.match(css, /\.card-compe \{[^\n]*grid-template-columns:6rem minmax\(0,1fr\)/);
 assert.doesNotMatch(css, /--registration-left/);
 assert.match(css, /body \{\s*margin:\s*0;/);
 assert.match(css, /\.registration-navbar \.navbar-brand img:first-child[^\n]*width:96px/);
@@ -95,7 +93,7 @@ assert.match(css, /\.registration-navbar \.navbar-brand \{ gap:24px;/);
 assert.match(css, /\.registration-heading h1[^\n]*"Plus Jakarta Sans SemiBold"/);
 assert.match(css, /\.registration-step > h2[^\n]*"Plus Jakarta Sans SemiBold"/);
 assert.match(script, /teamMemberCondition/);
-assert.match(script, /registrationPriceAt\(new Date\(\)\)/);
+assert.match(script, /registrationPriceAt\(new Date\(\), [\w.]+\)/);
 assert.match(script, /teamData\.payment_amount = registrationPrice\.amount/);
 assert.match(pricing, /2026-11-12T00:00:00\+07:00/);
 assert.match(pricing, /2026-12-05T00:00:00\+07:00/);

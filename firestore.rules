@@ -91,6 +91,9 @@ service cloud.firestore {
           'competition', 'teamName', 'leader', 'members', 'status', 'payment_status', 'join_on', 'payment_amount'
         ])
         && request.resource.data.join_on == request.time
+        && request.time < (request.resource.data.competition == 'smart competition'
+          ? timestamp.date(2026, 12, 9) - duration.value(7, 'h')
+          : timestamp.date(2026, 12, 12) - duration.value(7, 'h'))
         && request.resource.data.payment_amount == registrationAmount(request.time)
         && request.resource.data.payment_status in ['unpaid', 'pending_verification']
         && request.resource.data.status == 'pending'

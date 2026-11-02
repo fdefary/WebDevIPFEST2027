@@ -18,17 +18,17 @@ const USD_TO_IDR = 16000
 // Kalau harga di delegates.js berubah, ubah juga di sini.
 const FINAL_PRICE_TABLE = {
     'Full Hospitality': {
-        Full: { 'Bank BCA': 700000, 'Gopay': 700000, 'Paypal': 50 },
+        Full: { 'Bank Mandiri': 700000, 'Bank BCA': 700000, 'Gopay': 700000, 'Paypal': 55 },
         DP: {
-            First: { 'Bank BCA': 400000, 'Gopay': 400000, 'Paypal': 30 },
-            Last:  { 'Bank BCA': 300000, 'Gopay': 300000, 'Paypal': 20 }
+            First: { 'Bank Mandiri': 400000, 'Bank BCA': 400000, 'Gopay': 400000, 'Paypal': 30 },
+            Last:  { 'Bank Mandiri': 300000, 'Bank BCA': 300000, 'Gopay': 300000, 'Paypal': 20 }
         }
     },
     'Excluding Accommodation': {
-        Full: { 'Bank BCA': 450000, 'Gopay': 450000, 'Paypal': 32 },
+        Full: { 'Bank Mandiri': 400000, 'Bank BCA': 400000, 'Gopay': 400000, 'Paypal': 30 },
         DP: {
-            First: { 'Bank BCA': 300000, 'Gopay': 300000, 'Paypal': 20 },
-            Last:  { 'Bank BCA': 150000, 'Gopay': 150000, 'Paypal': 12 }
+            First: { 'Bank Mandiri': 300000, 'Bank BCA': 300000, 'Gopay': 300000, 'Paypal': 20 },
+            Last:  { 'Bank Mandiri': 150000, 'Bank BCA': 150000, 'Gopay': 150000, 'Paypal': 12 }
         }
     }
 }
