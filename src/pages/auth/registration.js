@@ -13,6 +13,7 @@ import { ref, uploadBytes } from 'firebase/storage';
 import { AUTH, STORAGE, DB } from '../../app/index.js';
 import { firstInvalidRegistrationStep } from '../../shared/registration-fields.js';
 import { registrationPriceAt } from '../../shared/registration-pricing.js';
+import { isRegistrationOpen } from '../../shared/registration-deadline.js';
 import { TEAM_DOCUMENTS, isValidTeamDocumentFile, teamDocumentPath } from '../../shared/team-documents.js';
 
 // Daftar kompetisi dan jumlah anggota yang valid
@@ -170,8 +171,20 @@ document.addEventListener("DOMContentLoaded", () => {
   const paymentForm = document.querySelector("#payment");
   const agreementForm = document.querySelector("#invalidCheck");
   const compeInput = document.querySelector('#choosen-competition');
+  const smartCompetitionCard = document.querySelector('.card-compe[data-value="smart competition"]');
   const memberCount = document.getElementById("memberCount");
   const entryContainer = document.querySelector("#entry");
+  const updateSmartCompetitionAvailability = () => {
+    if (!smartCompetitionCard) return;
+    const isOpen = isRegistrationOpen('smart competition', new Date());
+    smartCompetitionCard.disabled = !isOpen;
+    smartCompetitionCard.setAttribute('aria-disabled', String(!isOpen));
+    const description = smartCompetitionCard.querySelector('.card-description');
+    if (description) description.textContent = isOpen
+      ? 'Data-driven problem-solving and technology'
+      : 'Registration closed on December 8, 2026 at 23:59 WIB';
+  };
+  updateSmartCompetitionAvailability();
 
   const steps = [...document.querySelectorAll("[data-registration-step]")];
   const descriptions = [
@@ -228,6 +241,11 @@ document.addEventListener("DOMContentLoaded", () => {
     card.addEventListener("click", () => {
 
       const selectedCompetition = card.dataset.value;
+      if (!isRegistrationOpen(selectedCompetition, new Date())) {
+        updateSmartCompetitionAvailability();
+        showError('Smart Competition registration closed on December 8, 2026 at 23:59 WIB.');
+        return;
+      }
 
       document.querySelectorAll(".card-compe").forEach(c => {
         c.classList.remove('active');
@@ -307,6 +325,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedCompetition = compeInput?.value;
     if (!selectedCompetition) {
       showError("Please select a competition first.");
+      return;
+    }
+    if (!isRegistrationOpen(selectedCompetition, new Date())) {
+      updateSmartCompetitionAvailability();
+      showError('Smart Competition registration closed on December 8, 2026 at 23:59 WIB.');
       return;
     }
 
