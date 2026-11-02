@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 const markupAttributes = /\b(?:href|src|poster|srcset)\s*=\s*(?:"([^"]*)"|'([^']*)')/gi;
 const cssUrls = /url\(\s*(?:"([^"]*)"|'([^']*)'|((?:\\.|[^\s)])+))\s*\)/gi;
 const cssImports = /@(import|use|forward)[ \t]+(?:url\([ \t]*)?(?:"([^"]+)"|'([^']+)')/gi;
+const jsImageStrings = /["']([^"'`\r\n]*\.(?:png|jpe?g|gif|webp|svg)(?:[?#][^"'`\r\n]*)?)["']/gi;
 
 function filesIn(directory, extensions) {
   return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
@@ -72,14 +73,29 @@ function localReferences(file, source) {
     for (const match of css.matchAll(cssUrls)) references.push(match[1] ?? match[2] ?? match[3]);
     for (const match of css.matchAll(cssImports)) references.push(match[2] ?? match[3]);
   }
+  if (extension === '.js') {
+    for (const match of source.matchAll(jsImageStrings)) references.push(match[1]);
+  }
   return references;
 }
 
 export function findMissingReferences(publicRoot) {
   const root = path.resolve(publicRoot);
-  return filesIn(root, new Set(['.html', '.css', '.scss']))
+  const sourceRoot = path.resolve(root, '..', 'src');
+  const files = [
+    ...filesIn(root, new Set(['.html', '.css', '.scss', '.js'])).filter((file) => {
+      const segments = path.relative(root, file).split(path.sep);
+      return !segments.includes('dist') && !segments.includes('lib');
+    }),
+    ...(existsSync(sourceRoot) ? filesIn(sourceRoot, new Set(['.js'])) : [])
+  ];
+  return files
     .flatMap((file) => localReferences(file, readFileSync(file, 'utf8'))
-      .filter((reference) => !existsAsHostingPath(root, file, reference))
+      .filter((reference) => !existsAsHostingPath(
+        root,
+        path.extname(file).toLowerCase() === '.js' ? path.join(root, 'index.html') : file,
+        reference
+      ))
       .map((reference) => ({ file: path.relative(root, file), reference })));
 }
 
@@ -90,6 +106,6 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     for (const { file, reference } of missing) console.error(`${file}: missing local reference ${reference}`);
     process.exitCode = 1;
   } else {
-    console.log('All local HTML, CSS, and SCSS references resolve.');
+    console.log('All local HTML, CSS, SCSS, and JavaScript image references resolve.');
   }
 }

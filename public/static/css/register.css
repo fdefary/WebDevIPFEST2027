@@ -31,7 +31,7 @@ body {
 	margin: 0;
 	min-height: 100vh;
 	color: var(--ivory);
-	background: var(--navy) url("../images/brand/backgrounds/ipfest-background.jpg") center / cover fixed no-repeat;
+	background: var(--navy) url("../images/brand/backgrounds/ipfest-background.webp") center / cover fixed no-repeat;
 	font: 400 1rem/1.5 "Poppins", sans-serif;
 }
 

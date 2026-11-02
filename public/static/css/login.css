@@ -164,7 +164,7 @@ body {
 	min-height: 100%;
 	background:
 		linear-gradient(180deg, rgba(22, 33, 62, .05), rgba(22, 33, 62, .34)),
-		url("../images/brand/backgrounds/ipfest-background.jpg") center / cover no-repeat;
+		url("../images/brand/backgrounds/ipfest-background.webp") center / cover no-repeat;
 	box-shadow: inset 1px 0 rgba(230, 199, 42, .45);
 }
 

@@ -109,12 +109,12 @@ The current theme stylesheet references `DreamAvenue.ttf` and `SafiraMarch.ttf`;
 
 ## Layout
 
-Use the existing Bootstrap container and grid as the responsive foundation. Keep desktop compositions spacious and editorial, then stack content into a single readable column on narrow screens. Use `public/static/images/brand/backgrounds/ipfest-background.jpg` as the **only page background**: centered and cover the viewport. Do not add gradients, color washes, patterns, or other images behind the page. Keep content on distinct surfaces where needed for contrast.
+Use the existing Bootstrap container and grid as the responsive foundation. Keep desktop compositions spacious and editorial, then stack content into a single readable column on narrow screens. Use `public/static/images/brand/backgrounds/ipfest-background.webp` as the **only page background**: centered and cover the viewport. Do not add gradients, color washes, patterns, or other images behind the page. Keep content on distinct surfaces where needed for contrast.
 
 Use the supplied visual assets as a coherent kit:
-- `public/static/images/brand/backgrounds/ipfest-background.jpg` — full-page wave background.
-- `public/static/images/brand/logos/ipfest_2027_logo.png`, `ipfest_2027_text.png`, and `ipfest_2027_logo_footer.png` — official brand lockups for header and footer contexts.
-- `public/static/images/brand/mascot/ipfest_2027_mascot.png` — mascot moments; keep clear space around the mark.
+- `public/static/images/brand/backgrounds/ipfest-background.webp` — full-page wave background.
+- `public/static/images/brand/logos/ipfest_2027_logo.webp`, `ipfest_2027_text.webp`, and `ipfest_2027_logo_footer.webp` — official brand lockups for header and footer contexts.
+- `public/static/images/brand/mascot/ipfest_2027_mascot.webp` — mascot moments; keep clear space around the mark.
 - `public/static/images/events/archive/Grand Design Board.webp` — visual reference board, not a page background.
 
 ## Elevation & Depth

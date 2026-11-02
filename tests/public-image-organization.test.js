@@ -8,6 +8,13 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const publicImages = path.join(root, 'public/static/images');
 const groups = JSON.parse(readFileSync(path.join(root, 'docs/public-image-assets.json'), 'utf8'));
 
+function imageFiles(directory) {
+  return readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const file = path.join(directory, entry.name);
+    return entry.isDirectory() ? imageFiles(file) : [file];
+  });
+}
+
 test('stores top-level image assets in documented purpose folders', () => {
   for (const [folder, names] of Object.entries(groups)) {
     for (const name of names) {
@@ -16,4 +23,9 @@ test('stores top-level image assets in documented purpose folders', () => {
     }
   }
   assert.deepEqual(readdirSync(publicImages).filter((name) => /\.(?:png|jpe?g|webp|svg)$/i.test(name)), []);
+});
+
+test('keeps viable raster images in WebP format throughout public', () => {
+  const legacyRasters = imageFiles(path.join(root, 'public')).filter((file) => /\.(?:png|jpe?g|gif)$/i.test(file));
+  assert.deepEqual(legacyRasters, []);
 });

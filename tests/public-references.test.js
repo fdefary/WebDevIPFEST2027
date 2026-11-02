@@ -29,6 +29,29 @@ test('checks local markup and CSS references while accepting deployed clean URLs
   }
 });
 
+test('checks local image strings in public and source JavaScript against the hosting root', () => {
+  const project = mkdtempSync(path.join(os.tmpdir(), 'ipfest-js-refs-'));
+  const root = path.join(project, 'public');
+  try {
+    mkdirSync(path.join(root, 'static', 'images'), { recursive: true });
+    mkdirSync(path.join(root, 'static', 'js'), { recursive: true });
+    mkdirSync(path.join(project, 'src'), { recursive: true });
+    writeFileSync(path.join(root, 'static', 'images', 'exists.webp'), '');
+    writeFileSync(path.join(root, 'static', 'js', 'app.js'), 'const ok = "static/images/exists.webp"; const missing = "static/images/public-missing.webp";');
+    writeFileSync(path.join(project, 'src', 'app.js'), "const ok = 'static/images/exists.webp'; const missing = 'static/images/src-missing.webp';");
+
+    assert.deepEqual(
+      findMissingReferences(root).map(({ file, reference }) => [file.replaceAll('\\', '/'), reference]),
+      [
+        ['static/js/app.js', 'static/images/public-missing.webp'],
+        ['../src/app.js', 'static/images/src-missing.webp']
+      ]
+    );
+  } finally {
+    rmSync(project, { recursive: true, force: true });
+  }
+});
+
 test('keeps every local public page and stylesheet reference resolvable', () => {
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', 'public');
   assert.deepEqual(findMissingReferences(root), []);

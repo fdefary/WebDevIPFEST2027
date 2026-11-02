@@ -208,27 +208,27 @@ assert.match(readFileSync(path.join(srcRoot, 'pages/auth/login.js'), 'utf8'), /a
 for (const [file, code] of [['400.html', '400'], ['404.html', '404']]) {
   const html = readFileSync(path.join(root, 'public', file), 'utf8');
   assert(!/<nav\b/i.test(html), `${file} should not include a header`);
-  assert.match(html, new RegExp(`static/images/error-icon/${code}\\.png`), `${file} should use its error icon`);
+  assert.match(html, new RegExp(`static/images/error-icon/${code}\\.webp`), `${file} should use its error icon`);
   assert.match(html, new RegExp(`alt="Error ${code}"`), `${file} should expose its error code to assistive technology`);
-  assert(statSync(path.join(root, 'public/static/images/error-icon', `${code}.png`)).isFile(), `Missing ${code} error icon`);
+  assert(statSync(path.join(root, 'public/static/images/error-icon', `${code}.webp`)).isFile(), `Missing ${code} error icon`);
   assert.match(html, /static\/css\/error-pages\.css/, `${file} should load shared error-page styling`);
 }
 
 const registration = readFileSync(path.join(root, 'public/register.html'), 'utf8');
 for (const bank of ['bca', 'gopay', 'paypal']) {
-  assert.match(registration, new RegExp(`static/images/banks-logo/${bank}\\.png`), `register.html should use the updated ${bank} logo path`);
-  assert(statSync(path.join(root, 'public/static/images/banks-logo', `${bank}.png`)).isFile(), `Missing ${bank} bank logo`);
+  assert.match(registration, new RegExp(`static/images/banks-logo/${bank}\\.webp`), `register.html should use the updated ${bank} logo path`);
+  assert(statSync(path.join(root, 'public/static/images/banks-logo', `${bank}.webp`)).isFile(), `Missing ${bank} bank logo`);
 }
 
 const resetPage = readFileSync(path.join(root, 'public/reset-password.html'), 'utf8');
 const resetCss = readFileSync(path.join(root, 'public/static/css/reset-password.css'), 'utf8');
-assert.match(resetPage, /static\/images\/brand\/logos\/ipfest_2027_logo\.png/);
-assert.match(resetPage, /static\/images\/brand\/logos\/ipfest_2027_text\.png/);
+assert.match(resetPage, /static\/images\/brand\/logos\/ipfest_2027_logo\.webp/);
+assert.match(resetPage, /static\/images\/brand\/logos\/ipfest_2027_text\.webp/);
 assert.match(resetPage, /id="reset-password"/);
 assert.match(resetPage, /id="passwordResetEmail"/);
 assert.match(resetPage, /id="alertContainer"/);
 assert.doesNotMatch(resetPage, /ipfest_2026|IPFEST 2026|DM\+Sans/);
-assert.match(resetCss, /ipfest-background\.jpg/);
+assert.match(resetCss, /ipfest-background\.webp/);
 assert.match(resetCss, /\.reset-header\s*\{[^}]*background:\s*#fff;/);
 assert.match(resetCss, /\.reset-panel\s*\{[^}]*background:\s*rgba\(22,\s*33,\s*62/);
 assert.match(resetCss, /\.reset-panel\s*\{[^}]*padding:\s*2rem;/);
@@ -238,13 +238,13 @@ assert.match(resetCss, /@media\(max-width:575\.98px\)/);
 const comingSoon = readFileSync(path.join(root, 'public/coming-soon.html'), 'utf8');
 const merchandise = readFileSync(path.join(root, 'public/merchandise.html'), 'utf8');
 const merchandiseCatalog = readFileSync(path.join(root, 'public/merchandise-catalog.html'), 'utf8');
-assert.match(comingSoon, /static\/images\/brand\/mascot\/Oii%20mikir\.PNG/);
-assert(statSync(path.join(root, 'public/static/images/brand/mascot', 'Oii mikir.PNG')).isFile(), 'Missing Coming Soon mascot image');
-assert.match(readFileSync(path.join(root, 'public/static/css/coming-soon.css'), 'utf8'), /\.\.\/images\/brand\/backgrounds\/ipfest-background\.jpg/);
+assert.match(comingSoon, /static\/images\/brand\/mascot\/Oii%20mikir\.webp/);
+assert(statSync(path.join(root, 'public/static/images/brand/mascot', 'Oii mikir.webp')).isFile(), 'Missing Coming Soon mascot image');
+assert.match(readFileSync(path.join(root, 'public/static/css/coming-soon.css'), 'utf8'), /\.\.\/images\/brand\/backgrounds\/ipfest-background\.webp/);
 assert.doesNotMatch(comingSoon, /Merchandise|<nav\b/i);
 assert.match(merchandise, /class="coming-soon-page"/);
 assert.match(merchandise, /<h1[^>]*>Merchandise is not available yet<\/h1>/);
-assert.match(merchandise, /static\/images\/brand\/mascot\/Oii%20mikir\.PNG/);
+assert.match(merchandise, /static\/images\/brand\/mascot\/Oii%20mikir\.webp/);
 assert.match(merchandise, /static\/css\/coming-soon\.css/);
 assert.doesNotMatch(merchandise, /location\.replace|http-equiv="refresh"/);
 assert.match(merchandiseCatalog, /id="checkout-form"/);
