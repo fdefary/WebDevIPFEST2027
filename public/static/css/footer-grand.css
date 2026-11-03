@@ -142,13 +142,12 @@ html body footer.pt-5 a[href*="wa.me"] {
 #site-footer h5.lead.contact-long {
   font-size: 17px !important;
   letter-spacing: .02em !important;
-  white-space: nowrap !important;
+  white-space: normal !important;
 }
 
-@media (min-width: 768px) {
-  #site-footer h5.lead {
-    white-space: nowrap !important;
-  }
+#site-footer h5.lead {
+  white-space: normal !important;
+  overflow-wrap: anywhere;
 }
 
 #map-itb {

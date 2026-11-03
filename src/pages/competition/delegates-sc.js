@@ -83,7 +83,7 @@ const CompetitionFullName = {
 // WA GROUP LINKS
 // =========================
 const WAGroup = {
-	"smart competition": "https://chat.whatsapp.com/H4ReXpGuRPHHuke5CUIWiu?mode=wwt",
+	"smart competition": "https://chat.whatsapp.com/D8gtAYUV8uNLVqaCZnA9qj?s=cl&p=i&mlu=4&ilr=4&iam=2",
 };
 
 // =========================

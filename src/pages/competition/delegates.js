@@ -233,15 +233,15 @@ const CompetitionFullName = {
 // WA GROUP LINKS
 // =========================
 const WAGroup = {
-	"business case": "https://chat.whatsapp.com/LQIOCCbVfYhJaJyPl5w9XV?mode=wwt",
-	"geothermal development plan": "https://chat.whatsapp.com/GIELYdRnXdP09pVcgjqPiB?mode=wwt",
-	"paper and poster": "https://chat.whatsapp.com/Hew4NHXzrFgBM3C6QmBRkx?mode=wwt",
-	"oil rig design": "https://chat.whatsapp.com/EjGDGrF5ldGFDyLVoz50vO?mode=wwt",
-	"smart competition": "https://chat.whatsapp.com/H4ReXpGuRPHHuke5CUIWiu?mode=wwt",
-	"mud inovation": "https://chat.whatsapp.com/GIhNevsM6HW2xDUirbLGUo?mode=wwt",
-	"plan of development": "https://chat.whatsapp.com/DCYjX4rejsqLKZAdKVqeQi?mode=wwt",
-	"well design": "https://chat.whatsapp.com/L96OCbDm3sq7CvvbhNyz7U?mode=wwt",
-	"hackaton": "https://chat.whatsapp.com/BxMDdoC9aWG0MKx8cWZTqz?mode=wwt"
+	"business case": "https://chat.whatsapp.com/FFKs7vEPr5ZAUDqnG8hKFT?s=cl&p=i&mlu=4&ilr=4&iam=2",
+	"geothermal development plan": "https://chat.whatsapp.com/Cf8z9gqPqiDGp60ziW5iAQ?s=cl&p=i&mlu=4&ilr=4&iam=2",
+	"paper and poster": "https://chat.whatsapp.com/FHdQIaxW92x6oQy4NuEufx?s=cl&p=i&mlu=4&ilr=4&iam=2",
+	"oil rig design": "https://chat.whatsapp.com/Ei6ssQhs5DEKUhtWdMIQnz?s=cl&p=i&mlu=4&ilr=4&iam=2",
+	"smart competition": "https://chat.whatsapp.com/D8gtAYUV8uNLVqaCZnA9qj?s=cl&p=i&mlu=4&ilr=4&iam=2",
+	"mud inovation": "https://chat.whatsapp.com/FI0wapW3WjyCQqOQxaygXC?s=cl&p=i&mlu=4&ilr=4&iam=2",
+	"plan of development": "https://chat.whatsapp.com/BntTrJNjl1Y0umH0yylSia?s=cl&p=i&mlu=4&ilr=4&iam=2",
+	"well design": "https://chat.whatsapp.com/ERbFfZAqzYLED0kWAZPBMc?s=cl&p=i&mlu=4&ilr=4&iam=2",
+	"hackaton": "https://chat.whatsapp.com/IjhUekcfrACBYeNjoL0Vpm?s=cl&p=i&mlu=4&ilr=4&iam=2"
 };
 
 // =====================================
@@ -715,15 +715,15 @@ function setCaseLink(anchor, url, unavailableMsg) {
 // =====================================
 
 const competitionGuideBookRaw = {
-    "business case": "https://drive.google.com/drive/folders/1eG9MgKhfW0E_aQrsW14aN29GLMXDGfCm?usp=drive_link",
-    "geothermal development plan": "https://drive.google.com/drive/folders/12m5cj1cZVBADe5EpgcRTrieLi4n7s8Sx?usp=drive_link",
-    "mud inovation": "https://drive.google.com/drive/folders/1noM7qGBFAVzUF6rX-tw8SJtLKZur0oxy?usp=drive_link",
-    "oil rig design": "https://drive.google.com/drive/folders/11cJQVMsE95aGnZRe_N5PZ-tfmHcoA15V?usp=drive_link",
-    "paper and poster": "https://drive.google.com/drive/folders/17P023GNrW9ksEgIVyvJ7_N459IV-u0jw?usp=drive_link",
-    "plan of development": "https://drive.google.com/drive/folders/1BPNsjzrBkBcNTNhe8sp68B_RfZTy20Ve?usp=drive_link",
-    "smart competition": "https://drive.google.com/drive/folders/1dxNlkauTNd-Oa0sN46ShO0oQCv-EoMDe?usp=drive_link",
-    "well design": "https://drive.google.com/drive/folders/1nsiXXuDWnsf-5o62yt758k6WZYPaNqjI?usp=drive_link",
-    "hackaton": "https://drive.google.com/drive/folders/1HorhBttwNfCOY2dB9VqOR_GxXjujtXDI?usp=drive_link"
+    "business case": "https://drive.google.com/drive/folders/1ANBA2MaBiTcV9XJWC2JhGqRyX_Oj1fm1?usp=sharing",
+    "geothermal development plan": "https://drive.google.com/drive/folders/1C3W02QnY2zmA4Ce8bY-o_UKtt1r-cnzX?usp=sharing",
+    "mud inovation": "https://drive.google.com/drive/folders/19uyy0hVLaJygNwCmgkjKt2r9CQmlFMM2?usp=sharing",
+    "oil rig design": "https://drive.google.com/drive/folders/1LyhpwUugvh3gtXp3tuw-koCW1DfADZu9?usp=sharing",
+    "paper and poster": "https://drive.google.com/drive/folders/1GE53SGlRDqH-nnRULyeCSR0iQaKfSJVm?usp=sharing",
+    "plan of development": "https://drive.google.com/drive/folders/1FpWRBpdA0pmyt-YBCikWktq8Z8hrNGR-?usp=sharing",
+    "smart competition": "https://drive.google.com/drive/folders/1z6Qdh6c79a-8JRuihnTuDXmLvfqFrPnX?usp=sharing",
+    "well design": "https://drive.google.com/drive/folders/1BHnT-lpgO6eNXF_JQbPgJ4FWDEDj_Rmj?usp=sharing",
+    "hackaton": "https://drive.google.com/drive/folders/1xEFBlaKNaA5fBX9NMMAEOk0xljg7FGIZ?usp=sharing"
 };
 
 function setupGuidebook(userCompetition) {
@@ -752,29 +752,6 @@ function setupGuidebook(userCompetition) {
         return;
     }
 
-    // ======================================================
-    // CASE: SUBMISSION BELUM OPEN → kasih alert saat diklik
-    // ======================================================
-    if (!isSubmissionOpen()) {
-        guidebookAnchor.href = "#"; // tidak membuka apa pun
-
-        guidebookAnchor.addEventListener("click", (e) => {
-            e.preventDefault();
-            alert("Guidebook can be accessed during the submission period.");
-        });
-
-        finalguidebookAnchor.addEventListener("click", (e) => {
-            e.preventDefault();
-            alert("Guidebook can be accessed during the submission period.");
-        });
-
-        console.log("setupGuidebook: guidebook locked — alert mode aktif");
-        return;
-    }
-
-    // ======================================================
-    // CASE: SUBMISSION SUDAH OPEN → normal
-    // ======================================================
     if (!guidebookURL) {
         guidebookAnchor.href = "#";
         finalguidebookAnchor.href = "#";

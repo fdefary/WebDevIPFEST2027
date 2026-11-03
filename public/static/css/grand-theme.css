@@ -720,7 +720,9 @@ body::before {
 /* ==========================================================
    LOGO NUDGE
    ========================================================== */
-.hero-header img[alt="IPFest Logo"] { translate: -14% 0; }
+@media (min-width: 992px) {
+  .hero-header img[alt="IPFest Logo"] { translate: -14% 0; }
+}
 
 /* ===== Blob: melayang + bentuk berubah pelan-pelan ===== */
 @keyframes gt-blob-float {
