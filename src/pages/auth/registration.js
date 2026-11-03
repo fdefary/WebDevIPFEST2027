@@ -14,6 +14,7 @@ import { AUTH, STORAGE, DB } from '../../app/index.js';
 import { firstInvalidRegistrationStep } from '../../shared/registration-fields.js';
 import { registrationPriceAt } from '../../shared/registration-pricing.js';
 import { isRegistrationOpen } from '../../shared/registration-deadline.js';
+import { onDOMReady } from '../../shared/dom-ready.js';
 import { TEAM_DOCUMENTS, isValidTeamDocumentFile, teamDocumentPath } from '../../shared/team-documents.js';
 
 // Daftar kompetisi dan jumlah anggota yang valid
@@ -163,7 +164,7 @@ if (confirmPass) {
   });
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+onDOMReady(() => {
   const registrationForm = document.querySelector("#registration-form");
   if (!registrationForm) return;
 
