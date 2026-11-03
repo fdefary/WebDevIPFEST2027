@@ -2,9 +2,10 @@
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from "firebase/auth";
 import { AUTH, DB} from "../app/index.js";
 import { emailNotVerified, accountCreated, failedLogin } from "../shared/alert.js";
+import { onDOMReady } from "../shared/dom-ready.js";
 
 // ==== Wait for DOM ====
-window.addEventListener("DOMContentLoaded", () => {
+onDOMReady(() => {
   const signupSuccess = localStorage.getItem("signupSuccess");
   if (signupSuccess) {
     accountCreated();

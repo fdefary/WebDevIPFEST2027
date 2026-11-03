@@ -8,6 +8,7 @@ import { DB, AUTH, STORAGE } from '../../app/index.js'
 
 import { showProgressUI } from '../../shared/alert.js'
 import { privateStorageLink, privateStoragePathOf } from '../../shared/private-download.js'
+import { onDOMReady } from '../../shared/dom-ready.js'
 
 // =====================================================================
 //   IPFEST 2027 TIMELINE — samakan dengan src/pages/competition/compe-manager.js
@@ -541,12 +542,7 @@ function initDomBindings() {
     }
 }
 
-// ensure init runs whether DOMContentLoaded already fired or not
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", initDomBindings);
-} else {
-    initDomBindings();
-}
+onDOMReady(initDomBindings);
 
 
 // =====================================
@@ -857,11 +853,7 @@ function bindEditSubmission() {
     });
 }
 
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", bindEditSubmission);
-} else {
-    bindEditSubmission();
-}
+onDOMReady(bindEditSubmission);
 
 function unlockSubmissionForm() {
 
@@ -1442,18 +1434,17 @@ function generateFinalModal(teamData) {
     paymentTypeSelect.addEventListener("change", updateCategoryVisibility);
     updateCategoryVisibility(); // panggil sekali untuk inisialisasi
 
-    if (document.readyState === "loading") {
-        document.addEventListener("DOMContentLoaded", () => {
-            initFinalPaymentBindings(teamData);
+    onDOMReady(() => {
+        initFinalPaymentBindings(teamData);
 
-            const finalPaymentSubmitBtn = document.getElementById("final-payment-submit-btn");
+        const finalPaymentSubmitBtn = document.getElementById("final-payment-submit-btn");
 
-            if (!finalPaymentSubmitBtn) {
-                console.warn("Submit button not found, modal might not be generated yet.");
-                return;
-            }
+        if (!finalPaymentSubmitBtn) {
+            console.warn("Submit button not found, modal might not be generated yet.");
+            return;
+        }
 
-            finalPaymentSubmitBtn.addEventListener("click", async (e) => {
+        finalPaymentSubmitBtn.addEventListener("click", async (e) => {
                 e.preventDefault();
 
                 // 1. VALIDASI CHECKBOX (Rules Agreement)
@@ -1503,73 +1494,8 @@ function generateFinalModal(teamData) {
                     finalPaymentSubmitBtn.innerText = originalText;
                     finalPaymentSubmitBtn.disabled = false;
                 }
-            });
         });
-    } else {
-        initFinalPaymentBindings(teamData);
-
-        const finalPaymentSubmitBtn = document.getElementById("final-payment-submit-btn");
-
-        if (!finalPaymentSubmitBtn) {
-            console.warn("Submit button not found, modal might not be generated yet.");
-            return;
-        }
-
-        finalPaymentSubmitBtn.addEventListener("click", async (e) => {
-            e.preventDefault();
-
-            // 1. VALIDASI CHECKBOX (Rules Agreement)
-            const checkboxRead = document.getElementById("final-rules-check");
-                
-            if (!checkboxRead || !checkboxRead.checked) {
-                alert("⚠️ Please read and check the Finalist Payment Rules agreement.");
-                checkboxRead.focus();
-                return;
-            }
-
-            // 2. VALIDASI LEADER
-            const leaderFileInput = document.getElementById("final-leader-payment-submit");
-            if (!leaderFileInput || leaderFileInput.files.length === 0) {
-                alert("⚠️ Leader must upload payment proof first.");
-                leaderFileInput.focus();
-                return;
-            }
-
-            // 3. VALIDASI MEMBER
-            if (teamData.members && teamData.members.length > 0) {
-                for (let i = 0; i < teamData.members.length; i++) {
-                    const memberFileInput = document.getElementById(`member-payment-submit-${i}`);
-                    if (!memberFileInput || memberFileInput.files.length === 0) {
-                        alert(`⚠️ ${teamData.members[i].firstName} must upload payment proof.`);
-                        memberFileInput.focus();
-                        return;
-                    }
-                }
-            }
-
-            // --- PROSES SUBMIT ---
-            const originalText = finalPaymentSubmitBtn.innerText;
-            finalPaymentSubmitBtn.innerText = "Processing...";
-            finalPaymentSubmitBtn.disabled = true;
-
-            try {
-                const formData = collectFinalFormData(teamData);
-                await submitFinalRegistration(currentUserID, formData, teamData);
-
-                alert("Payment submitted successfully and is currently under verification by the organizing committee.\nWell done on reaching the Final Round. We look forward to seeing you there.");
-
-                window.location.reload();
-            } catch (err) {
-                console.error(err);
-                alert("Failed to save data! Please check your connection.");
-                finalPaymentSubmitBtn.innerText = originalText;
-                finalPaymentSubmitBtn.disabled = false;
-            }
-        });
-
-
-
-    }
+    });
 }
 
 // PRICE TABLE
@@ -1992,8 +1918,4 @@ function applyFinalStageVisibility() {
     document.getElementById("nav-contact-tab")?.classList.toggle("d-none", !isOpen);
 }
 
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", applyFinalStageVisibility);
-} else {
-    applyFinalStageVisibility();
-}
+onDOMReady(applyFinalStageVisibility);

@@ -1,13 +1,14 @@
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { DB } from "../../app/index.js"; 
+import { onDOMReady } from "../../shared/dom-ready.js";
 
 // 1. Inisialisasi Global
 let cart = [];
 const storage = getStorage();
 
 // 2. Satu DOMContentLoaded untuk semua listener
-document.addEventListener('DOMContentLoaded', () => {
+onDOMReady(() => {
     
     // Listener untuk klik produk (Tambah ke keranjang)
     const productContainer = document.querySelector('.merch-product');

@@ -4,9 +4,11 @@ import { AUTH, DB } from "../../app/index.js";
 import { emailNotVerified, accountCreated, failedLogin } from "../../shared/alert.js";
 import { doc, getDoc } from "firebase/firestore";
 import { getRoleClaims } from "../../shared/role-claims.js";
+import { onDOMReady } from "../../shared/dom-ready.js";
+import { loginCredentials } from "../../shared/login-credentials.js";
 
 // ==== Wait for DOM ====
-window.addEventListener("DOMContentLoaded", () => {
+onDOMReady(() => {
 
   // Show success popup after signup
   const signupSuccess = localStorage.getItem("signupSuccess");
@@ -25,8 +27,10 @@ window.addEventListener("DOMContentLoaded", () => {
   loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const userEmail = document.getElementById("email").value.trim();
-    const userPassword = document.getElementById("password").value.trim();
+    const { email: userEmail, password: userPassword } = loginCredentials(
+      document.getElementById("email").value,
+      document.getElementById("password").value
+    );
 
     if (!userEmail || !userPassword) {
       failedLogin("Please enter both email and password.");
