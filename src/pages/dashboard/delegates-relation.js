@@ -145,12 +145,21 @@ let unsubscribeTeams = null
 //   AUTH
 // ===============================
 onAuthStateChanged(AUTH, async (user) => {
-    const claims = user ? await getRoleClaims(user) : null
+    document.body.style.visibility = 'hidden'
+    let claims = null
+    try {
+        claims = user ? await getRoleClaims(user) : null
+    } catch (error) {
+        console.error('Cannot verify delegates relation access', error)
+        window.location.replace('../login.html')
+        return
+    }
     if (claims?.role !== 'delegates_relation') {
-        window.location.href = '../login.html'
+        window.location.replace('../login.html')
         return
     }
 
+    document.body.style.visibility = 'visible'
     if (!unsubscribeTeams) {
         showTableMessage(delRelList, 21, 'Loading data...')
         showTableMessage(treasuryList, PAYMENT_COLS, 'Loading data...')

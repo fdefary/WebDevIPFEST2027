@@ -204,12 +204,21 @@ const pendingFinal = new Map()
 //   AUTH
 // =====================================================================
 onAuthStateChanged(AUTH, async (user) => {
-    const claims = user ? await getRoleClaims(user) : null
-    if (claims?.role !== 'treasury') {
-        if (unsubscribeTeams) { unsubscribeTeams(); unsubscribeTeams = null }
-        window.location.href = '../login.html'
+    document.body.style.visibility = 'hidden'
+    let claims = null
+    try {
+        claims = user ? await getRoleClaims(user) : null
+    } catch (error) {
+        console.error('Cannot verify treasury access', error)
+        window.location.replace('../login.html')
         return
     }
+    if (claims?.role !== 'treasury') {
+        if (unsubscribeTeams) { unsubscribeTeams(); unsubscribeTeams = null }
+        window.location.replace('../login.html')
+        return
+    }
+    document.body.style.visibility = 'visible'
     if (!unsubscribeTeams) {
         showTableMessage(el.regList, REG_COLS, 'Loading data...')
         showTableMessage(el.finalList, FINAL_COLS, 'Loading data...')
