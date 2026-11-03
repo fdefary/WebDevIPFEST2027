@@ -65,7 +65,7 @@ assert.match(script, /class="registration-subsection-grid member-details"/);
 assert.match(script, /<legend>Identity &amp; Contact Information<\/legend>/);
 assert.doesNotMatch(script, /<legend>Required Documents<\/legend>/);
 for (const copy of [
-  'Choose one competition', 'Prepare Your Twibbon Proof', 'Team Members', 'Account Setup',
+  'Choose one competition', 'Prepare Your Twibbon and Supporting Proof', 'Team Members', 'Account Setup',
   'Upload payment proof', 'I agree to the terms and conditions', 'Please select a competition first.',
   'Total payment', 'Transfer to Bank Mandiri account', 'Pay through',
   'Personal &amp; Academic Details', 'Class year', "Enter member ${i}'s first name."
