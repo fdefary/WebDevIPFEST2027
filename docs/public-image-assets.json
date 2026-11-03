@@ -1,0 +1,53 @@
+{
+  "brand/backgrounds": [
+    "ipfest-background.webp"
+  ],
+  "brand/decorative": [
+    "dotted-halftone.svg"
+  ],
+  "brand/logos": [
+    "ipfest_2026_logo.svg",
+    "ipfest_2026_text.svg",
+    "ipfest_2027_logo.webp",
+    "ipfest_2027_logo_footer.webp",
+    "ipfest_2027_text.webp",
+    "logo.webp"
+  ],
+  "brand/mascot": [
+    "ipfest_2027_mascot.webp",
+    "Oii mikir.webp",
+    "Oii.webp"
+  ],
+  "competitions": [
+    "bcc.webp",
+    "gdpc+rev.webp",
+    "mic.webp",
+    "ordc.webp",
+    "podc.webp",
+    "ppc.webp",
+    "sc.webp",
+    "wdc.webp"
+  ],
+  "events/archive": [
+    "Grand Design Board.webp"
+  ],
+  "events": [
+    "grand_comp_expo.webp",
+    "ipconvex_2027_home.webp",
+    "ipconvex_home.webp",
+    "ipexpo_home.webp",
+    "iptraining_home.webp",
+    "petrocare.webp"
+  ],
+  "partners": [
+    "esdm.webp",
+    "iatmi.webp",
+    "iatmi_itb.webp",
+    "patra.webp",
+    "spe-java.webp",
+    "spe_itb.webp"
+  ],
+  "ui": [
+    "sty-1.webp"
+  ]
+}

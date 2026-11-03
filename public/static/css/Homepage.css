@@ -314,7 +314,7 @@ body:not(.dashboard-theme) footer img:hover {
 @media (max-width: 991px) {
 
     /* 1. BERSIHKAN DEKORASI LAMA */
-    .rotate-img, .rotate-sty-2, img[src*="sty-1.png"],
+    .rotate-img, .rotate-sty-2, img[src*="sty-1.webp"],
     .hero-header::before, .hero-header::after {
         display: none !important;
     }
@@ -419,7 +419,7 @@ body:not(.dashboard-theme) footer img:hover {
     }
 
     /* Hapus elemen lama */
-    .rotate-img, .rotate-sty-2, img[src*="sty-1.png"],
+    .rotate-img, .rotate-sty-2, img[src*="sty-1.webp"],
     .hero-header::before, .hero-header::after {
         display: none !important;
     }

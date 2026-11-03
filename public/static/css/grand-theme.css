@@ -488,7 +488,7 @@ body::before {
   pointer-events: none;
   background:
     linear-gradient(rgba(22, 33, 62, .15), rgba(22, 33, 62, .15)),
-    url("../images/ipfest-background.jpg") center / cover no-repeat;
+    url("../images/brand/backgrounds/ipfest-background.webp") center / cover no-repeat;
 }
 @media (max-width: 991px) {
   /* let the image show through the mobile hero too */
@@ -618,7 +618,7 @@ body::before {
 @media (min-width: 992px) {
   .header::after {
     background:
-      url("../images/ipfest_2027_logo.png") center / auto 64% no-repeat padding-box,
+      url("../images/brand/logos/ipfest_2027_logo.webp") center / auto 64% no-repeat padding-box,
       radial-gradient(ellipse at 50% 54%, rgba(230, 199, 42, .45) 0%, rgba(230, 199, 42, .14) 38%, transparent 64%) padding-box,
       radial-gradient(ellipse at 16% 10%, rgba(108, 103, 125, .6), transparent 52%) padding-box,
       linear-gradient(var(--navy), var(--navy)) padding-box,

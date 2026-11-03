@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict')
 const { test } = require('node:test')
-const { resolveRoleClaims, mergeRoleClaims } = require('../role-assignments')
+const { resolveRoleClaims, mergeRoleClaims } = require('../src/auth/role-assignments')
 
 test('maps approved staff accounts to scoped custom claims', () => {
   assert.deepEqual(resolveRoleClaims(' BCC.IPFEST2027@gmail.com '), {

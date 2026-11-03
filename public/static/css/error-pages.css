@@ -24,7 +24,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   margin: 0;
-  background: var(--navy) url("../images/ipfest-background.jpg") center / cover fixed no-repeat;
+  background: var(--navy) url("../images/brand/backgrounds/ipfest-background.webp") center / cover fixed no-repeat;
   color: var(--ivory);
   font: 400 1rem/1.6 "Poppins", sans-serif;
 }

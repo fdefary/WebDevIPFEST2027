@@ -1,0 +1,500 @@
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from 'firebase/auth';
+import {
+  serverTimestamp,
+  doc,
+  setDoc,
+} from 'firebase/firestore';
+import { ref, uploadBytes } from 'firebase/storage';
+
+// Import Firebase SDK initialization
+import { AUTH, STORAGE, DB } from '../../app/index.js';
+import { firstInvalidRegistrationStep } from '../../shared/registration-fields.js';
+import { registrationPriceAt } from '../../shared/registration-pricing.js';
+import { isRegistrationOpen } from '../../shared/registration-deadline.js';
+import { onDOMReady } from '../../shared/dom-ready.js';
+import { TEAM_DOCUMENTS, isValidTeamDocumentFile, teamDocumentPath } from '../../shared/team-documents.js';
+
+// Daftar kompetisi dan jumlah anggota yang valid
+const teamMemberCondition = {
+  "plan of development": [4, 5],
+  "smart competition": [2, 3],
+  "mud inovation": [2, 3],
+  "paper and poster": [2, 3],
+  "oil rig design": [4, 5],
+  "business case": [3],
+  "geothermal development plan": [4],
+  "well design": [4, 5],
+  "hackaton": [3]
+};
+
+const registrationClosedMessage = (competition) => `Registration is closed. The last day to register was ${competition === 'smart competition' ? 'December 8' : 'December 11'}, 2026.`;
+
+function generateTeamMemberOption(competition, container) {
+  if (!container || !teamMemberCondition[competition]) return;
+  const selected = container.value || teamMemberCondition[competition][0];
+  container.innerHTML = '';
+  teamMemberCondition[competition].forEach(m => {
+    container.innerHTML += `<option value="${m}" ${m == selected ? 'selected' : ''}>${m} people</option>`;
+  });
+}
+
+function generateMemberEntry(entry, count) {
+  if (!entry) return;
+  entry.innerHTML = '';
+  for (let i = 1; i < count; i++) {
+    const memberEntry = document.createElement('div');
+    memberEntry.innerHTML = `
+      <h3 class="lead fs-2 mt-6">Member ${i}</h3>
+      <div class="member-entry">
+        <div class="registration-subsection-grid member-details">
+          <fieldset class="registration-subsection">
+            <legend>Personal &amp; Academic Details</legend>
+        <div class="row my-1">
+          <div class="col-md-6">
+            <label for="firstName${i}" class="form-label">First name</label>
+            <input type="text" name="firstName${i}" id="firstName${i}" class="form-control" required>
+            <div class="invalid-feedback">Enter member ${i}'s first name.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="lastName${i}" class="form-label">Last name</label>
+            <input type="text" name="lastName${i}" id="lastName${i}" class="form-control" required>
+            <div class="invalid-feedback">Enter member ${i}'s last name.</div>
+          </div>
+        </div>
+        <div class="row my-1">
+          <div class="col-md-6">
+            <label for="major${i}" class="form-label">Major</label>
+            <input type="text" name="major${i}" id="major${i}" class="form-control" required>
+            <div class="invalid-feedback">Enter member ${i}'s major.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="gender${i}" class="form-label">Gender</label>
+            <select name="gender${i}" id="gender${i}" class="form-select" required>
+              <option value="" selected disabled>Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+            <div class="invalid-feedback">Select member ${i}'s gender.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="batch${i}" class="form-label">Class year</label>
+            <select name="batch${i}" id="batch${i}" class="form-select" required>
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+              <option value="2022">2022</option>
+            </select>
+            <div class="invalid-feedback">Select member ${i}'s class year.</div>
+          </div>
+        </div>
+          </fieldset>
+          <fieldset class="registration-subsection">
+            <legend>Identity &amp; Contact Information</legend>
+        <div class="row my-1">
+          <div class="col-md-6">
+            <label for="idCard${i}" class="form-label">National ID / Passport number</label>
+            <input type="text" name="idCard${i}" id="idCard${i}" class="form-control" required>
+            <div class="invalid-feedback">Enter member ${i}'s National ID or passport number.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="studentId${i}" class="form-label">Student ID</label>
+            <input type="text" name="studentId${i}" id="studentId${i}" class="form-control" required>
+            <div class="invalid-feedback">Enter member ${i}'s student ID.</div>
+          </div>
+        </div>
+        <div class="row my-1">
+          <div class="col-md-6">
+            <label for="email${i}" class="form-label">Email address</label>
+            <input type="email" name="email${i}" id="email${i}" class="form-control" required>
+            <div class="invalid-feedback">Enter a valid email address for member ${i}.</div>
+          </div>
+          <div class="col-md-6">
+            <label for="phoneNo${i}" class="form-label">Phone number</label>
+            <input type="tel" name="phoneNo${i}" id="phoneNo${i}" class="form-control" required>
+            <div class="invalid-feedback">Enter member ${i}'s phone number.</div>
+          </div>
+        </div>
+          </fieldset>
+        </div>
+      </div>
+    `;
+    entry.appendChild(memberEntry);
+  }
+
+}
+
+// Fungsi upload file ke Firebase Storage
+async function uploadFile(file, path, contentType = file?.type) {
+  if (!file) return null;
+  const fileRef = ref(STORAGE, path);
+  await uploadBytes(fileRef, file, contentType ? { contentType } : undefined);
+  return fileRef.fullPath;
+}
+
+// Fungsi tampilkan error
+function showError(message) {
+  const alertContainer = document.querySelector("#alertContainer");
+  if (alertContainer) {
+    alertContainer.innerHTML = `
+      <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+  }
+}
+
+// Validasi password
+const pass = document.querySelector("input[name='password']");
+const confirmPass = document.querySelector("input[name='confirmPassword']");
+
+if (confirmPass) {
+  confirmPass.addEventListener("input", () => {
+    if (pass && confirmPass) {
+      const passwordIsValid = pass.value === confirmPass.value && pass.value.length >= 8;
+      const feedback = confirmPass.parentNode.querySelector('.invalid-feedback');
+      if (feedback) {
+          feedback.textContent = passwordIsValid ? "" : "Passwords must match and be at least 8 characters long.";
+      }
+    }
+  });
+}
+
+onDOMReady(() => {
+  const registrationForm = document.querySelector("#registration-form");
+  if (!registrationForm) return;
+
+  const leaderForm = document.querySelector("#leader");
+  const memberForm = document.querySelector("#member");
+  const competitionForm = document.querySelector("#competition");
+  const paymentForm = document.querySelector("#payment");
+  const agreementForm = document.querySelector("#invalidCheck");
+  const compeInput = document.querySelector('#choosen-competition');
+  const smartCompetitionCard = document.querySelector('.card-compe[data-value="smart competition"]');
+  const memberCount = document.getElementById("memberCount");
+  const entryContainer = document.querySelector("#entry");
+  const updateSmartCompetitionAvailability = () => {
+    if (!smartCompetitionCard) return;
+    const isOpen = isRegistrationOpen('smart competition', new Date());
+    smartCompetitionCard.disabled = !isOpen;
+    smartCompetitionCard.setAttribute('aria-disabled', String(!isOpen));
+    const description = smartCompetitionCard.querySelector('.card-description');
+    if (description) description.textContent = isOpen
+      ? 'Data-driven problem-solving and technology'
+      : 'Registration closed on December 8, 2026 at 23:59 WIB';
+  };
+  updateSmartCompetitionAvailability();
+
+  const steps = [...document.querySelectorAll("[data-registration-step]")];
+  const descriptions = [
+    "Choose your competition. Review the overview and team requirements before continuing.",
+    "Enter the team leader's details and prepare the required documents.",
+    "Enter each team member's details based on the team size you selected.",
+    "Create an account to sign in and track your registration.",
+    "Choose a payment method and upload proof to complete your registration."
+  ];
+  let currentStep = 0;
+  const showStep = (index) => {
+    currentStep = index;
+    sessionStorage.setItem("registration-step", steps[index].dataset.registrationStep);
+    steps.forEach((step, stepIndex) => { step.hidden = stepIndex !== index; });
+    document.querySelectorAll(".registration-progress-step").forEach((item, stepIndex) => {
+      item.classList.toggle("is-complete", stepIndex < index);
+      item.classList.toggle("is-current", stepIndex === index);
+      if (stepIndex === index) item.setAttribute("aria-current", "step");
+      else item.removeAttribute("aria-current");
+    });
+    document.querySelector(".registration-progress").style.setProperty("--step-progress", `${(index / (steps.length - 1)) * 100}%`);
+    document.querySelector("#step-description").textContent = descriptions[index];
+    steps[index]?.querySelector("h2")?.focus({ preventScroll: true });
+    steps[index]?.scrollIntoView({
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+      block: "start"
+    });
+  };
+  const validateStep = () => {
+    if (currentStep === 0 && !compeInput.value) {
+      showError("Please select a competition first.");
+      return false;
+    }
+    if (currentStep === 0 && !registrationPriceAt(new Date(), compeInput.value)) {
+      showError(registrationClosedMessage(compeInput.value));
+      return false;
+    }
+    if (firstInvalidRegistrationStep([steps[currentStep]]) !== -1) {
+      registrationForm.classList.add('was-validated');
+      showError('Please complete all fields on this step.');
+      steps[currentStep].querySelector(':invalid')?.focus();
+      return false;
+    }
+    return true;
+  };
+  document.querySelectorAll("[data-next]").forEach(button => {
+    button.addEventListener("click", () => {
+      if (validateStep()) showStep(Math.min(currentStep + 1, steps.length - 1));
+    });
+  });
+  document.querySelectorAll("[data-back]").forEach(button => {
+    button.addEventListener("click", () => showStep(Math.max(currentStep - 1, 0)));
+  });
+  const savedStepIndex = steps.findIndex(step => step.dataset.registrationStep === sessionStorage.getItem("registration-step"));
+  if (savedStepIndex > 0) showStep(savedStepIndex);
+  // Handle klik kompetisi
+  document.querySelectorAll(".card-compe").forEach(card => {
+    card.addEventListener("click", () => {
+
+      const selectedCompetition = card.dataset.value;
+      if (!isRegistrationOpen(selectedCompetition, new Date())) {
+        updateSmartCompetitionAvailability();
+        showError('Smart Competition registration closed on December 8, 2026 at 23:59 WIB.');
+        return;
+      }
+
+      document.querySelectorAll(".card-compe").forEach(c => {
+        c.classList.remove('active');
+        c.setAttribute("aria-pressed", "false");
+      });
+
+      card.classList.add('active');
+      card.setAttribute("aria-pressed", "true");
+
+      compeInput.value = selectedCompetition;
+      const activePayment = document.querySelector('.payment-method .nav-link.active');
+      if (activePayment) showPaymentMethod(activePayment);
+      competitionForm.querySelector("[data-next]").disabled = false;
+
+      generateTeamMemberOption(selectedCompetition, memberCount);
+      const count = parseInt(memberCount.value, 10) || 1;
+      generateMemberEntry(entryContainer, count);
+    });
+  });
+
+  // Handle perubahan jumlah anggota
+  memberCount?.addEventListener('change', () => {
+    const count = parseInt(memberCount.value, 10) || 1;
+    generateMemberEntry(entryContainer, count);
+  });
+
+  // Handle metode pembayaran
+  const paymentMethods = [...document.querySelectorAll(".payment-method .nav-link")];
+  const showPaymentMethod = (method) => {
+      const payMethod = method.dataset.method;
+      paymentMethods.forEach(btn => {
+        const selected = btn === method;
+        btn.classList.toggle('active', selected);
+        btn.setAttribute("aria-selected", String(selected));
+      });
+
+      const targetPane = document.querySelector(method.dataset.bsTarget);
+      if (!targetPane) return;
+      document.querySelectorAll(".payment-panel").forEach(panel => {
+        panel.hidden = panel !== targetPane;
+      });
+
+      const price = registrationPriceAt(new Date(), compeInput.value);
+      if (!price) {
+        targetPane.innerHTML = `<p>${registrationClosedMessage(compeInput.value)}</p>`;
+        return;
+      }
+      const indoPrice = `IDR ${price.amount.toLocaleString('id-ID')}`;
+      const intlPrice = `USD ${price.usd}`;
+      const total = `<div class="payment-total"><span>Total payment — ${price.tier}</span><strong>${indoPrice}</strong></div>`;
+
+      switch (payMethod) {
+        case "Bank Mandiri":
+          targetPane.innerHTML = `${total}<p>Transfer to Bank Mandiri account <strong>1300028653809</strong> under the name <strong>ALDWIN ZACHARRY</strong>.</p>`;
+          break;
+        case "Paypal":
+          targetPane.innerHTML = `<div class="payment-total"><span>Total payment — ${price.tier} (approx.)</span><strong>${intlPrice}</strong></div><p>Pay through <a href="https://www.paypal.me/RaflyGhazany" target="_blank" rel="noopener noreferrer">paypal.me/RaflyGhazany</a>.</p>`;
+          break;
+      }
+  };
+  paymentMethods.forEach(method => {
+    method.addEventListener('click', () => showPaymentMethod(method));
+  });
+  if (paymentMethods[0]) showPaymentMethod(paymentMethods[0]);
+
+  // Handle submit form
+  registrationForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const invalidStep = firstInvalidRegistrationStep(steps);
+    if (invalidStep !== -1) {
+      registrationForm.classList.add("was-validated");
+      showStep(invalidStep);
+      showError('Please complete all fields before registering.');
+      steps[invalidStep].querySelector(':invalid')?.focus();
+      return;
+    }
+    const submitBtn = registrationForm.querySelector("button[type='submit']");
+    if (!submitBtn) return;
+
+    const selectedCompetition = compeInput?.value;
+    if (!selectedCompetition) {
+      showError("Please select a competition first.");
+      return;
+    }
+    if (!isRegistrationOpen(selectedCompetition, new Date())) {
+      updateSmartCompetitionAvailability();
+      showError('Smart Competition registration closed on December 8, 2026 at 23:59 WIB.');
+      return;
+    }
+
+    submitBtn.disabled = true;
+    submitBtn.innerText = 'Processing...';
+
+    try {
+      if (pass?.value !== confirmPass?.value || pass.value.length < 8) {
+        throw new Error("Passwords must match and be at least 8 characters long.");
+      }
+
+      // Ambil data leader
+      const email = document.getElementById("email")?.value;
+      const password = pass?.value;
+      const firstName = document.getElementById("firstName")?.value;
+      const lastName = document.getElementById("lastName")?.value;
+      const major = document.getElementById("major")?.value;
+      const gender = document.getElementById("gender")?.value;
+      const batch = document.getElementById("batch")?.value;
+      const teamName = document.getElementById("teamName")?.value;
+      const university = document.getElementById("university")?.value;
+      const phoneNo = document.getElementById("phoneNo")?.value;
+      const idCard = document.getElementById("idCard")?.value;
+      const studentId = document.getElementById("studentId")?.value;
+      const teamDocumentFiles = Object.fromEntries(TEAM_DOCUMENTS.map(definition => [
+        definition.field,
+        document.getElementById(definition.inputId)?.files[0]
+      ]));
+
+      // Validasi dasar
+      if (
+        !email || !password || !firstName || !lastName || !major || !gender || !batch ||
+        !teamName || !university || !phoneNo || !idCard || !studentId
+      ) {
+        throw new Error("All leader fields are required");
+      }
+      for (const definition of TEAM_DOCUMENTS) {
+        const file = teamDocumentFiles[definition.field];
+        if (!file) throw new Error(`Upload the required ${definition.label} PDF.`);
+        if ((file.type && file.type !== 'application/pdf') || !file.name.toLowerCase().endsWith('.pdf')) {
+          throw new Error(`${definition.label} must be a PDF file.`);
+        }
+        if (!await isValidTeamDocumentFile(file)) {
+          throw new Error(`${definition.label} must be a valid PDF file under 20 MiB.`);
+        }
+      }
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email)) throw new Error("Invalid email address");
+      if (password.length < 8) throw new Error("Password must be at least 8 characters");
+
+      // Tolak sebelum akun dibuat jika pendaftaran sudah ditutup.
+      if (!registrationPriceAt(new Date(), selectedCompetition)) throw new Error(registrationClosedMessage(selectedCompetition));
+
+      // Buat user terlebih dahulu agar unggahan bisa disimpan di folder pemilik.
+      const { user } = await createUserWithEmailAndPassword(AUTH, email, password);
+
+      // Upload bukti pembayaran (jika ada)
+      const paymentFile = document.getElementById("payment-proof")?.files[0];
+      let paymentProofUrl = null;
+      if (paymentFile) {
+        paymentProofUrl = await uploadFile(paymentFile, `payments/${user.uid}/${Date.now()}_${paymentFile.name}`);
+      }
+
+      const teamDocuments = {};
+      for (const definition of TEAM_DOCUMENTS) {
+        teamDocuments[definition.field] = await uploadFile(
+          teamDocumentFiles[definition.field],
+          teamDocumentPath(user.uid, selectedCompetition, teamName, definition.suffix),
+          'application/pdf'
+        );
+      }
+
+      // Siapkan data tim untuk Firestore
+      const teamData = {
+        competition: selectedCompetition,
+        teamName,
+        leader: {
+          firstName,
+          lastName,
+          email,
+          major,
+          gender,
+          batch,
+          university,
+          phoneNo,
+          idCard,
+          studentId
+        },
+        members: [],
+        join_on: serverTimestamp(),
+        status: "pending",
+        payment_status: paymentProofUrl ? "pending_verification" : "unpaid"
+      };
+      teamData.teamDocuments = teamDocuments;
+
+      if (paymentProofUrl) {
+        teamData.payment = {
+          proofUrl: paymentProofUrl,
+          uploadedAt: serverTimestamp()
+        };
+      }
+
+      // Ambil data anggota
+    const totalMembers = parseInt(memberCount?.value || "1", 10);
+      for (let i = 1; i < totalMembers; i++) {
+        const mFirstName = document.getElementById(`firstName${i}`)?.value;
+        const mLastName = document.getElementById(`lastName${i}`)?.value;
+        const mEmail = document.getElementById(`email${i}`)?.value;
+        const mMajor = document.getElementById(`major${i}`)?.value;
+        const mGender = document.getElementById(`gender${i}`)?.value;
+        const mBatch = document.getElementById(`batch${i}`)?.value;
+        const mIdCard = document.getElementById(`idCard${i}`)?.value;
+        const mStudentId = document.getElementById(`studentId${i}`)?.value;
+        const mPhoneNo = document.getElementById(`phoneNo${i}`)?.value;
+
+        if (!mFirstName || !mLastName || !mEmail || !mMajor || !mGender || !mBatch || !mIdCard || !mStudentId || !mPhoneNo) {
+        throw new Error(`Please complete all required details for member ${i}.`);
+        }
+
+        const member = {
+          firstName: mFirstName,
+          lastName: mLastName,
+          email: mEmail,
+          major: mMajor,
+          gender: mGender,
+          batch: mBatch,
+          idCard: mIdCard,
+          studentId: mStudentId,
+          phoneNo: mPhoneNo
+        };
+
+        teamData.members.push(member);
+      }
+
+      // Simpan ke Firestore
+      const registrationPrice = registrationPriceAt(new Date(), selectedCompetition);
+      if (!registrationPrice) throw new Error(registrationClosedMessage(selectedCompetition));
+      teamData.payment_amount = registrationPrice.amount;
+      await setDoc(doc(DB, "Team", user.uid), teamData);
+
+      // Kirim verifikasi email
+      await sendEmailVerification(user);
+
+      alert("Registration successful! Please check your email to verify your account.");
+
+      window.location.href = "/login.html";
+
+    } catch (error) {
+      console.error("Registration error:", error);
+      alert(error.message);
+    } finally {
+      submitBtn.disabled = false;
+      submitBtn.innerText = 'Submit Registration';
+    }
+  }); 
+}); 
+

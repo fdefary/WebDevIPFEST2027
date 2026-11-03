@@ -1,5 +1,5 @@
 const admin = require('firebase-admin')
-const { resolveRoleClaims, mergeRoleClaims, STAFF } = require('../role-assignments')
+const { resolveRoleClaims, mergeRoleClaims, STAFF } = require('../src/auth/role-assignments')
 
 admin.initializeApp()
 const apply = process.argv.includes('--apply')

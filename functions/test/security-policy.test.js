@@ -1,6 +1,6 @@
 const assert = require('node:assert/strict')
 const { test } = require('node:test')
-const { assertPaymentUpdates, assertResult, assertCase, INFO_DOCS, RELEASES } = require('../security-policy')
+const { assertPaymentUpdates, assertResult, assertCase, INFO_DOCS, RELEASES } = require('../src/security/security-policy')
 
 test('validates payment batches and status enums', () => {
   assert.doesNotThrow(() => assertPaymentUpdates([{ teamId: 't1', kind: 'final', status: 'down_payment_verified' }]))

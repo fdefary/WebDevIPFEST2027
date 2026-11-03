@@ -95,11 +95,18 @@ Resolve all failures before deploy. `npm run build` creates ignored output in `p
 
 ## 7. Deploy (production gate)
 
-Run only after the project owner confirms billing, Firestore location, rules, staff mapping, SMTP secret, template bucket, and initial data.
+For normal frontend releases, open a pull request and merge it to `main` after review. The GitHub Actions workflow builds and deploys Hosting to `ipfest-2027`; PRs from this repository get a preview. The merge workflow needs the repository secret `FIREBASE_SERVICE_ACCOUNT_IPFEST_2027`. It deploys **Hosting only**, not Rules or Functions.
+
+Use Firebase CLI only as an alternative when GitHub Actions is unavailable or when Rules/Functions need a separate deployment. Proceed only after the project owner confirms billing, Firestore location, rules, staff mapping, SMTP secret, template bucket, and initial data. Run commands from the repository root and target the project explicitly:
 
 ```sh
+# Rules/indexes only when those files changed
 firebase deploy --only firestore:rules,firestore:indexes,storage --project ipfest-2027
+
+# Core Functions only when backend code changed
 firebase deploy --only functions:createPrivateDownloadUrl,functions:updatePaymentVerifications,functions:updateCompetitionResult,functions:publishCompetitionCase --project ipfest-2027
+
+# Hosting alternative to the GitHub Actions merge workflow
 npm run build
 firebase deploy --only hosting --project ipfest-2027
 ```

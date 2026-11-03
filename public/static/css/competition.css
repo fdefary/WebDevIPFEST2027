@@ -39,7 +39,7 @@ body::after {
     content: "";
     position: fixed;
     inset: 0;
-    background-image: url("../images/dotted-halftone.svg");
+    background-image: url("../images/brand/decorative/dotted-halftone.svg");
     background-repeat: no-repeat;
     background-position: center top;
     background-size: cover;

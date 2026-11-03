@@ -31,7 +31,7 @@ body {
 	margin: 0;
 	min-height: 100vh;
 	color: var(--ivory);
-	background: var(--navy) url("../images/ipfest-background.jpg") center / cover fixed no-repeat;
+	background: var(--navy) url("../images/brand/backgrounds/ipfest-background.webp") center / cover fixed no-repeat;
 	font: 400 1rem/1.5 "Poppins", sans-serif;
 }
 
@@ -72,14 +72,13 @@ body { padding-top: 96px; }
 .form-control::file-selector-button { min-height:40px; color:var(--navy); }
 .compe-container.row { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr)); gap:1rem; margin:0; }
 .compe-container.row > * { width:auto; max-width:none; padding:0; }
-.card-compe { position:relative; display:grid; width:100%; min-height:210px; grid-template-columns:4rem minmax(0,1fr); grid-template-rows:auto auto; align-content:center; align-items:center; gap:.35rem 1rem; padding:1.25rem; border:1px solid var(--line); border-radius:16px; background:rgba(248,245,242,.08); color:var(--ivory); text-align:left; cursor:pointer; transition:transform .18s ease,background-color .18s ease,border-color .18s ease,box-shadow .18s ease; }
+.card-compe { position:relative; display:grid; width:100%; min-height:180px; grid-template-columns:6rem minmax(0,1fr); grid-template-rows:auto; align-content:center; align-items:center; gap:0 1.5rem; padding:1.5rem; border:1px solid var(--line); border-radius:16px; background:rgba(248,245,242,.08); color:var(--ivory); text-align:left; cursor:pointer; transition:transform .18s ease,background-color .18s ease,border-color .18s ease,box-shadow .18s ease; }
 .card-compe:hover { transform:translateY(-3px); border-color:rgba(230,199,42,.7); background:rgba(248,245,242,.13); }
 .card-compe:active { transform:scale(.98); }
 .card-compe:focus-visible { outline:3px solid var(--gold); outline-offset:3px; }
-.card-compe.active { border:2px solid var(--gold); padding:calc(1.25rem - 1px); background:rgba(230,199,42,.12); }
-.card-compe img { grid-column:1; grid-row:1 / span 2; width:4rem !important; height:4rem; object-fit:contain; margin:0; }
-.card-compe .card-title { grid-column:2; grid-row:1; margin:0; color:var(--ivory); font:500 1.05rem/1.3 "Poppins",sans-serif; }
-.card-compe .card-description { grid-column:2; grid-row:2; margin:0; color:rgba(248,245,242,.74); font-size:.9rem; }
+.card-compe.active { border:2px solid var(--gold); padding:calc(1.5rem - 1px); background:rgba(230,199,42,.12); }
+.card-compe img { grid-column:1; grid-row:1; width:6rem !important; height:6rem; object-fit:contain; margin:0; }
+.card-compe .card-title { grid-column:2; grid-row:1; margin:0; color:var(--ivory); font:600 1.4rem/1.3 "Poppins",sans-serif; }
 .card-compe.disabled { opacity:.45; filter:grayscale(1); cursor:not-allowed; }
 .card-compe.disabled:hover { transform:none; }
 .twibbon-info, .account-info, .payment-details { margin-top:1.25rem; padding:1rem 1.1rem; border:1px solid rgba(230,199,42,.42); border-radius:12px; background:rgba(248,245,242,.07); }
@@ -89,6 +88,7 @@ body { padding-top: 96px; }
 .payment-method { display:flex; gap:.75rem; flex-wrap:wrap; border:0; }
 .payment-method-option { display:flex; min-width:9rem; flex:1 1 9rem; align-items:center; justify-content:center; gap:.7rem; padding:.7rem 1rem; border:1px solid var(--line); border-radius:8px; background:transparent; color:var(--ivory); transition:border-color .18s,background-color .18s,color .18s; }
 .payment-method-option img { width:72px; height:32px; object-fit:contain; }
+.payment-method-option img.payment-logo-light { box-sizing:content-box; height:24px; padding:4px 8px; border-radius:6px; background:#fff; }
 .payment-method-option:hover, .payment-method-option:focus-visible { border-color:var(--gold); color:var(--ivory); }
 .payment-method-option:focus-visible { outline:2px solid var(--gold); outline-offset:2px; }
 .payment-method-option.active { border-color:var(--gold); background:rgba(230,199,42,.12); color:var(--ivory); }
@@ -143,7 +143,9 @@ body { padding-top: 96px; }
 	.registration-progress::before { top:23px; height:4px; }
 	.registration-progress-icon { width:50px; height:50px; font-size:1rem; }
 	.registration-progress-label { max-width:70px; margin-top:.5rem; font-size:.64rem; overflow-wrap:anywhere; }
-	.card-compe { min-height:175px; }
+	.card-compe { min-height:140px; grid-template-columns:4.5rem minmax(0,1fr); gap:0 1rem; padding:1.1rem; }
+	.card-compe img { width:4.5rem !important; height:4.5rem; }
+	.card-compe .card-title { font-size:1.15rem; }
 	.step-actions { flex-direction:column-reverse; }
 	.step-actions .btn { width:100%; }
 }

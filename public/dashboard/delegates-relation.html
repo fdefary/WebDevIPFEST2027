@@ -6,7 +6,7 @@
 	<meta content="width=device-width, initial-scale=1.0" name="viewport">
 	<meta content="" name="keywords">
 	<meta content="" name="description">
-	<link rel="icon" href="../static/images/ipfest_2027_logo.png">
+	<link rel="icon" href="../static/images/brand/logos/ipfest_2027_logo.webp">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -18,7 +18,6 @@
 	<link href="../static/css/bootstrap.min.css" rel="stylesheet">
 	<link href="../static/css/style.css" rel="stylesheet">
 	<link href="../static/css/grand-theme.css" rel="stylesheet">
-	<link href="../static/css/competition-manager.css" rel="stylesheet">
 	<link href="../static/css/dashboard-extra.css" rel="stylesheet">
 	<link href="../static/css/grand-subpage.css" rel="stylesheet">
 	<link href="../static/css/delegates-relation-grand.css" rel="stylesheet">
@@ -44,8 +43,8 @@
 	<div class="container-fluid p-0 event-nav-layer">
 		<nav class="navbar navbar-expand-lg fixed-top navbar-light px-4 px-lg-5 py-3 py-lg-0 event-navbar">
 			<a href="" class="navbar-brand p-0 d-flex align-items-center gap-3">
-				<img src="../static/images/ipfest_2027_logo.png" alt="IPFEST 2027 Logo">
-				<img src="../static/images/ipfest_2027_text.png" alt="IPFEST 2027">
+				<img src="../static/images/brand/logos/ipfest_2027_logo.webp" alt="IPFEST 2027 Logo">
+				<img src="../static/images/brand/logos/ipfest_2027_text.webp" alt="IPFEST 2027">
 			</a>
 			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
 				<span class="fa fa-bars"></span>
@@ -301,7 +300,6 @@
 	<script src="../static/lib/owlcarousel/owl.carousel.min.js"></script>
 	<script src="../static/lib/lightbox/js/lightbox.min.js"></script>
 	<script src="../static/js/main.js"></script>
-	<script src="../dist/plugin/chart.min.js"></script>
 	<script>
 		// Warna & font default Chart.js mengikuti tema Grand (harus sebelum bundle membuat chart)
 		if (window.Chart && Chart.defaults) {
@@ -310,8 +308,7 @@
 			Chart.defaults.font.family = "'Poppins', sans-serif";
 		}
 	</script>
-	<script src="../dist/index.bundle.js"></script>
-	<script src="../dist/delegates_relation.bundle.js"></script>
+	<script src="../dist/bootstrap.bundle.js" data-entry="delegates_relation"></script>
 	<script>
 	// Angka jumlah tim menghitung naik saat diisi oleh bundle
 	document.querySelectorAll('.total-del').forEach(function (el) {
