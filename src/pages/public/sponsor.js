@@ -33,6 +33,20 @@ const sponsorData = {
         <strong>Website:</strong> <a href="https://phe.pertamina.com" target="_blank" rel="noopener noreferrer" style="color: #4da6ff; text-decoration: underline;">phe.pertamina.com</a>`
     },
 
+    // ID: wondr (dipakai logo wondr dan BNI)
+    "wondr": {
+        title: "Wondr BNI",
+        img: "static/images/sponsor/wondr.webp",
+        img2: "static/images/sponsor/BNI.webp",
+        desc: `wondr by BNI is the latest banking application from PT Bank Negara Indonesia (Persero) Tbk, designed to provide financial management solutions that are more intuitive, comprehensive, and tailored to individual lifestyle needs.
+        <br><br>
+        Through its three core dimensions, namely Insight, Transaksi, and Growth, wondr empowers users to understand their financial patterns better, carry out transactions seamlessly, and grow their wealth for a secure future. The application supports modern financial lifestyles through safe, reliable, and user-friendly digital banking features.
+        <br><br>
+        wondr by BNI is also committed to supporting youth empowerment, education, and innovation, contributing to the development of the younger generation's potential across Indonesia.
+        <br><br>
+        <strong>Website:</strong> <a href="https://www.bni.co.id" target="_blank" rel="noopener noreferrer" style="color: #4da6ff; text-decoration: underline;">bni.co.id</a>`
+    },
+
     // ID: emp
     "emp": {
         title: "Energi Mega Persada (EMP)",
@@ -83,49 +97,107 @@ const sponsorData = {
     }
 };
 
-// --- BAGIAN 2: EVENT LISTENER (Salin yang ini) ---
+// --- BAGIAN 2: MODAL SPONSOR (klik logo, panah, geser, keyboard) ---
 
-// 1. Ambil elemen modal berdasarkan ID
 const sponsorModal = document.getElementById('sponsorModal');
 
-// 2. Cek apakah modal ada di halaman ini (untuk menghindari error di halaman lain)
+// Cek apakah modal ada di halaman ini (untuk menghindari error di halaman lain)
 if (sponsorModal) {
-    
-    // 3. Tambahkan Event Listener khusus Bootstrap: 'show.bs.modal'
-    // Event ini meletus SESAAT SEBELUM modal muncul
-    sponsorModal.addEventListener('show.bs.modal', function (event) {
-        
-        // A. Tangkap elemen yang memicu modal (yaitu Gambar Logo yang diklik)
-        const button = event.relatedTarget;
-        
-        // B. Ambil nilai 'data-id' dari gambar tersebut (contoh: "exxon", "PHR")
-        const id = button.getAttribute('data-id');
-        
-        // C. Cari data yang cocok di dalam variable 'sponsorData'
+    const modalTitle = sponsorModal.querySelector('#modalTitle');
+    const modalImage = sponsorModal.querySelector('#modalImage');
+    const modalDesc = sponsorModal.querySelector('#modalDesc');
+    const modalImage2 = sponsorModal.querySelector('#modalImage2');
+    const modalImage2Box = sponsorModal.querySelector('#modalImage2Box');
+    const prevBtn = sponsorModal.querySelector('#sponsorPrev');
+    const nextBtn = sponsorModal.querySelector('#sponsorNext');
+    const modalBody = sponsorModal.querySelector('.modal-body');
+
+    // Urutan sponsor mengikuti urutan logo di halaman (tanpa duplikat, misal wondr & BNI)
+    const sponsorIds = [...new Set(
+        [...document.querySelectorAll('[data-bs-target="#sponsorModal"][data-id]')]
+            .map(el => el.getAttribute('data-id'))
+    )]
+    let currentIndex = 0
+
+    function renderSponsor(id) {
         const data = sponsorData[id];
 
-        // D. Siapkan elemen-elemen di dalam Modal yang mau diubah isinya
-        const modalTitle = sponsorModal.querySelector('#modalTitle');
-        const modalImage = sponsorModal.querySelector('#modalImage');
-        const modalDesc = sponsorModal.querySelector('#modalDesc');
+        // Logo kedua (opsional) disembunyikan dulu supaya tidak terbawa dari sponsor sebelumnya
+        modalImage2Box.classList.add('d-none');
+        modalImage2.removeAttribute('src');
+        modalImage.style.height = '';
+        modalImage.style.width = '';
 
-        // E. Masukkan data ke dalam elemen Modal
         if (data) {
-            // Update Judul
             modalTitle.textContent = data.title;
-            
-            // Update Gambar (Src)
             modalImage.src = data.img;
-            modalImage.alt = data.title; // update alt text juga biar rapi (SEO/Accessibility)
-            
-            // Update Deskripsi
-            // Kita pakai 'innerHTML' 
-            modalDesc.innerHTML = data.desc; 
+            modalImage.alt = data.title;
+
+            // Logo kedua (opsional), tampil di samping logo pertama
+            if (data.img2) {
+                modalImage2.src = data.img2;
+                modalImage2Box.classList.remove('d-none');
+
+                // Dua logo dalam satu pop up: samakan tingginya
+                modalImage.style.height = '70px';
+                modalImage2.style.height = '70px';
+                modalImage.style.width = modalImage2.style.width = 'auto';
+            }
+
+            // 'innerHTML' dipakai karena deskripsi berisi <br> dan link
+            modalDesc.innerHTML = data.desc;
         } else {
-            // F. Fallback (Jaga-jaga kalau lupa bikin data di JS tapi ID ada di HTML)
+            // Jaga-jaga kalau lupa bikin data di JS tapi ID ada di HTML
             console.error(`Data untuk ID "${id}" tidak ditemukan di sponsorData.`);
             modalTitle.textContent = "Sponsor";
             modalDesc.textContent = "Information not available.";
         }
+        if (modalBody) modalBody.scrollTop = 0;
+    }
+
+    // Pindah ke sponsor sebelum/sesudahnya (berputar)
+    function step(direction) {
+        if (sponsorIds.length < 2) return;
+        currentIndex = (currentIndex + direction + sponsorIds.length) % sponsorIds.length;
+        renderSponsor(sponsorIds[currentIndex]);
+    }
+
+    // Event Bootstrap 'show.bs.modal' meletus sesaat sebelum modal muncul
+    sponsorModal.addEventListener('show.bs.modal', function (event) {
+        const id = event.relatedTarget.getAttribute('data-id');
+        const index = sponsorIds.indexOf(id);
+        currentIndex = index === -1 ? 0 : index;
+
+        const hasMany = sponsorIds.length > 1;
+        prevBtn?.classList.toggle('d-none', !hasMany);
+        nextBtn?.classList.toggle('d-none', !hasMany);
+
+        renderSponsor(id);
     });
+
+    prevBtn?.addEventListener('click', () => step(-1));
+    nextBtn?.addEventListener('click', () => step(1));
+
+    // Keyboard: panah kiri/kanan saat modal terbuka
+    document.addEventListener('keydown', (e) => {
+        if (!sponsorModal.classList.contains('show')) return;
+        if (e.key === 'ArrowLeft') step(-1);
+        else if (e.key === 'ArrowRight') step(1);
+    });
+
+    // Geser (swipe) kiri/kanan di layar sentuh
+    let touchStartX = null;
+    let touchStartY = null;
+    sponsorModal.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].clientX;
+        touchStartY = e.changedTouches[0].clientY;
+    }, { passive: true });
+    sponsorModal.addEventListener('touchend', (e) => {
+        if (touchStartX === null) return;
+        const dx = e.changedTouches[0].clientX - touchStartX;
+        const dy = e.changedTouches[0].clientY - touchStartY;
+        touchStartX = touchStartY = null;
+        // Hanya geseran yang dominan horizontal, supaya scroll teks tidak ikut memindahkan sponsor
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) step(dx < 0 ? 1 : -1);
+    }, { passive: true });
 }

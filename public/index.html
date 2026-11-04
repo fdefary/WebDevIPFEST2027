@@ -193,9 +193,9 @@
                 Organized By
             </div>
             <div class="logo-capsule d-flex align-items-center justify-content-center flex-wrap gap-4 px-4 py-3 wow fadeInUp" data-wow-delay="0.2s">
-                <img src="static/images/partners/spe_itb.webp" alt="SPE ITB" class="partner-logo">
-                <img src="static/images/partners/patra.webp" alt="PATRA ITB" class="partner-logo">
-                <img src="static/images/partners/iatmi_itb.webp" alt="IATMI ITB" class="partner-logo">
+                <img src="static/images/partners/spe_itb.webp" alt="SPE ITB" class="partner-logo logo-l">
+                <img src="static/images/partners/patra.webp" alt="PATRA ITB" class="partner-logo logo-l">
+                <img src="static/images/partners/iatmi_itb.webp" alt="IATMI ITB" class="partner-logo logo-l">
             </div>
         </div>
     </div>
@@ -211,11 +211,13 @@
             <div class="logo-capsule d-flex align-items-center justify-content-center flex-wrap gap-4 px-4 py-3 wow fadeInUp" data-wow-delay="0.2s">
                 <img src="static/images/sponsor/PHR.webp"
                      alt="PHR" 
-                     class="partner-logo sponsor-gold"
+                     class="partner-logo sponsor-gold logo-xs"
                      style="cursor: pointer;"
-                     data-bs-toggle="modal" 
+                     data-bs-toggle="modal"
                      data-bs-target="#sponsorModal"
                      data-id="PHR">
+                <img src="static/images/sponsor/wondr.webp" alt="wondr by BNI" class="partner-logo logo-l" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#sponsorModal" data-id="wondr">
+                <img src="static/images/sponsor/BNI.webp" alt="BNI" class="partner-logo logo-l" style="cursor: pointer;" data-bs-toggle="modal" data-bs-target="#sponsorModal" data-id="wondr">
             </div>
         </div>
     </div>
@@ -228,9 +230,10 @@
                 Supported By
             </div>
             <div class="logo-capsule d-flex align-items-center justify-content-center flex-wrap gap-4 px-4 py-3 wow fadeInUp" data-wow-delay="0.2s">
-                <img src="static/images/partners/esdm.webp" alt="KESDM" class="partner-logo">
-                <img src="static/images/partners/spe-java.webp" alt="SPE Java" class="partner-logo">
-                <img src="static/images/partners/iatmi.webp" alt="IATMI" class="partner-logo">
+                <img src="static/images/partners/esdm.webp" alt="KESDM" class="partner-logo logo-l">
+                <img src="static/images/partners/spe-java.webp" alt="SPE Java" class="partner-logo logo-l">
+                <img src="static/images/partners/iatmi.webp" alt="IATMI" class="partner-logo logo-l">
+                <img src="static/images/partners/ipa.webp" alt="IPA" class="partner-logo logo-l">
             </div>
         </div>
     </div>
@@ -1009,14 +1012,22 @@
 				
 				<div class="modal-content" style="background: rgba(20, 20, 50, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 20px; color: white;">
 				
+				<button type="button" id="sponsorPrev" class="sponsor-nav sponsor-nav-prev d-none" aria-label="Previous sponsor"><span>&#8249;</span></button>
+				<button type="button" id="sponsorNext" class="sponsor-nav sponsor-nav-next d-none" aria-label="Next sponsor"><span>&#8250;</span></button>
+
 				<div class="modal-header border-0">
 					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				
 				<div class="modal-body text-center p-4">
 					
-					<div class="bg-white p-3 rounded-3 d-inline-block mb-3">
-						<img id="modalImage" src="" alt="Sponsor Logo" class="img-fluid" style="max-height: 80px;">
+					<div class="d-flex flex-wrap align-items-center justify-content-center gap-3 mb-3">
+						<div class="bg-white p-3 rounded-3 flex-shrink-0">
+							<img id="modalImage" src="" alt="Sponsor Logo" class="img-fluid" style="max-height: 80px;">
+						</div>
+						<div id="modalImage2Box" class="bg-white p-3 rounded-3 flex-shrink-0 d-none">
+							<img id="modalImage2" src="" alt="" class="img-fluid" style="max-height: 80px;">
+						</div>
 					</div>
 					
 					<h3 id="modalTitle" class="fw-bold mb-3" style="color: #ffc107; text-shadow: 0 2px 5px rgba(0,0,0,0.5); letter-spacing: 1px;">
