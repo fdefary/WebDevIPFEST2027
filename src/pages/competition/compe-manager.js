@@ -168,7 +168,15 @@ let unsubscribeTeams = null
 //   AUTH
 // =====================================================================
 onAuthStateChanged(AUTH, async (user) => {
-    const claims = user ? await getRoleClaims(user) : null
+    document.body.style.visibility = 'hidden'
+    let claims = null
+    try {
+        claims = user ? await getRoleClaims(user) : null
+    } catch (error) {
+        console.error('Cannot verify competition manager access', error)
+        window.location.replace('../login.html')
+        return
+    }
     const found = claims?.role === 'competition_manager'
         ? MANAGERS[claims.competition]
         : null
@@ -176,13 +184,14 @@ onAuthStateChanged(AUTH, async (user) => {
     // Belum login, atau bukan akun manager → ke halaman login
     if (!found) {
         if (unsubscribeTeams) { unsubscribeTeams(); unsubscribeTeams = null }
-        window.location.href = '../login.html'
+        window.location.replace('../login.html')
         return
     }
 
     manager = { ...found, competition: claims.competition }
     if (el.managerName) el.managerName.textContent = manager.name
     if (el.managerCompetition) el.managerCompetition.textContent = manager.label
+    document.body.style.visibility = 'visible'
 
     // Satu listener untuk semua tabel, dipasang SETELAH akun dikenali,
     // supaya data pertama tidak terlewat dan tidak ada pembacaan sebelum login.
