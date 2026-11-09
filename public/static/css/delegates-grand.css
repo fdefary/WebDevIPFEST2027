@@ -246,6 +246,22 @@ html body.delegates-page .delegates-stage .card .card-title span {
 	-webkit-text-fill-color: #F8F5F2 !important;
 }
 
+/* grand-subpage.css memaksa -webkit-text-fill-color krem ke semua elemen di dalam
+   .container, dan itu ikut mewarnai isi SVG. Kembalikan supaya ikut warna ikon. */
+html body.delegates-page .delegates-stage .card svg,
+html body.delegates-page .delegates-stage .card svg * {
+	color: inherit !important;
+	-webkit-text-fill-color: currentColor !important;
+}
+
+/* Warna ikon per kartu */
+html body.delegates-page .delegates-stage .card:has(#Team-Leader) svg { color: #F5C542 !important; }
+html body.delegates-page .delegates-stage .card:has(#Team-Name) svg { color: #4FC3F7 !important; }
+html body.delegates-page .delegates-stage .card:has(#Team-Member) svg { color: #B388FF !important; }
+html body.delegates-page .delegates-stage .card:has(#Competition-Name) svg { color: #FF8A65 !important; }
+html body.delegates-page .delegates-stage .card:has(#WhatsApp-Group) svg { color: #4ADE80 !important; }
+html body.delegates-page .delegates-stage .card:has(#Payment-Status) svg { color: #F472B6 !important; }
+
 /* Nama leader, tim, member, dan kompetisi: tidak kapital semua */
 html body.delegates-page .delegates-stage .card .card-title #Team-Leader,
 html body.delegates-page .delegates-stage .card .card-title #Team-Name,
