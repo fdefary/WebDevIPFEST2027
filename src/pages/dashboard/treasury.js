@@ -61,9 +61,11 @@ const esc = (value) => {
 const linkCell = (value, label = 'View') => {
     return privateStorageLink(value, label) || '-'
 }
-const teamFileLinks = (team, field) => [team.leader, ...(Array.isArray(team.members) ? team.members : [])]
-    .map((person, index) => `<div>${index === 0 ? 'Leader' : `Member ${index}`}: ${linkCell(person?.[field])}</div>`)
-    .join('')
+const memberNames = (team) => {
+    const members = Array.isArray(team.members) ? team.members : []
+    if (members.length === 0) return '-'
+    return members.map((m, i) => `<div>${i + 1}. ${esc(fullName(m))}</div>`).join('')
+}
 
 const toDate = (ts) => {
     if (!ts) return null
@@ -189,7 +191,7 @@ const el = {
     logoutBtn:      document.getElementById('logout-btn')
 }
 
-const REG_COLS = 10
+const REG_COLS = 11
 const FINAL_COLS = 12
 
 let unsubscribeTeams = null
@@ -291,12 +293,12 @@ function renderVerification(teams) {
         row.innerHTML = `
             <td>${i + 1}</td>
             <td>${esc(t.teamName)}</td>
+            <td>${esc(fullName(t.leader))}</td>
+            <td>${memberNames(t)}</td>
             <td>${esc(t.leader?.university)}</td>
             <td>${esc(competitionName(t))}</td>
             <td>${formatDate(joinedAtOf(t))}</td>
             <td>${eb === null ? '-' : eb ? 'Yes' : 'No'}</td>
-            <td>${teamFileLinks(t, 'twibbonUrl')}</td>
-            <td>${teamFileLinks(t, 'followIgUrl')}</td>
             <td>${linkCell(regProofOf(t))}</td>
             <td>${statusSelect(REG_STATUSES, current, `data-team-id="${esc(t.id)}" data-kind="reg"`, regStatusClass)}</td>
         `
