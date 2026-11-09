@@ -24,7 +24,7 @@ const teamMemberCondition = {
   "mud inovation": [2, 3],
   "paper and poster": [2, 3],
   "oil rig design": [4, 5],
-  "business case": [3],
+  "business case": [2, 3],
   "geothermal development plan": [4],
   "well design": [4, 5],
   "hackaton": [3]
