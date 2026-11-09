@@ -246,6 +246,14 @@ html body.delegates-page .delegates-stage .card .card-title span {
 	-webkit-text-fill-color: #F8F5F2 !important;
 }
 
+/* Nama leader, tim, member, dan kompetisi: tidak kapital semua */
+html body.delegates-page .delegates-stage .card .card-title #Team-Leader,
+html body.delegates-page .delegates-stage .card .card-title #Team-Name,
+html body.delegates-page .delegates-stage .card .card-title #Team-Member,
+html body.delegates-page .delegates-stage .card .card-title #Competition-Name {
+	text-transform: capitalize !important;
+}
+
 /* Link WhatsApp / Final Registration: bukan lagi tombol pill putih */
 html body.delegates-page .delegates-stage .card .card-title a {
 	display: inline-block;
