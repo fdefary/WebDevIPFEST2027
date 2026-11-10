@@ -152,3 +152,8 @@ body { padding-top: 96px; }
 @media(prefers-reduced-motion:reduce) {
 	*,*::before,*::after { scroll-behavior:auto !important; transition-duration:.01ms !important; animation-duration:.01ms !important; }
 }
+.registration-subsection .twibbon-info { margin:0 0 1.25rem; }
+/* Kolom Required Documents: input file rata bawah supaya sejajar dengan kolom di sebelahnya */
+.registration-subsection .row > [class*="col-"]:has(input[type="file"]) { display:flex; flex-direction:column; }
+.registration-subsection .row > [class*="col-"]:has(input[type="file"]) > input[type="file"] { margin-top:auto; }
+.registration-subsection .row > [class*="col-"]:has(input[type="file"]) > p { flex:1 1 auto; margin-bottom:1rem; }
