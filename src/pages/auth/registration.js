@@ -1,13 +1,16 @@
 import {
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
   sendEmailVerification,
 } from 'firebase/auth';
 import {
   serverTimestamp,
   doc,
+  getDoc,
   setDoc,
 } from 'firebase/firestore';
-import { ref, uploadBytes } from 'firebase/storage';
+import { ref, uploadBytes, getMetadata } from 'firebase/storage';
 
 // Import Firebase SDK initialization
 import { AUTH, STORAGE, DB } from '../../app/index.js';
@@ -131,6 +134,12 @@ function generateMemberEntry(entry, count) {
 async function uploadFile(file, path, contentType = file?.type) {
   if (!file) return null;
   const fileRef = ref(STORAGE, path);
+  try {
+    await getMetadata(fileRef);
+    return fileRef.fullPath;
+  } catch (error) {
+    if (error.code !== 'storage/object-not-found') throw error;
+  }
   await uploadBytes(fileRef, file, contentType ? { contentType } : undefined);
   return fileRef.fullPath;
 }
@@ -394,8 +403,18 @@ onDOMReady(() => {
       // Tolak sebelum akun dibuat jika pendaftaran sudah ditutup.
       if (!registrationPriceAt(new Date(), selectedCompetition)) throw new Error(registrationClosedMessage(selectedCompetition));
 
-      // Buat user terlebih dahulu agar unggahan bisa disimpan di folder pemilik.
-      const { user } = await createUserWithEmailAndPassword(AUTH, email, password);
+      // Resume an account left behind when an earlier registration failed partway through.
+      let user;
+      try {
+        ({ user } = await createUserWithEmailAndPassword(AUTH, email, password));
+      } catch (error) {
+        if (error.code !== 'auth/email-already-in-use') throw error;
+        ({ user } = await signInWithEmailAndPassword(AUTH, email, password));
+        if ((await getDoc(doc(DB, 'Team', user.uid))).exists()) {
+          await signOut(AUTH);
+          throw new Error('This account already has a registration. Please log in instead.');
+        }
+      }
 
       // Upload bukti pembayaran (jika ada)
       const paymentFile = document.getElementById("payment-proof")?.files[0];

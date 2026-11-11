@@ -109,6 +109,12 @@ assert.doesNotMatch(html.match(/<button[^>]*data-value="smart competition"[^>]*>
 assert.doesNotMatch(script, /selectedCompetition === ["']smart competition["']/);
 assert.match(script, /["']smart competition["']:\s*\[2,\s*3\]/, 'Smart Competition must retain the two- or three-person team sizes');
 assert.match(script, /createUserWithEmailAndPassword/);
+assert.match(script, /auth\/email-already-in-use/);
+assert.match(script, /signInWithEmailAndPassword/);
+assert.match(script, /getDoc\(doc\(DB, ["']Team["'], user\.uid\)\)/);
+assert.ok(script.indexOf('signInWithEmailAndPassword') < script.indexOf('await setDoc(doc(DB, "Team", user.uid), teamData)'), 'Recover an existing Auth account before saving registration data');
+assert.match(script, /already has a registration/i, 'Never overwrite an existing team registration during account recovery');
+assert.match(script, /getMetadata\(fileRef\)/, 'Reuse uploaded files when resuming a partially completed registration');
 assert.match(script, /setDoc\(doc\(DB, "Team", user\.uid\), teamData\)/);
 for (const copy of [
   'Upload the student ID card of every team member. Only student ID cards are accepted. Make sure the name, student ID number, and university are easy to read. Put all ID cards in one PDF file named [CompetitionName]_[TeamName]_StudentID.pdf.',
