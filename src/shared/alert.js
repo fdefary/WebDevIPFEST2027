@@ -1,16 +1,63 @@
 const alertContainer = document.querySelector("#alertContainer")
 
 // alert when users havent verified their email as they tried to login
-export function emailNotVerified(){
+// onResend (optional): async () => string — sends a new verification email and returns a status message.
+export function emailNotVerified(onResend){
+	const COOLDOWN_SECONDS = 60
 	const wrapper = document.createElement('div')
+	wrapper.dataset.verifyAlert = 'true'
 	wrapper.innerHTML = `
 		<div class="alert alert-warning alert-dismissible fade show" role="alert">
-  			<strong>Please verified your email first!</strong>
+  			<strong>Please verify your email first!</strong>
+  			${onResend ? `
+  			<p class="mb-0 mt-1 small">
+  				Didn't receive the email? Check your spam folder or
+  				<a href="#" class="resend-verification fw-bold">resend verification email</a>.
+  				<span class="resend-status d-block"></span>
+  			</p>` : ''}
   			<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 		</div>
 	`
 
 	alertContainer.append(wrapper)
+
+	if (!onResend) return
+
+	const link = wrapper.querySelector('.resend-verification')
+	const status = wrapper.querySelector('.resend-status')
+	let busy = false
+
+	function startCooldown() {
+		let remaining = COOLDOWN_SECONDS
+		link.style.pointerEvents = 'none'
+		link.style.opacity = '0.6'
+		const timer = setInterval(() => {
+			remaining -= 1
+			if (remaining <= 0 || !wrapper.isConnected) {
+				clearInterval(timer)
+				link.style.pointerEvents = ''
+				link.style.opacity = ''
+				link.textContent = 'resend verification email'
+				return
+			}
+			link.textContent = `resend available in ${remaining}s`
+		}, 1000)
+		link.textContent = `resend available in ${remaining}s`
+	}
+
+	link.addEventListener('click', async (e) => {
+		e.preventDefault()
+		if (busy) return
+		busy = true
+		status.textContent = 'Sending...'
+		try {
+			status.textContent = await onResend()
+		} catch (err) {
+			status.textContent = err?.message || 'Could not send the email. Please try again later.'
+		}
+		busy = false
+		startCooldown()
+	})
 }
 
 // alert when users successfully create their account

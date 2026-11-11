@@ -7,6 +7,26 @@ import { getRoleClaims } from "../../shared/role-claims.js";
 import { onDOMReady } from "../../shared/dom-ready.js";
 import { loginCredentials } from "../../shared/login-credentials.js";
 
+// Kirim ulang email verifikasi: login sebentar (sendEmailVerification butuh user aktif), kirim, lalu sign out.
+async function resendVerificationEmail(email, password) {
+  try {
+    const { user } = await signInWithEmailAndPassword(AUTH, email, password);
+    try {
+      if (user.emailVerified) return "Your email is already verified. You can sign in now.";
+      await sendEmailVerification(user);
+      return "Verification email sent. Please check your inbox and spam folder.";
+    } finally {
+      await signOut(AUTH);
+    }
+  } catch (err) {
+    console.error("Failed to resend verification email:", err);
+    if (err.code === "auth/too-many-requests" || /quota/i.test(err.message || "")) {
+      throw new Error("Email sending is temporarily limited. Please try again later or contact the committee.");
+    }
+    throw new Error("Could not send the email. Please try again later.");
+  }
+}
+
 // ==== Wait for DOM ====
 onDOMReady(() => {
 
@@ -39,6 +59,9 @@ onDOMReady(() => {
 
     console.log("Attempting login with:", userEmail);
 
+    // Hapus banner dari percobaan login sebelumnya agar tidak menumpuk.
+    document.querySelectorAll("#alertContainer > div, #failLoginAlert > div").forEach((el) => el.remove());
+
     try {
       const credential = await signInWithEmailAndPassword(AUTH, userEmail, userPassword);
       const user = credential.user;
@@ -48,15 +71,10 @@ onDOMReady(() => {
 
       // ==== RESEND EMAIL VERIFICATION IF USER IS NOT VERIFIED ====
       if (!roleClaims.role && !user.emailVerified) {
-        try {
-          await sendEmailVerification(user);
-          console.log("Verification email resent to:", user.email);
-        } catch (err) {
-          console.error("Failed to resend verification email:", err);
-        }
-
-        emailNotVerified();   // your alert popup
+        // Email tidak dikirim otomatis di sini agar kuota harian Firebase tidak terbuang;
+        // pendaftar menekan "resend" di banner jika perlu.
         await signOut(AUTH);  // keep user logged out until verified
+        emailNotVerified(() => resendVerificationEmail(userEmail, userPassword));
         return;
       }
 

@@ -482,9 +482,15 @@ onDOMReady(() => {
       await setDoc(doc(DB, "Team", user.uid), teamData);
 
       // Kirim verifikasi email
-      await sendEmailVerification(user);
-
-      alert("Registration successful! Please check your email to verify your account.");
+      // Akun dan data tim sudah tersimpan. Kegagalan kirim email (mis. kuota harian Firebase
+      // habis) tidak boleh terlihat sebagai gagal daftar, supaya pendaftar tidak mendaftar ulang.
+      try {
+        await sendEmailVerification(user);
+        alert("Registration successful! Please check your email to verify your account.");
+      } catch (mailError) {
+        console.error("Failed to send verification email:", mailError);
+        alert("Registration successful! Your account and team data are saved, but the verification email could not be sent right now. Please do not register again. Try logging in later (a new verification email will be sent) or contact the committee.");
+      }
 
       window.location.href = "/login.html";
 
