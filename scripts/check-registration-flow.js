@@ -138,3 +138,7 @@ assert.ok(script.indexOf('firstInvalidRegistrationStep(steps)', submitStart) < s
 assert.match(script, /catch \(error\) \{\s*verificationSent = false;/, 'A failed verification email must not fail a saved registration');
 assert.doesNotMatch(script, /sessionStorage\.setItem\("registration-step"/, 'Do not restore a step whose inputs were lost on reload');
 assert.match(validation, /data-registration-step/);
+
+const login = readFileSync('src/pages/auth/login.js', 'utf8');
+assert.ok(login.indexOf('const teamSnap = await getDoc(teamRef)') < login.indexOf('!user.emailVerified'), 'Login must look up the team before deciding on unverified accounts');
+assert.match(login, /if \(!hasTeam\) \{[\s\S]*?signOut\(AUTH\)/, 'Unverified accounts without a team must finish registration first');

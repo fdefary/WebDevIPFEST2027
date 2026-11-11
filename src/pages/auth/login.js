@@ -1,7 +1,7 @@
 // ==== Import Firebase SDK ====
 import { signInWithEmailAndPassword, signOut, sendEmailVerification } from "firebase/auth";
 import { AUTH, DB } from "../../app/index.js";
-import { emailNotVerified, accountCreated, failedLogin } from "../../shared/alert.js";
+import { accountCreated, failedLogin } from "../../shared/alert.js";
 import { doc, getDoc } from "firebase/firestore";
 import { getRoleClaims } from "../../shared/role-claims.js";
 import { onDOMReady } from "../../shared/dom-ready.js";
@@ -46,7 +46,24 @@ onDOMReady(() => {
 
       console.log("Login successful:", user.email);
 
-      // ==== RESEND EMAIL VERIFICATION IF USER IS NOT VERIFIED ====
+      // ==== FETCH TEAM DATA (ONLY FOR DELEGATES) ====
+      let competitionField = null;
+      let hasTeam = false;
+
+      if (!roleClaims.role) {
+        const teamRef = doc(DB, "Team", user.uid);
+        const teamSnap = await getDoc(teamRef);
+
+        if (teamSnap.exists()) {
+          hasTeam = true;
+          competitionField = teamSnap.data().competition || null;
+          console.log("Competition field:", competitionField);
+        } else {
+          console.warn("Team document not found for UID:", user.uid);
+        }
+      }
+
+      // ==== EMAIL VERIFICATION ====
       if (!roleClaims.role && !user.emailVerified) {
         // Kirim ulang paling sering sekali per 30 menit per akun di browser ini,
         // karena kuota harian email verifikasi Firebase dipakai bersama semua pendaftar.
@@ -63,24 +80,15 @@ onDOMReady(() => {
           }
         }
 
-        emailNotVerified();   // your alert popup
-        await signOut(AUTH);  // keep user logged out until verified
-        return;
-      }
-
-      // ==== FETCH TEAM DATA (ONLY FOR DELEGATES) ====
-      let competitionField = null;
-
-      if (!roleClaims.role) {
-        const teamRef = doc(DB, "Team", user.uid);
-        const teamSnap = await getDoc(teamRef);
-
-        if (teamSnap.exists()) {
-          competitionField = teamSnap.data().competition || null;
-          console.log("Competition field:", competitionField);
-        } else {
-          console.warn("Team document not found for UID:", user.uid);
+        // Akun tanpa data tim berarti pendaftarannya terputus: arahkan untuk
+        // menyelesaikannya dengan email dan kata sandi yang sama.
+        if (!hasTeam) {
+          await signOut(AUTH);
+          failedLogin("Your registration is not complete yet. Please submit the registration form again using the same email and password.");
+          return;
         }
+        // Tim sudah tersimpan: izinkan masuk walau email belum terverifikasi,
+        // karena kuota email verifikasi dapat habis di luar kendali peserta.
       }
 
       // =============================
