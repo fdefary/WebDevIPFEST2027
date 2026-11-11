@@ -140,3 +140,8 @@ assert.match(script, /teamDocumentPath\(user\.uid, selectedCompetition, teamName
 assert.match(teamDocuments, /export const TEAM_DOCUMENTS/);
 assert.ok(script.indexOf('firstInvalidRegistrationStep(steps)', script.indexOf("registrationForm.addEventListener('submit'")) < script.indexOf('createUserWithEmailAndPassword(AUTH, email, password)'), 'Validate every step before creating a Firebase account');
 assert.match(validation, /data-registration-step/);
+
+assert.doesNotMatch(script, /sessionStorage\.setItem\("registration-step"/, 'Do not restore a step whose inputs were lost on reload');
+const login = readFileSync('src/pages/auth/login.js', 'utf8');
+assert.doesNotMatch(login, /!user\.emailVerified/, 'Delegates with a saved team must not be locked out by email verification');
+assert.match(login, /if \(!roleClaims\.role && !hasTeam\) \{[\s\S]*?signOut\(AUTH\)/, 'Accounts without a team must finish registration first');

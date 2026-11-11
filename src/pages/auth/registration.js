@@ -209,7 +209,6 @@ onDOMReady(() => {
   let currentStep = 0;
   const showStep = (index) => {
     currentStep = index;
-    sessionStorage.setItem("registration-step", steps[index].dataset.registrationStep);
     steps.forEach((step, stepIndex) => { step.hidden = stepIndex !== index; });
     document.querySelectorAll(".registration-progress-step").forEach((item, stepIndex) => {
       item.classList.toggle("is-complete", stepIndex < index);
@@ -250,8 +249,9 @@ onDOMReady(() => {
   document.querySelectorAll("[data-back]").forEach(button => {
     button.addEventListener("click", () => showStep(Math.max(currentStep - 1, 0)));
   });
-  const savedStepIndex = steps.findIndex(step => step.dataset.registrationStep === sessionStorage.getItem("registration-step"));
-  if (savedStepIndex > 0) showStep(savedStepIndex);
+  // Always start at the first step. Restoring a later step after a reload left the
+  // competition choice, PDF uploads, and member forms empty while appearing complete.
+  sessionStorage.removeItem("registration-step");
   // Handle klik kompetisi
   document.querySelectorAll(".card-compe").forEach(card => {
     card.addEventListener("click", () => {
@@ -409,7 +409,11 @@ onDOMReady(() => {
         ({ user } = await createUserWithEmailAndPassword(AUTH, email, password));
       } catch (error) {
         if (error.code !== 'auth/email-already-in-use') throw error;
-        ({ user } = await signInWithEmailAndPassword(AUTH, email, password));
+        try {
+          ({ user } = await signInWithEmailAndPassword(AUTH, email, password));
+        } catch {
+          throw new Error('This email is already registered. Log in with this email, or use "Forgot password" on the login page if you do not remember the password.');
+        }
         if ((await getDoc(doc(DB, 'Team', user.uid))).exists()) {
           await signOut(AUTH);
           throw new Error('This account already has a registration. Please log in instead.');
@@ -508,7 +512,7 @@ onDOMReady(() => {
         alert("Registration successful! Please check your email to verify your account.");
       } catch (mailError) {
         console.error("Failed to send verification email:", mailError);
-        alert("Registration successful! Your account and team data are saved, but the verification email could not be sent right now. Please do not register again. Try logging in later (a new verification email will be sent) or contact the committee.");
+        alert("Registration successful! Your account and team data are saved, but the verification email could not be sent right now. Please do not register again. You can log in now with your email and password.");
       }
 
       window.location.href = "/login.html";
