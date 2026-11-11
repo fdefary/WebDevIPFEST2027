@@ -191,7 +191,7 @@ const el = {
     logoutBtn:      document.getElementById('logout-btn')
 }
 
-const REG_COLS = 11
+const REG_COLS = 10
 const FINAL_COLS = 12
 
 let unsubscribeTeams = null
