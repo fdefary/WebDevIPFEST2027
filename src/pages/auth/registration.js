@@ -1,13 +1,15 @@
 import {
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
   sendEmailVerification,
 } from 'firebase/auth';
 import {
   serverTimestamp,
   doc,
+  getDoc,
   setDoc,
 } from 'firebase/firestore';
-import { ref, uploadBytes } from 'firebase/storage';
+import { ref, uploadBytes, getMetadata } from 'firebase/storage';
 
 // Import Firebase SDK initialization
 import { AUTH, STORAGE, DB } from '../../app/index.js';
@@ -131,8 +133,45 @@ function generateMemberEntry(entry, count) {
 async function uploadFile(file, path, contentType = file?.type) {
   if (!file) return null;
   const fileRef = ref(STORAGE, path);
-  await uploadBytes(fileRef, file, contentType ? { contentType } : undefined);
+  try {
+    await uploadBytes(fileRef, file, contentType ? { contentType } : undefined);
+  } catch (error) {
+    // Storage Rules melarang menimpa berkas. Jika percobaan sebelumnya sudah
+    // mengunggah berkas di path yang sama, pakai berkas tersebut.
+    if (error?.code !== 'storage/unauthorized') throw error;
+    try {
+      await getMetadata(fileRef);
+    } catch {
+      throw error;
+    }
+  }
   return fileRef.fullPath;
+}
+
+class AlreadyRegisteredError extends Error {}
+
+// Buat akun baru, atau lanjutkan akun yang tercipta pada percobaan sebelumnya
+// yang terputus sebelum data tim tersimpan.
+async function getRegistrationUser(email, password) {
+  try {
+    const { user } = await createUserWithEmailAndPassword(AUTH, email, password);
+    return user;
+  } catch (error) {
+    if (error?.code !== 'auth/email-already-in-use') throw error;
+  }
+
+  let user;
+  try {
+    ({ user } = await signInWithEmailAndPassword(AUTH, email, password));
+  } catch {
+    throw new Error('This email is already registered. Log in with this email, or use "Forgot password" on the login page if you do not remember the password.');
+  }
+
+  const team = await getDoc(doc(DB, 'Team', user.uid));
+  if (team.exists()) {
+    throw new AlreadyRegisteredError('Your team is already registered with this email. Please log in to see your registration status.');
+  }
+  return user;
 }
 
 // Fungsi tampilkan error
@@ -200,7 +239,6 @@ onDOMReady(() => {
   let currentStep = 0;
   const showStep = (index) => {
     currentStep = index;
-    sessionStorage.setItem("registration-step", steps[index].dataset.registrationStep);
     steps.forEach((step, stepIndex) => { step.hidden = stepIndex !== index; });
     document.querySelectorAll(".registration-progress-step").forEach((item, stepIndex) => {
       item.classList.toggle("is-complete", stepIndex < index);
@@ -241,8 +279,9 @@ onDOMReady(() => {
   document.querySelectorAll("[data-back]").forEach(button => {
     button.addEventListener("click", () => showStep(Math.max(currentStep - 1, 0)));
   });
-  const savedStepIndex = steps.findIndex(step => step.dataset.registrationStep === sessionStorage.getItem("registration-step"));
-  if (savedStepIndex > 0) showStep(savedStepIndex);
+  // Jangan pulihkan step terakhir setelah reload: pilihan kompetisi, berkas PDF,
+  // dan form anggota tidak ikut pulih, sehingga form tampak lengkap padahal kosong.
+  sessionStorage.removeItem("registration-step");
   // Handle klik kompetisi
   document.querySelectorAll(".card-compe").forEach(card => {
     card.addEventListener("click", () => {
@@ -395,7 +434,7 @@ onDOMReady(() => {
       if (!registrationPriceAt(new Date(), selectedCompetition)) throw new Error(registrationClosedMessage(selectedCompetition));
 
       // Buat user terlebih dahulu agar unggahan bisa disimpan di folder pemilik.
-      const { user } = await createUserWithEmailAndPassword(AUTH, email, password);
+      const user = await getRegistrationUser(email, password);
 
       // Upload bukti pembayaran (jika ada)
       const paymentFile = document.getElementById("payment-proof")?.files[0];
@@ -481,16 +520,33 @@ onDOMReady(() => {
       teamData.payment_amount = registrationPrice.amount;
       await setDoc(doc(DB, "Team", user.uid), teamData);
 
-      // Kirim verifikasi email
-      await sendEmailVerification(user);
+      sessionStorage.removeItem("registration-step");
 
-      alert("Registration successful! Please check your email to verify your account.");
+      // Data tim sudah tersimpan; kegagalan email verifikasi (mis. kuota harian
+      // habis) tidak boleh membuat pendaftar mengira pendaftarannya gagal.
+      let verificationSent = true;
+      try {
+        await sendEmailVerification(user);
+      } catch (error) {
+        verificationSent = false;
+        console.warn("Verification email was not sent:", error);
+      }
+
+      alert(verificationSent
+        ? "Registration successful! Please check your email to verify your account."
+        : "Registration successful! Your team data has been saved. We could not send the verification email right now. Log in later and we will send it again. Do not register again.");
 
       window.location.href = "/login.html";
 
     } catch (error) {
+      if (error instanceof AlreadyRegisteredError) {
+        sessionStorage.removeItem("registration-step");
+        alert(error.message);
+        window.location.href = "/login.html";
+        return;
+      }
       console.error("Registration error:", error);
-      alert(error.message);
+      alert(`${error.message}\n\nIf your account was already created, submit again with the same email and password to finish your registration.`);
     } finally {
       submitBtn.disabled = false;
       submitBtn.innerText = 'Submit Registration';

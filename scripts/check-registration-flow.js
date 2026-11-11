@@ -132,5 +132,9 @@ assert.match(script, /await isValidTeamDocumentFile\(file\)/, 'Validate PDF cont
 assert.match(script, /file\.type\s*&&\s*file\.type\s*!==\s*['"]application\/pdf['"][\s\S]*?file\.name\.toLowerCase\(\)\.endsWith\(['"]\.pdf['"]\)/, 'Reject non-PDF MIME types even when the filename ends in .pdf');
 assert.match(script, /teamDocumentPath\(user\.uid, selectedCompetition, teamName, definition\.suffix\)[\s\S]*?['"]application\/pdf['"]/, 'Store team documents with PDF content type');
 assert.match(teamDocuments, /export const TEAM_DOCUMENTS/);
-assert.ok(script.indexOf('firstInvalidRegistrationStep(steps)', script.indexOf("registrationForm.addEventListener('submit'")) < script.indexOf('createUserWithEmailAndPassword(AUTH, email, password)'), 'Validate every step before creating a Firebase account');
+const submitStart = script.indexOf("registrationForm.addEventListener('submit'");
+assert.ok(submitStart > script.indexOf('createUserWithEmailAndPassword(AUTH, email, password)'), 'Account creation must stay in the getRegistrationUser helper');
+assert.ok(script.indexOf('firstInvalidRegistrationStep(steps)', submitStart) < script.indexOf('getRegistrationUser(email, password)', submitStart), 'Validate every step before creating a Firebase account');
+assert.match(script, /catch \(error\) \{\s*verificationSent = false;/, 'A failed verification email must not fail a saved registration');
+assert.doesNotMatch(script, /sessionStorage\.setItem\("registration-step"/, 'Do not restore a step whose inputs were lost on reload');
 assert.match(validation, /data-registration-step/);

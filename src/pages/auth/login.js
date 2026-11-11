@@ -48,11 +48,19 @@ onDOMReady(() => {
 
       // ==== RESEND EMAIL VERIFICATION IF USER IS NOT VERIFIED ====
       if (!roleClaims.role && !user.emailVerified) {
-        try {
-          await sendEmailVerification(user);
-          console.log("Verification email resent to:", user.email);
-        } catch (err) {
-          console.error("Failed to resend verification email:", err);
+        // Kirim ulang paling sering sekali per 30 menit per akun di browser ini,
+        // karena kuota harian email verifikasi Firebase dipakai bersama semua pendaftar.
+        const resendKey = `verification-sent:${user.uid}`;
+        let lastSent = 0;
+        try { lastSent = Number(localStorage.getItem(resendKey)) || 0; } catch {}
+        if (Date.now() - lastSent > 30 * 60 * 1000) {
+          try {
+            await sendEmailVerification(user);
+            try { localStorage.setItem(resendKey, String(Date.now())); } catch {}
+            console.log("Verification email resent to:", user.email);
+          } catch (err) {
+            console.error("Failed to resend verification email:", err);
+          }
         }
 
         emailNotVerified();   // your alert popup
