@@ -145,3 +145,12 @@ assert.doesNotMatch(script, /sessionStorage\.setItem\("registration-step"/, 'Do 
 const login = readFileSync('src/pages/auth/login.js', 'utf8');
 assert.match(login, /!user\.emailVerified && emailVerificationRequired\(\)/, 'Unverified delegates may sign in only during the verification grace period');
 assert.match(login, /if \(!roleClaims\.role && !hasTeam\) \{[\s\S]*?signOut\(AUTH\)/, 'Accounts without a team must finish registration first');
+
+// National ID / passport is optional: the submit checks must not require it.
+assert.doesNotMatch(html, /name="idCard" id="idCard"[^>]*required/);
+assert.doesNotMatch(script, /name="idCard\$\{i\}" id="idCard\$\{i\}"[^>]*required/);
+assert.doesNotMatch(script, /!idCard\b/);
+assert.doesNotMatch(script, /!mIdCard\b/);
+// A stale error must be cleared once the delegate moves on or submits again.
+assert.match(script, /if \(validateStep\(\)\) \{\s*clearError\(\);/);
+assert.match(script, /clearError\(\);\s*submitBtn\.disabled = true;/);
