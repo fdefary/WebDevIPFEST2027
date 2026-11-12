@@ -8,7 +8,8 @@ test('defines all required team document fields and canonical suffixes', () => {
     ['twibbonUrl', 'Twibbon'],
     ['socialMediaFollowUrl', 'Follow'],
     ['instagramStoryShareUrl', 'AddToStory'],
-    ['likeAndRepostUrl', 'LikeRepost']
+    ['likeAndRepostUrl', 'LikeRepost'],
+    ['broadcastPosterUrl', 'BroadcastandPoster']
   ]);
 });
 

@@ -3,7 +3,7 @@ const TEAM_FILE_ROOTS = new Set([
 ])
 const PAYMENT_PROOF_ROOTS = new Set(['payments', 'finalreg_submissions'])
 const PARTICIPANT_DOCUMENTS = new Set(['student_card.jpg', 'twibbon.jpg', 'follow_ig.jpg'])
-const TEAM_DOCUMENT_SUFFIXES = ['StudentID', 'Twibbon', 'Follow', 'AddToStory', 'LikeRepost']
+const TEAM_DOCUMENT_SUFFIXES = ['StudentID', 'Twibbon', 'Follow', 'AddToStory', 'LikeRepost', 'BroadcastandPoster']
 
 function isTeamRegistrationDocument(path) {
   const parts = path.split('/')

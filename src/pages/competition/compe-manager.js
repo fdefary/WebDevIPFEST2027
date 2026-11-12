@@ -157,7 +157,7 @@ const el = {
     logoutBtn:          document.getElementById('logout-btn')
 }
 
-const DB_COLS = 19
+const DB_COLS = 20
 const PRELIM_COLS = 8
 const FINAL_COLS = 5
 

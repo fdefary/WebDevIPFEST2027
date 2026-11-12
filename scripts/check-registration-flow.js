@@ -65,7 +65,7 @@ assert.match(script, /class="registration-subsection-grid member-details"/);
 assert.match(script, /<legend>Identity &amp; Contact Information<\/legend>/);
 assert.doesNotMatch(script, /<legend>Required Documents<\/legend>/);
 for (const copy of [
-  'Choose one competition', 'Prepare Your Twibbon and Supporting Proof', 'Team Members', 'Account Setup',
+  'Choose one competition', 'Prepare Your Required Document Proof', 'Team Members', 'Account Setup',
   'Upload payment proof', 'I agree to the terms and conditions', 'Please select a competition first.',
   'Total payment', 'Transfer to Bank Mandiri account', 'Pay through',
   'Personal &amp; Academic Details', 'Class year', "Enter member ${i}'s first name."
@@ -125,7 +125,7 @@ for (const copy of [
   'Upload a screenshot of each team member’s Instagram Story sharing the post of the competition you are registering for. The story must mention @ipfest27. The screenshot must show the username and the mention. Put all proof in one PDF file named [CompetitionName]_[TeamName]_AddToStory.pdf.',
   'Upload screenshots showing that each team member has liked and reposted the Instagram post of the competition you are registering for. Put all proof in one PDF file named [CompetitionName]_[TeamName]_LikeRepost.pdf.'
 ]) assert.ok(html.includes(copy), `Missing team document instructions: ${copy}`);
-for (const id of ['student-id-card-pdf', 'twibbon-pdf', 'social-media-follow-pdf', 'instagram-story-share-pdf', 'like-and-repost-pdf']) {
+for (const id of ['student-id-card-pdf', 'twibbon-pdf', 'social-media-follow-pdf', 'instagram-story-share-pdf', 'like-and-repost-pdf', 'broadcast-poster-pdf']) {
   assert.match(html, new RegExp(`<input[^>]*id="${id}"[^>]*type="file"|<input[^>]*type="file"[^>]*id="${id}"`), `${id} must be a file upload`);
   assert.match(html, new RegExp(`<input[^>]*id="${id}"[^>]*accept="application/pdf"[^>]*required|<input[^>]*accept="application/pdf"[^>]*required[^>]*id="${id}"`), `${id} must require a PDF`);
 }

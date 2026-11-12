@@ -29,7 +29,7 @@ service firebase.storage {
     }
 
     function validTeamDocument(fileName) {
-      return fileName.matches('^[A-Za-z0-9_-]+_(StudentID|Twibbon|Follow|AddToStory|LikeRepost)\\.pdf$');
+      return fileName.matches('^[A-Za-z0-9_-]+_(StudentID|Twibbon|Follow|AddToStory|LikeRepost|BroadcastandPoster)\\.pdf$');
     }
 
     function canReadPaymentProofs(uid) {

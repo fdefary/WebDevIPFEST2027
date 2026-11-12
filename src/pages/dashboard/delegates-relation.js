@@ -161,7 +161,7 @@ onAuthStateChanged(AUTH, async (user) => {
 
     document.body.style.visibility = 'visible'
     if (!unsubscribeTeams) {
-        showTableMessage(delRelList, 21, 'Loading data...')
+        showTableMessage(delRelList, 22, 'Loading data...')
         showTableMessage(treasuryList, PAYMENT_COLS, 'Loading data...')
         unsubscribeTeams = onSnapshot(collection(DB, 'Team'), (snap) => {
             const teams = sortTeams(snap.docs.map(d => ({ id: d.id, ...d.data() })))
@@ -173,7 +173,7 @@ onAuthStateChanged(AUTH, async (user) => {
             const msg = err.code === 'permission-denied'
                 ? 'Akun ini tidak punya izin membaca data tim.'
                 : 'Gagal memuat data tim. Coba muat ulang halaman.'
-            showTableMessage(delRelList, 21, msg)
+            showTableMessage(delRelList, 22, msg)
             showTableMessage(treasuryList, PAYMENT_COLS, msg)
             if (totalTeamsEl) totalTeamsEl.textContent = msg
         })
@@ -318,7 +318,7 @@ function renderDatabase(teams) {
     if (!delRelList) return
 
     if (teams.length === 0) {
-        showTableMessage(delRelList, 21, 'Belum ada tim yang terdaftar.')
+        showTableMessage(delRelList, 22, 'Belum ada tim yang terdaftar.')
         return
     }
 

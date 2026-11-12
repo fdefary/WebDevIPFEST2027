@@ -46,7 +46,7 @@ test('competition managers can read team files only for their claimed competitio
 })
 
 test('team registration PDFs are private to their owner, matching manager, and Delegates Relation', async () => {
-  for (const suffix of ['StudentID', 'Twibbon', 'Follow', 'AddToStory', 'LikeRepost']) {
+  for (const suffix of ['StudentID', 'Twibbon', 'Follow', 'AddToStory', 'LikeRepost', 'BroadcastandPoster']) {
     const path = `team/owner/documents/Business_Case_Team_${suffix}.pdf`
     assert.equal(await authorizeStoragePath(owner, path, teamLookup), true, `owner: ${suffix}`)
     assert.equal(await authorizeStoragePath(bccManager, path, teamLookup), true, `manager: ${suffix}`)

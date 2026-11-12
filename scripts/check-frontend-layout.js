@@ -89,7 +89,7 @@ for (const header of ['Student ID PDF', 'Twibbon PDF', 'Social Media Follow', 'I
   assert.ok(standardManagerHtml.includes(`<th scope="col">${header}</th>`), `Competition Manager database must include ${header}`);
   assert.ok(delegatesRelationHtml.includes(`<th scope="col">${header}</th>`), `Delegates Relation database must include ${header}`);
 }
-for (const field of ['studentIdCardUrl', 'twibbonUrl', 'socialMediaFollowUrl', 'instagramStoryShareUrl', 'likeAndRepostUrl']) {
+for (const field of ['studentIdCardUrl', 'twibbonUrl', 'socialMediaFollowUrl', 'instagramStoryShareUrl', 'likeAndRepostUrl', 'broadcastPosterUrl']) {
   assert.ok(teamDocuments.includes(`field: '${field}'`), `Team document manifest must include ${field}`);
 }
 assert.match(competitionManager, /team\.teamDocuments\?\.\[field\]/, 'Competition Manager must link team document paths');
@@ -120,7 +120,7 @@ assert.match(scManager, /rankSelect\.className = "form-select form-select-sm tex
 assert.match(scManagerHtml, /id="selection-pagination"/, 'Smart Competition preliminary table must provide pagination controls');
 assert.match(scManager, /const SELECTION_PAGE_SIZE = 20/);
 assert.match(scManager, /selectionTeams\.slice\(start,\s*start \+ SELECTION_PAGE_SIZE\)/, 'Smart Competition preliminary rows must be limited to the current page');
-assert.match(delegatesRelation, /showTableMessage\(delRelList,\s*21,/);
+assert.match(delegatesRelation, /showTableMessage\(delRelList,\s*22,/);
 assert.doesNotMatch(treasuryHtml, /<th scope="col">(?:Student ID PDF|Twibbon PDF|Social Media Follow|Instagram Story Share|Like and Repost)<\/th>/, 'Treasury columns must remain unchanged');
 assert.match(readFileSync(path.join(root, 'public/static/css/compe-manager-grand.css'), 'utf8'), /\.btn-view-file\s*\{[^}]*white-space:\s*nowrap/s, 'PDF buttons must keep their label on one line so their height stays consistent');
 assert.doesNotMatch(competitionManager, /twibbonCell|followIgCell/, 'Competition Manager rows must not render the obsolete Twibbon or IG Following proofs');
@@ -171,7 +171,7 @@ for (const [file, source] of [['compe-manager.js', competitionManager], ['compe-
   assert.doesNotMatch(source, /studentCardCell|teamStudentCardCell|studentCardUrl|studentCardURL/, `${file} must not render the removed Student Card column`);
 }
 assert.match(competitionManager, /a\.dataset\.privateStoragePath\s*\|\|/, 'standard manager exports must retain private object paths');
-assert.match(competitionManager, /const DB_COLS = 19/);
+assert.match(competitionManager, /const DB_COLS = 20/);
 assert.match(competitionManager, /const PRELIM_COLS = 8/);
 assert.match(competitionManager, /const FINAL_COLS = 5/);
 

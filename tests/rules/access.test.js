@@ -290,7 +290,7 @@ describe('Storage access', () => {
     await assertFails(getBytes(ref(manager, 'payments/bcc-team/registration.jpg')))
     await assertFails(getBytes(ref(manager, 'finalreg_submissions/bcc-team/leader_1')))
     await assertSucceeds(getBytes(ref(manager, 'team/bcc-team/leader/twibbon.jpg')))
-    for (const suffix of ['StudentID', 'Twibbon', 'Follow', 'AddToStory', 'LikeRepost']) {
+    for (const suffix of ['StudentID', 'Twibbon', 'Follow', 'AddToStory', 'LikeRepost', 'BroadcastandPoster']) {
       const path = `team/bcc-team/documents/Business_Case_Team_${suffix}.pdf`
       await assertSucceeds(getBytes(ref(owner, path)))
       await assertSucceeds(getBytes(ref(manager, path)))

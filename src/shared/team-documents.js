@@ -3,7 +3,8 @@ export const TEAM_DOCUMENTS = [
   { field: 'twibbonUrl', suffix: 'Twibbon', inputId: 'twibbon-pdf', label: 'Twibbon' },
   { field: 'socialMediaFollowUrl', suffix: 'Follow', inputId: 'social-media-follow-pdf', label: 'Social Media Follow' },
   { field: 'instagramStoryShareUrl', suffix: 'AddToStory', inputId: 'instagram-story-share-pdf', label: 'Instagram Story Share' },
-  { field: 'likeAndRepostUrl', suffix: 'LikeRepost', inputId: 'like-and-repost-pdf', label: 'Like and Repost' }
+  { field: 'likeAndRepostUrl', suffix: 'LikeRepost', inputId: 'like-and-repost-pdf', label: 'Like and Repost' },
+  { field: 'broadcastPosterUrl', suffix: 'BroadcastandPoster', inputId: 'broadcast-poster-pdf', label: 'Broadcast and Poster Share' }
 ]
 
 const MAX_TEAM_DOCUMENT_SIZE = 20 * 1024 * 1024
