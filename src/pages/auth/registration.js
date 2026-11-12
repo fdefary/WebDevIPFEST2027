@@ -96,9 +96,8 @@ function generateMemberEntry(entry, count) {
             <legend>Identity &amp; Contact Information</legend>
         <div class="row my-1">
           <div class="col-md-6">
-            <label for="idCard${i}" class="form-label">National ID / Passport number</label>
-            <input type="text" name="idCard${i}" id="idCard${i}" class="form-control" required>
-            <div class="invalid-feedback">Enter member ${i}'s National ID or passport number.</div>
+            <label for="idCard${i}" class="form-label">National ID / Passport number (Optional)</label>
+            <input type="text" name="idCard${i}" id="idCard${i}" class="form-control">
           </div>
           <div class="col-md-6">
             <label for="studentId${i}" class="form-label">Student ID</label>
