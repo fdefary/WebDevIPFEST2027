@@ -157,6 +157,12 @@ function showError(message) {
   }
 }
 
+// Remove an earlier error so a fixed field no longer looks like it still fails.
+function clearError() {
+  const alertContainer = document.querySelector("#alertContainer");
+  if (alertContainer) alertContainer.innerHTML = "";
+}
+
 // Validasi password
 const pass = document.querySelector("input[name='password']");
 const confirmPass = document.querySelector("input[name='confirmPassword']");
@@ -243,7 +249,10 @@ onDOMReady(() => {
   };
   document.querySelectorAll("[data-next]").forEach(button => {
     button.addEventListener("click", () => {
-      if (validateStep()) showStep(Math.min(currentStep + 1, steps.length - 1));
+      if (validateStep()) {
+        clearError();
+        showStep(Math.min(currentStep + 1, steps.length - 1));
+      }
     });
   });
   document.querySelectorAll("[data-back]").forEach(button => {
@@ -352,6 +361,7 @@ onDOMReady(() => {
       return;
     }
 
+    clearError();
     submitBtn.disabled = true;
     submitBtn.innerText = 'Processing...';
 
@@ -381,7 +391,7 @@ onDOMReady(() => {
       // Validasi dasar
       if (
         !email || !password || !firstName || !lastName || !major || !gender || !batch ||
-        !teamName || !university || !phoneNo || !idCard || !studentId
+        !teamName || !university || !phoneNo || !studentId
       ) {
         throw new Error("All leader fields are required");
       }
@@ -479,7 +489,7 @@ onDOMReady(() => {
         const mStudentId = document.getElementById(`studentId${i}`)?.value;
         const mPhoneNo = document.getElementById(`phoneNo${i}`)?.value;
 
-        if (!mFirstName || !mLastName || !mEmail || !mMajor || !mGender || !mBatch || !mIdCard || !mStudentId || !mPhoneNo) {
+        if (!mFirstName || !mLastName || !mEmail || !mMajor || !mGender || !mBatch || !mStudentId || !mPhoneNo) {
         throw new Error(`Please complete all required details for member ${i}.`);
         }
 
