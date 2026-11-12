@@ -275,6 +275,7 @@ describe('Storage access', () => {
       'team/bcc-team/documents/Business_Case_Team_Follow.pdf',
       'team/bcc-team/documents/Business_Case_Team_AddToStory.pdf',
       'team/bcc-team/documents/Business_Case_Team_LikeRepost.pdf',
+      'team/bcc-team/documents/Business_Case_Team_BroadcastandPoster.pdf',
       'payments/bcc-team/registration.jpg',
       'finalreg_submissions/bcc-team/leader_1'
     ]
