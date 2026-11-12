@@ -6,6 +6,7 @@ import { doc, getDoc } from "firebase/firestore";
 import { getRoleClaims } from "../../shared/role-claims.js";
 import { onDOMReady } from "../../shared/dom-ready.js";
 import { loginCredentials } from "../../shared/login-credentials.js";
+import { emailVerificationRequired } from "../../shared/email-verification.js";
 
 // Kirim ulang email verifikasi: login sebentar (sendEmailVerification butuh user aktif), kirim, lalu sign out.
 async function resendVerificationEmail(email, password) {
@@ -70,7 +71,8 @@ onDOMReady(() => {
       console.log("Login successful:", user.email);
 
       // ==== RESEND EMAIL VERIFICATION IF USER IS NOT VERIFIED ====
-      if (!roleClaims.role && !user.emailVerified) {
+      // Enforced again after the grace period that followed the email quota outage.
+      if (!roleClaims.role && !user.emailVerified && emailVerificationRequired()) {
         // Email tidak dikirim otomatis di sini agar kuota harian Firebase tidak terbuang;
         // pendaftar menekan "resend" di banner jika perlu.
         await signOut(AUTH);  // keep user logged out until verified
@@ -80,17 +82,28 @@ onDOMReady(() => {
 
       // ==== FETCH TEAM DATA (ONLY FOR DELEGATES) ====
       let competitionField = null;
+      let hasTeam = false;
 
       if (!roleClaims.role) {
         const teamRef = doc(DB, "Team", user.uid);
         const teamSnap = await getDoc(teamRef);
 
         if (teamSnap.exists()) {
+          hasTeam = true;
           competitionField = teamSnap.data().competition || null;
           console.log("Competition field:", competitionField);
         } else {
           console.warn("Team document not found for UID:", user.uid);
         }
+      }
+
+      // ==== DELEGATE ACCOUNT CHECKS ====
+      // An account without a team document means registration was interrupted
+      // after the account was created. Ask the registrant to finish it.
+      if (!roleClaims.role && !hasTeam) {
+        await signOut(AUTH);
+        failedLogin("Your registration is not complete yet. Please submit the registration form again using the same email and password.");
+        return;
       }
 
       // =============================
