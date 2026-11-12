@@ -109,6 +109,12 @@ assert.doesNotMatch(html.match(/<button[^>]*data-value="smart competition"[^>]*>
 assert.doesNotMatch(script, /selectedCompetition === ["']smart competition["']/);
 assert.match(script, /["']smart competition["']:\s*\[2,\s*3\]/, 'Smart Competition must retain the two- or three-person team sizes');
 assert.match(script, /createUserWithEmailAndPassword/);
+assert.match(script, /auth\/email-already-in-use/);
+assert.match(script, /signInWithEmailAndPassword/);
+assert.match(script, /getDoc\(doc\(DB, ["']Team["'], user\.uid\)\)/);
+assert.ok(script.indexOf('signInWithEmailAndPassword') < script.indexOf('await setDoc(doc(DB, "Team", user.uid), teamData)'), 'Recover an existing Auth account before saving registration data');
+assert.match(script, /already has a registration/i, 'Never overwrite an existing team registration during account recovery');
+assert.match(script, /getMetadata\(fileRef\)/, 'Reuse uploaded files when resuming a partially completed registration');
 assert.match(script, /setDoc\(doc\(DB, "Team", user\.uid\), teamData\)/);
 for (const copy of [
   'Upload the student ID card of every team member. Only student ID cards are accepted. Make sure the name, student ID number, and university are easy to read. Put all ID cards in one PDF file named [CompetitionName]_[TeamName]_StudentID.pdf.',
@@ -134,3 +140,8 @@ assert.match(script, /teamDocumentPath\(user\.uid, selectedCompetition, teamName
 assert.match(teamDocuments, /export const TEAM_DOCUMENTS/);
 assert.ok(script.indexOf('firstInvalidRegistrationStep(steps)', script.indexOf("registrationForm.addEventListener('submit'")) < script.indexOf('createUserWithEmailAndPassword(AUTH, email, password)'), 'Validate every step before creating a Firebase account');
 assert.match(validation, /data-registration-step/);
+
+assert.doesNotMatch(script, /sessionStorage\.setItem\("registration-step"/, 'Do not restore a step whose inputs were lost on reload');
+const login = readFileSync('src/pages/auth/login.js', 'utf8');
+assert.match(login, /!user\.emailVerified && emailVerificationRequired\(\)/, 'Unverified delegates may sign in only during the verification grace period');
+assert.match(login, /if \(!roleClaims\.role && !hasTeam\) \{[\s\S]*?signOut\(AUTH\)/, 'Accounts without a team must finish registration first');

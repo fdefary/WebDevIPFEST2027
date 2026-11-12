@@ -1,13 +1,16 @@
 import {
   createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
   sendEmailVerification,
 } from 'firebase/auth';
 import {
   serverTimestamp,
   doc,
+  getDoc,
   setDoc,
 } from 'firebase/firestore';
-import { ref, uploadBytes } from 'firebase/storage';
+import { ref, uploadBytes, getMetadata } from 'firebase/storage';
 
 // Import Firebase SDK initialization
 import { AUTH, STORAGE, DB } from '../../app/index.js';
@@ -15,6 +18,7 @@ import { firstInvalidRegistrationStep } from '../../shared/registration-fields.j
 import { registrationPriceAt } from '../../shared/registration-pricing.js';
 import { isRegistrationOpen } from '../../shared/registration-deadline.js';
 import { onDOMReady } from '../../shared/dom-ready.js';
+import { emailVerificationRequired, EMAIL_VERIFICATION_DEADLINE_LABEL } from '../../shared/email-verification.js';
 import { TEAM_DOCUMENTS, isValidTeamDocumentFile, teamDocumentPath } from '../../shared/team-documents.js';
 
 // Daftar kompetisi dan jumlah anggota yang valid
@@ -130,6 +134,12 @@ function generateMemberEntry(entry, count) {
 async function uploadFile(file, path, contentType = file?.type) {
   if (!file) return null;
   const fileRef = ref(STORAGE, path);
+  try {
+    await getMetadata(fileRef);
+    return fileRef.fullPath;
+  } catch (error) {
+    if (error.code !== 'storage/object-not-found') throw error;
+  }
   await uploadBytes(fileRef, file, contentType ? { contentType } : undefined);
   return fileRef.fullPath;
 }
@@ -199,7 +209,6 @@ onDOMReady(() => {
   let currentStep = 0;
   const showStep = (index) => {
     currentStep = index;
-    sessionStorage.setItem("registration-step", steps[index].dataset.registrationStep);
     steps.forEach((step, stepIndex) => { step.hidden = stepIndex !== index; });
     document.querySelectorAll(".registration-progress-step").forEach((item, stepIndex) => {
       item.classList.toggle("is-complete", stepIndex < index);
@@ -240,8 +249,9 @@ onDOMReady(() => {
   document.querySelectorAll("[data-back]").forEach(button => {
     button.addEventListener("click", () => showStep(Math.max(currentStep - 1, 0)));
   });
-  const savedStepIndex = steps.findIndex(step => step.dataset.registrationStep === sessionStorage.getItem("registration-step"));
-  if (savedStepIndex > 0) showStep(savedStepIndex);
+  // Always start at the first step. Restoring a later step after a reload left the
+  // competition choice, PDF uploads, and member forms empty while appearing complete.
+  sessionStorage.removeItem("registration-step");
   // Handle klik kompetisi
   document.querySelectorAll(".card-compe").forEach(card => {
     card.addEventListener("click", () => {
@@ -393,8 +403,22 @@ onDOMReady(() => {
       // Tolak sebelum akun dibuat jika pendaftaran sudah ditutup.
       if (!registrationPriceAt(new Date(), selectedCompetition)) throw new Error(registrationClosedMessage(selectedCompetition));
 
-      // Buat user terlebih dahulu agar unggahan bisa disimpan di folder pemilik.
-      const { user } = await createUserWithEmailAndPassword(AUTH, email, password);
+      // Resume an account left behind when an earlier registration failed partway through.
+      let user;
+      try {
+        ({ user } = await createUserWithEmailAndPassword(AUTH, email, password));
+      } catch (error) {
+        if (error.code !== 'auth/email-already-in-use') throw error;
+        try {
+          ({ user } = await signInWithEmailAndPassword(AUTH, email, password));
+        } catch {
+          throw new Error('This email is already registered. Log in with this email, or use "Forgot password" on the login page if you do not remember the password.');
+        }
+        if ((await getDoc(doc(DB, 'Team', user.uid))).exists()) {
+          await signOut(AUTH);
+          throw new Error('This account already has a registration. Please log in instead.');
+        }
+      }
 
       // Upload bukti pembayaran (jika ada)
       const paymentFile = document.getElementById("payment-proof")?.files[0];
@@ -488,7 +512,9 @@ onDOMReady(() => {
         alert("Registration successful! Please check your email to verify your account.");
       } catch (mailError) {
         console.error("Failed to send verification email:", mailError);
-        alert("Registration successful! Your account and team data are saved, but the verification email could not be sent right now. Please do not register again. Try logging in later (a new verification email will be sent) or contact the committee.");
+        alert(`Registration successful! Your account and team data are saved, but the verification email could not be sent right now. Please do not register again. ${emailVerificationRequired()
+          ? 'Log in and use "resend verification email" to get a new one.'
+          : `You can log in now with your email and password. Please verify your email from the dashboard before ${EMAIL_VERIFICATION_DEADLINE_LABEL}.`}`);
       }
 
       window.location.href = "/login.html";

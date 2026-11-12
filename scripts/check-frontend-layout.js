@@ -124,10 +124,13 @@ assert.match(delegatesRelation, /showTableMessage\(delRelList,\s*21,/);
 assert.doesNotMatch(treasuryHtml, /<th scope="col">(?:Student ID PDF|Twibbon PDF|Social Media Follow|Instagram Story Share|Like and Repost)<\/th>/, 'Treasury columns must remain unchanged');
 assert.match(readFileSync(path.join(root, 'public/static/css/compe-manager-grand.css'), 'utf8'), /\.btn-view-file\s*\{[^}]*white-space:\s*nowrap/s, 'PDF buttons must keep their label on one line so their height stays consistent');
 assert.doesNotMatch(competitionManager, /twibbonCell|followIgCell/, 'Competition Manager rows must not render the obsolete Twibbon or IG Following proofs');
-assert.match(treasuryHtml, /<th scope="col">Early Bird<\/th>[\s\S]*?<th scope="col">Twibbon<\/th>[\s\S]*?<th scope="col">IG Following<\/th>[\s\S]*?<th scope="col">Proof Link<\/th>/, 'Treasury database must show participant document columns');
-assert.match(treasury, /teamFileLinks\(t,\s*'twibbonUrl'\)/);
-assert.match(treasury, /teamFileLinks\(t,\s*'followIgUrl'\)/);
-assert.match(treasury, /const REG_COLS = 10/);
+const treasuryRegistrationTable = treasuryHtml.match(/<table class="table">[\s\S]*?<tbody id="treasury-team-list">[\s\S]*?<\/table>/)?.[0] ?? '';
+assert.deepEqual(
+  [...treasuryRegistrationTable.matchAll(/<th scope="col">([^<]+)<\/th>/g)].map(([, label]) => label),
+  ['No.', 'Team Name', 'Team Leader', 'Members', 'University', 'Competition', 'Join on', 'Early Bird', 'Proof Link', 'Payment Status'],
+  'Treasury registration table headers must match the current registration data'
+);
+assert.match(treasury, /const REG_COLS = 10/, 'Treasury empty and error rows must span the 10 registration columns');
 const delegatesSource = readFileSync(path.join(srcRoot, 'pages/competition/delegates.js'), 'utf8');
 assert.doesNotMatch(delegatesSource, /getDocs\(collection\(DB,\s*['"]Team['"]\)/, 'participants must not download all Team records for a fallback search');
 
@@ -244,7 +247,7 @@ assert.match(readFileSync(path.join(root, 'public/static/css/coming-soon.css'), 
 assert.doesNotMatch(comingSoon, /Merchandise|<nav\b/i);
 assert.match(merchandise, /class="coming-soon-page"/);
 assert.match(merchandise, /<h1[^>]*>Merchandise is not available yet<\/h1>/);
-assert.match(merchandise, /static\/images\/brand\/mascot\/Oii%20mikir\.webp/);
+assert.match(merchandise, /static\/images\/brand\/mascot\/Oii%20loncat%20finish\.webp/);
 assert.match(merchandise, /static\/css\/coming-soon\.css/);
 assert.doesNotMatch(merchandise, /location\.replace|http-equiv="refresh"/);
 assert.match(merchandiseCatalog, /id="checkout-form"/);

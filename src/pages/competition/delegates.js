@@ -9,6 +9,7 @@ import { DB, AUTH, STORAGE } from '../../app/index.js'
 import { showProgressUI } from '../../shared/alert.js'
 import { privateStorageLink, privateStoragePathOf } from '../../shared/private-download.js'
 import { onDOMReady } from '../../shared/dom-ready.js'
+import { showVerificationReminder } from '../../shared/email-verification.js'
 
 // =====================================================================
 //   IPFEST 2027 TIMELINE — samakan dengan src/pages/competition/compe-manager.js
@@ -54,6 +55,7 @@ onAuthStateChanged(AUTH, async (user) => {
     }
 
     currentUserID = user.uid;
+    showVerificationReminder(user);
     
     // Ambil data user
     let userData = await fetchUserData();
