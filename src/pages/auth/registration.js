@@ -18,6 +18,7 @@ import { firstInvalidRegistrationStep } from '../../shared/registration-fields.j
 import { registrationPriceAt } from '../../shared/registration-pricing.js';
 import { isRegistrationOpen } from '../../shared/registration-deadline.js';
 import { onDOMReady } from '../../shared/dom-ready.js';
+import { emailVerificationRequired, EMAIL_VERIFICATION_DEADLINE_LABEL } from '../../shared/email-verification.js';
 import { TEAM_DOCUMENTS, isValidTeamDocumentFile, teamDocumentPath } from '../../shared/team-documents.js';
 
 // Daftar kompetisi dan jumlah anggota yang valid
@@ -512,7 +513,9 @@ onDOMReady(() => {
         alert("Registration successful! Please check your email to verify your account.");
       } catch (mailError) {
         console.error("Failed to send verification email:", mailError);
-        alert("Registration successful! Your account and team data are saved, but the verification email could not be sent right now. Please do not register again. You can log in now with your email and password.");
+        alert(`Registration successful! Your account and team data are saved, but the verification email could not be sent right now. Please do not register again. ${emailVerificationRequired()
+          ? 'Log in and use "resend verification email" to get a new one.'
+          : `You can log in now with your email and password. Please verify your email from the dashboard before ${EMAIL_VERIFICATION_DEADLINE_LABEL}.`}`);
       }
 
       window.location.href = "/login.html";

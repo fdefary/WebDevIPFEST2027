@@ -1,11 +1,32 @@
 // ==== Import Firebase SDK ====
-import { signInWithEmailAndPassword, signOut } from "firebase/auth";
+import { signInWithEmailAndPassword, signOut, sendEmailVerification } from "firebase/auth";
 import { AUTH, DB } from "../../app/index.js";
-import { accountCreated, failedLogin } from "../../shared/alert.js";
+import { emailNotVerified, accountCreated, failedLogin } from "../../shared/alert.js";
 import { doc, getDoc } from "firebase/firestore";
 import { getRoleClaims } from "../../shared/role-claims.js";
 import { onDOMReady } from "../../shared/dom-ready.js";
 import { loginCredentials } from "../../shared/login-credentials.js";
+import { emailVerificationRequired } from "../../shared/email-verification.js";
+
+// Kirim ulang email verifikasi: login sebentar (sendEmailVerification butuh user aktif), kirim, lalu sign out.
+async function resendVerificationEmail(email, password) {
+  try {
+    const { user } = await signInWithEmailAndPassword(AUTH, email, password);
+    try {
+      if (user.emailVerified) return "Your email is already verified. You can sign in now.";
+      await sendEmailVerification(user);
+      return "Verification email sent. Please check your inbox and spam folder.";
+    } finally {
+      await signOut(AUTH);
+    }
+  } catch (err) {
+    console.error("Failed to resend verification email:", err);
+    if (err.code === "auth/too-many-requests" || /quota/i.test(err.message || "")) {
+      throw new Error("Email sending is temporarily limited. Please try again later or contact the committee.");
+    }
+    throw new Error("Could not send the email. Please try again later.");
+  }
+}
 
 // ==== Wait for DOM ====
 onDOMReady(() => {
@@ -49,6 +70,16 @@ onDOMReady(() => {
 
       console.log("Login successful:", user.email);
 
+      // ==== RESEND EMAIL VERIFICATION IF USER IS NOT VERIFIED ====
+      // Enforced again after the grace period that followed the email quota outage.
+      if (!roleClaims.role && !user.emailVerified && emailVerificationRequired()) {
+        // Email tidak dikirim otomatis di sini agar kuota harian Firebase tidak terbuang;
+        // pendaftar menekan "resend" di banner jika perlu.
+        await signOut(AUTH);  // keep user logged out until verified
+        emailNotVerified(() => resendVerificationEmail(userEmail, userPassword));
+        return;
+      }
+
       // ==== FETCH TEAM DATA (ONLY FOR DELEGATES) ====
       let competitionField = null;
       let hasTeam = false;
@@ -74,9 +105,6 @@ onDOMReady(() => {
         failedLogin("Your registration is not complete yet. Please submit the registration form again using the same email and password.");
         return;
       }
-      // Delegates with a saved team may sign in before verifying their email. Email
-      // verification is not required by Firestore or Storage Rules, and verification
-      // emails can be unavailable when the daily Firebase email quota is exhausted.
 
       // =============================
       // ==== OFFICIAL ACCOUNT ROUTE ====

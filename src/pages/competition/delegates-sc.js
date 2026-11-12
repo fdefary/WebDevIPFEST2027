@@ -7,6 +7,7 @@ import { ref, uploadBytes } from 'firebase/storage'
 import { DB, AUTH, STORAGE } from '../../app/index.js'
 import { setToastAlert } from '../../shared/alert.js'
 import { SC_TEST_WINDOW, scTestStatus } from '../../shared/sc-schedule.js'
+import { showVerificationReminder } from '../../shared/email-verification.js'
 
 // =========================
 // START TEST BUTTON
@@ -53,6 +54,7 @@ onAuthStateChanged(AUTH, (user) => {
 	}
 
 	currentUserID = user.uid;
+	showVerificationReminder(user);
 	fetchUserData();
 });
 

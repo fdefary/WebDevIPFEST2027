@@ -143,5 +143,5 @@ assert.match(validation, /data-registration-step/);
 
 assert.doesNotMatch(script, /sessionStorage\.setItem\("registration-step"/, 'Do not restore a step whose inputs were lost on reload');
 const login = readFileSync('src/pages/auth/login.js', 'utf8');
-assert.doesNotMatch(login, /!user\.emailVerified/, 'Delegates with a saved team must not be locked out by email verification');
+assert.match(login, /!user\.emailVerified && emailVerificationRequired\(\)/, 'Unverified delegates may sign in only during the verification grace period');
 assert.match(login, /if \(!roleClaims\.role && !hasTeam\) \{[\s\S]*?signOut\(AUTH\)/, 'Accounts without a team must finish registration first');
