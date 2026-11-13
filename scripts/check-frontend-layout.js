@@ -102,6 +102,12 @@ for (const header of ['Leader Email', 'Last Sign-in']) {
 }
 assert.equal((delegatesRelationHtml.match(/<th scope="col">/g) || []).length - 9, Number(delegatesRelation.match(/const DB_COLS = (\d+)/)?.[1]), 'DB_COLS must match the Database table headers');
 assert.match(delegatesRelation, /httpsCallable\(FUNCTIONS, 'listLeaderAccountStatus'\)/);
+// The Database tab can be searched and filtered; Download exports what is shown.
+for (const id of ['db-search', 'db-filter-competition', 'db-filter-payment', 'db-filter-email', 'db-filter-reset', 'db-filter-count']) {
+  assert.ok(delegatesRelationHtml.includes(`id="${id}"`), `Delegates Relation database must include #${id}`);
+}
+assert.match(delegatesRelation, /const teams = filterTeams\(allTeams\)/);
+assert.match(delegatesRelationCss, /\.delrel-stage \.delrel-filters\s*\{/);
 const scManager = readFileSync(path.join(srcRoot, 'pages/competition/compe-manager-sc.js'), 'utf8');
 const scManagerHtml = readFileSync(path.join(root, 'public/dashboard/smart-competition/manager.html'), 'utf8');
 assert.match(competitionManager, /class="cm-team-cell" rowspan="\$\{span\}"/, 'Common Competition Manager columns must be grouped for hover');
