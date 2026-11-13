@@ -194,6 +194,29 @@ body.delrel-page #logout-btn:hover {
 .delrel-stage .table tbody tr { transition: background-color .25s ease; }
 .delrel-stage .table tbody tr:hover > td { background-color: rgba(230, 199, 42, .16) !important; }
 .delrel-stage .cm-help { color: rgba(248, 245, 242, .75); font-size: .9rem; }
+/* ---------- Pencarian & filter tab Database ---------- */
+.delrel-stage .delrel-filters {
+	display: grid;
+	grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(160px, 1fr)) auto;
+	gap: .5rem;
+	margin-bottom: .5rem;
+}
+.delrel-stage .delrel-filters .form-control,
+.delrel-stage .delrel-filters .form-select {
+	background-color: var(--g-navy-deep);
+	color: var(--g-ivory);
+	border: 1px solid rgba(230, 199, 42, .5);
+}
+.delrel-stage .delrel-filters .form-control::placeholder { color: rgba(248, 245, 242, .55); }
+.delrel-stage .delrel-filters .form-control:focus,
+.delrel-stage .delrel-filters .form-select:focus {
+	border-color: var(--g-gold);
+	box-shadow: 0 0 0 .2rem rgba(230, 199, 42, .25);
+}
+@media (max-width: 991px) {
+	.delrel-stage .delrel-filters { grid-template-columns: 1fr 1fr; }
+	.delrel-stage .delrel-filters .form-control { grid-column: 1 / -1; }
+}
 .delrel-stage .cm-leader-tag {
 	display: inline-block; margin-left: .35rem; padding: .05rem .45rem;
 	border-radius: 999px; font-size: 10px; font-weight: 700; letter-spacing: .05em;

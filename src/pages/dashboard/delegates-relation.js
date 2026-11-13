@@ -6,6 +6,7 @@ import { DB, AUTH, FUNCTIONS } from '../../app/index.js'
 import { privateStorageLink } from '../../shared/private-download.js'
 import { TEAM_DOCUMENTS } from '../../shared/team-documents.js'
 import { getRoleClaims } from '../../shared/role-claims.js'
+import { teamSearchText, matchesSearch } from '../../shared/team-search.js'
 
 // ===============================
 //   IPFEST 2027 CONFIG
@@ -141,6 +142,12 @@ const finalPaymentTable = document.getElementById('final-payment-table')
 const excelConvertBtn = document.getElementById('excel-convert')
 const finalPaymentExcelBtn = document.getElementById('final-payment-excel')
 const logoutBtn = document.getElementById('logout-btn')
+const searchInput = document.getElementById('db-search')
+const competitionFilter = document.getElementById('db-filter-competition')
+const paymentFilter = document.getElementById('db-filter-payment')
+const emailFilter = document.getElementById('db-filter-email')
+const filterResetBtn = document.getElementById('db-filter-reset')
+const filterCountEl = document.getElementById('db-filter-count')
 
 let registrationChart = null
 let unsubscribeTeams = null
@@ -348,6 +355,44 @@ const lastSignInCell = (team) => {
 }
 
 // ===============================
+//   SEARCH & FILTER (DATABASE TAB)
+// ===============================
+// Pencarian mencocokkan data tim, ketua, dan semua anggota. Download Excel ikut hasil filter.
+const emailStateOf = (team) => {
+    const status = accountStatus.get(team.id)
+    if (!status) return null
+    if (!status.exists) return 'no-account'
+    return status.emailVerified ? 'verified' : 'unverified'
+}
+
+const filterTeams = (teams) => {
+    const query = searchInput?.value ?? ''
+    const competition = competitionFilter?.value ?? ''
+    const payment = paymentFilter?.value ?? ''
+    const email = emailFilter?.value ?? ''
+    return teams.filter(team =>
+        matchesSearch(teamSearchText(team, competitionName(team)), query) &&
+        (!competition || competitionOf(team)?.code === competition) &&
+        (!payment || statusInfo(team.payment_status).cls === payment) &&
+        (!email || emailStateOf(team) === email)
+    )
+}
+
+// Jangan render sebelum data tim pertama masuk, supaya pesan "Loading data..." tidak tertimpa.
+const applyFilters = () => { if (latestTeams.length) renderDatabase(latestTeams) }
+
+if (competitionFilter) {
+    COMPETITIONS.forEach(c => competitionFilter.add(new Option(c.full, c.code)))
+}
+;[searchInput, competitionFilter, paymentFilter, emailFilter].forEach(el => {
+    el?.addEventListener(el.tagName === 'INPUT' ? 'input' : 'change', applyFilters)
+})
+filterResetBtn?.addEventListener('click', () => {
+    ;[searchInput, competitionFilter, paymentFilter, emailFilter].forEach(el => { if (el) el.value = '' })
+    applyFilters()
+})
+
+// ===============================
 //   DATABASE TAB
 // ===============================
 // Field kartu mahasiswa: studentCardUrl (sama dengan versi 2026)
@@ -375,11 +420,23 @@ const personCells = (p, fmt = COMPETITION_FORMAT.default, isLeader = false) => `
     <td>${studentCardCell(p)}</td>
 `
 
-function renderDatabase(teams) {
+function renderDatabase(allTeams) {
     if (!delRelList) return
 
-    if (teams.length === 0) {
+    if (allTeams.length === 0) {
+        if (filterCountEl) filterCountEl.textContent = ''
         showTableMessage(delRelList, DB_COLS, 'Belum ada tim yang terdaftar.')
+        return
+    }
+
+    const teams = filterTeams(allTeams)
+    if (filterCountEl) {
+        filterCountEl.textContent = teams.length === allTeams.length
+            ? `Showing all ${allTeams.length} teams`
+            : `Showing ${teams.length} of ${allTeams.length} teams (Download only includes these teams)`
+    }
+    if (teams.length === 0) {
+        showTableMessage(delRelList, DB_COLS, 'Tidak ada tim yang cocok dengan pencarian atau filter.')
         return
     }
 
