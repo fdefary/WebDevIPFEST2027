@@ -197,7 +197,7 @@ body.delrel-page #logout-btn:hover {
 /* ---------- Pencarian & filter tab Database ---------- */
 .delrel-stage .delrel-filters {
 	display: grid;
-	grid-template-columns: minmax(220px, 2fr) repeat(3, minmax(160px, 1fr)) auto;
+	grid-template-columns: minmax(200px, 1.3fr) repeat(3, minmax(185px, 1fr)) auto;
 	gap: .5rem;
 	margin-bottom: .5rem;
 }
