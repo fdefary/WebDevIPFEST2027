@@ -7,6 +7,7 @@ const { Storage } = require('@google-cloud/storage')
 const nodeMailer = require('nodemailer')
 const { authorizeStoragePath, signedReadOptions } = require('./security/storage-access')
 const { assertPaymentUpdates, assertResult, assertCase, validTeamId, certificateId, validateCertificateAttendance } = require('./security/security-policy')
+const { assertTeamIds, chunk, summarizeAccounts } = require('./security/account-status')
 
 admin.initializeApp()
 const storage = new Storage()
@@ -55,6 +56,16 @@ exports.updatePaymentVerifications = onCall({ region: 'asia-southeast2' }, async
   }
   await batch.commit()
   return { updated: request.data.updates.length }
+})
+
+// Email verification state lives in Auth, which the admin panel cannot read from the browser.
+exports.listLeaderAccountStatus = onCall({ region: 'asia-southeast2' }, async (request) => {
+  if (!request.auth) throw new HttpsError('unauthenticated', 'Sign-in required.')
+  if (request.auth.token.ipfestRole !== 'delegates_relation') throw new HttpsError('permission-denied', 'Delegates relation role required.')
+  const teamIds = request.data?.teamIds
+  try { assertTeamIds(teamIds) } catch { throw new HttpsError('invalid-argument', 'Invalid team IDs.') }
+  const results = await Promise.all(chunk(teamIds).map((ids) => admin.auth().getUsers(ids.map((uid) => ({ uid })))))
+  return { accounts: summarizeAccounts(teamIds, results.flatMap((result) => result.users)) }
 })
 
 exports.updateCompetitionResult = onCall({ region: 'asia-southeast2' }, async (request) => {

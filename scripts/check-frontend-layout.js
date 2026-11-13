@@ -96,6 +96,12 @@ assert.match(competitionManager, /team\.teamDocuments\?\.\[field\]/, 'Competitio
 assert.match(delegatesRelation, /team\.teamDocuments\?\.\[field\]/, 'Delegates Relation must link team document paths');
 assert.match(competitionManager, /teamDocumentCells\(team,\s*span\)/, 'Competition Manager team document links must span the team rows');
 assert.match(delegatesRelation, /teamDocumentCells\(team,\s*rows\)/, 'Delegates Relation team document links must span the team rows');
+// Leader email verification comes from Auth through a role-gated function, one column per header.
+for (const header of ['Leader Email', 'Last Sign-in']) {
+  assert.ok(delegatesRelationHtml.includes(`<th scope="col">${header}</th>`), `Delegates Relation database must include ${header}`);
+}
+assert.equal((delegatesRelationHtml.match(/<th scope="col">/g) || []).length - 9, Number(delegatesRelation.match(/const DB_COLS = (\d+)/)?.[1]), 'DB_COLS must match the Database table headers');
+assert.match(delegatesRelation, /httpsCallable\(FUNCTIONS, 'listLeaderAccountStatus'\)/);
 const scManager = readFileSync(path.join(srcRoot, 'pages/competition/compe-manager-sc.js'), 'utf8');
 const scManagerHtml = readFileSync(path.join(root, 'public/dashboard/smart-competition/manager.html'), 'utf8');
 assert.match(competitionManager, /class="cm-team-cell" rowspan="\$\{span\}"/, 'Common Competition Manager columns must be grouped for hover');
@@ -120,7 +126,7 @@ assert.match(scManager, /rankSelect\.className = "form-select form-select-sm tex
 assert.match(scManagerHtml, /id="selection-pagination"/, 'Smart Competition preliminary table must provide pagination controls');
 assert.match(scManager, /const SELECTION_PAGE_SIZE = 20/);
 assert.match(scManager, /selectionTeams\.slice\(start,\s*start \+ SELECTION_PAGE_SIZE\)/, 'Smart Competition preliminary rows must be limited to the current page');
-assert.match(delegatesRelation, /showTableMessage\(delRelList,\s*22,/);
+assert.match(delegatesRelation, /showTableMessage\(delRelList,\s*DB_COLS,/);
 assert.doesNotMatch(treasuryHtml, /<th scope="col">(?:Student ID PDF|Twibbon PDF|Social Media Follow|Instagram Story Share|Like and Repost)<\/th>/, 'Treasury columns must remain unchanged');
 assert.match(readFileSync(path.join(root, 'public/static/css/compe-manager-grand.css'), 'utf8'), /\.btn-view-file\s*\{[^}]*white-space:\s*nowrap/s, 'PDF buttons must keep their label on one line so their height stays consistent');
 assert.doesNotMatch(competitionManager, /twibbonCell|followIgCell/, 'Competition Manager rows must not render the obsolete Twibbon or IG Following proofs');
