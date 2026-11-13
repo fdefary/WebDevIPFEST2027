@@ -1,7 +1,8 @@
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { onSnapshot, collection } from 'firebase/firestore'
+import { httpsCallable } from 'firebase/functions'
 
-import { DB, AUTH } from '../../app/index.js'
+import { DB, AUTH, FUNCTIONS } from '../../app/index.js'
 import { privateStorageLink } from '../../shared/private-download.js'
 import { TEAM_DOCUMENTS } from '../../shared/team-documents.js'
 import { getRoleClaims } from '../../shared/role-claims.js'
@@ -46,6 +47,9 @@ const hasFinalPayment = (team) => Boolean(team.final_reg)
 
 // Jumlah kolom tabel Final Payment (harus sama dengan <thead> di HTML)
 const PAYMENT_COLS = 9
+
+// Jumlah kolom tabel Database (harus sama dengan <thead> di HTML)
+const DB_COLS = 24
 
 // ===============================
 //   HELPERS
@@ -140,6 +144,7 @@ const logoutBtn = document.getElementById('logout-btn')
 
 let registrationChart = null
 let unsubscribeTeams = null
+let latestTeams = []
 
 // ===============================
 //   AUTH
@@ -161,19 +166,21 @@ onAuthStateChanged(AUTH, async (user) => {
 
     document.body.style.visibility = 'visible'
     if (!unsubscribeTeams) {
-        showTableMessage(delRelList, 22, 'Loading data...')
+        showTableMessage(delRelList, DB_COLS, 'Loading data...')
         showTableMessage(treasuryList, PAYMENT_COLS, 'Loading data...')
         unsubscribeTeams = onSnapshot(collection(DB, 'Team'), (snap) => {
             const teams = sortTeams(snap.docs.map(d => ({ id: d.id, ...d.data() })))
+            latestTeams = teams
             renderDashboard(teams)
             renderDatabase(teams)
             renderPayment(teams)
+            loadAccountStatus(teams)
         }, (err) => {
             console.error('Cannot read Team collection', err)
             const msg = err.code === 'permission-denied'
                 ? 'Akun ini tidak punya izin membaca data tim.'
                 : 'Gagal memuat data tim. Coba muat ulang halaman.'
-            showTableMessage(delRelList, 22, msg)
+            showTableMessage(delRelList, DB_COLS, msg)
             showTableMessage(treasuryList, PAYMENT_COLS, msg)
             if (totalTeamsEl) totalTeamsEl.textContent = msg
         })
@@ -223,8 +230,13 @@ function renderDashboard(teams) {
 
     if (totalTeamsEl) {
         const verified = teams.filter(isRegVerified).length
+        const unverifiedEmails = teams.filter(team => {
+            const status = accountStatus.get(team.id)
+            return status?.exists && !status.emailVerified
+        }).length
         totalTeamsEl.textContent =
-            `Total Teams Registered: ${teams.length}  ·  Verified: ${verified}  ·  Pending: ${teams.length - verified}`
+            `Total Teams Registered: ${teams.length}  ·  Verified: ${verified}  ·  Pending: ${teams.length - verified}` +
+            (accountStatus.size ? `  ·  Email not verified: ${unverifiedEmails}` : '')
     }
     if (unknown > 0) {
         console.warn(`${unknown} tim punya nilai "competition" yang tidak dikenali, cek ejaannya di Firestore.`)
@@ -287,6 +299,55 @@ function renderChart(counts) {
 }
 
 // ===============================
+//   LEADER ACCOUNT STATUS
+// ===============================
+// Status verifikasi email ada di Firebase Auth, bukan Firestore, jadi diambil lewat Cloud Function.
+// Team/{id} memakai UID ketua sebagai ID, jadi hanya akun ketua yang punya status.
+// Status diambil sekali per tim; muat ulang halaman untuk melihat perubahan terbaru.
+const listLeaderAccountStatus = httpsCallable(FUNCTIONS, 'listLeaderAccountStatus')
+const accountStatus = new Map()
+let accountStatusFailed = false
+let accountStatusLoading = false
+
+async function loadAccountStatus(teams) {
+    if (accountStatusLoading || accountStatusFailed) return
+    const missing = teams.map(team => team.id).filter(id => !accountStatus.has(id))
+    if (missing.length === 0) return
+
+    accountStatusLoading = true
+    try {
+        const batch = missing.slice(0, 1000)
+        const { data } = await listLeaderAccountStatus({ teamIds: batch })
+        // Berhenti kalau jawaban tidak lengkap, supaya function tidak dipanggil berulang tanpa henti.
+        if (!batch.every(id => data?.accounts?.[id])) throw new Error('Incomplete account status response')
+        batch.forEach(id => accountStatus.set(id, data.accounts[id]))
+    } catch (error) {
+        console.error('Cannot load leader email verification status', error)
+        accountStatusFailed = true
+    } finally {
+        accountStatusLoading = false
+    }
+    renderDashboard(latestTeams)
+    renderDatabase(latestTeams)
+    // Tim baru yang masuk selama permintaan berjalan diambil di putaran berikutnya.
+    if (!accountStatusFailed) loadAccountStatus(latestTeams)
+}
+
+const emailStatusCell = (team) => {
+    const status = accountStatus.get(team.id)
+    if (!status) return accountStatusFailed ? '-' : '<span class="text-secondary">Loading...</span>'
+    if (!status.exists) return '<span class="pay-badge pay-rejected">No account</span>'
+    return status.emailVerified
+        ? '<span class="pay-badge pay-verified">Verified</span>'
+        : '<span class="pay-badge pay-pending cm-badge-pending">Not verified</span>'
+}
+
+const lastSignInCell = (team) => {
+    const signedIn = accountStatus.get(team.id)?.lastSignInAt
+    return signedIn ? esc(formatTime(signedIn)) : '-'
+}
+
+// ===============================
 //   DATABASE TAB
 // ===============================
 // Field kartu mahasiswa: studentCardUrl (sama dengan versi 2026)
@@ -318,7 +379,7 @@ function renderDatabase(teams) {
     if (!delRelList) return
 
     if (teams.length === 0) {
-        showTableMessage(delRelList, 22, 'Belum ada tim yang terdaftar.')
+        showTableMessage(delRelList, DB_COLS, 'Belum ada tim yang terdaftar.')
         return
     }
 
@@ -338,6 +399,8 @@ function renderDatabase(teams) {
             <td rowspan="${rows}">${esc(leader.university)}</td>
             <td rowspan="${rows}">${esc(competitionName(team))}</td>
             <td rowspan="${rows}">${statusBadge(team.payment_status)}</td>
+            <td rowspan="${rows}">${emailStatusCell(team)}</td>
+            <td rowspan="${rows}">${lastSignInCell(team)}</td>
             <td rowspan="${rows}">${rows}</td>
             ${personCells(leader, fmt, true)}
             ${teamDocumentCells(team, rows)}
