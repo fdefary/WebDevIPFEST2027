@@ -180,7 +180,6 @@ async function fetchUserData() {
 
         let finalStatusText = "Not Paid";
         if (finalPaymentStatus === "pending") finalStatusText = "Pending";
-        else if (finalPaymentStatus === "down_payment_verified") finalStatusText = "Down Payment Verified";
         else if (finalPaymentStatus === "verified") finalStatusText = "Verified";
 
         setText("Final-Payment-Status", finalStatusText);
@@ -1346,27 +1345,10 @@ function generateFinalModal(teamData) {
                                     </select>
                                 </div>
                                 <div class="col-6">
-                                    <label for="leader-payment-type" class="form-label">Payment Scheme</label>
-                                    <select id="leader-payment-type" name="leader-payment-type" class="form-select" required>
-                                        <option value="Full">Full Payment</option>
-                                        <option value="DP" selected>Down Payment</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="row"> 
-                                <div class="col-6">
                                     <label for="leader-payment-method" class="form-label">Payment Method</label>
                                     <select id="leader-payment-method" name="leader-payment-method" class="form-select" required>
                                         <option value="Bank Mandiri">Bank Mandiri</option>
                                         <option value="Paypal">Paypal</option>
-                                    </select>
-                                </div>
-                                <div class="col-6" id="down-payment-category-col">
-                                    <label for="leader-down-payment-category" class="form-label">Category (DP)</label>
-                                    <select id="leader-down-payment-category" name="leader-down-payment-category" class="form-select">
-                                        <option value="First">First Payment</option>
-                                        <option value="Last">Last Payment</option>
                                     </select>
                                 </div>
                             </div>
@@ -1392,27 +1374,6 @@ function generateFinalModal(teamData) {
             </div>
         </div>
     `;
-    // Ambil elemen
-    const paymentTypeSelect = document.getElementById("leader-payment-type");
-    const downPaymentCategoryCol = document.getElementById("down-payment-category-col");
-    const downPaymentCategorySelect = document.getElementById("leader-down-payment-category");
-
-    // Fungsi untuk toggle visibility dan set default
-    function updateCategoryVisibility() {
-        if (paymentTypeSelect.value === "DP") {
-            downPaymentCategoryCol.style.display = "block"; // muncul
-            downPaymentCategorySelect.disabled = false;
-            downPaymentCategorySelect.value = "First"; // default First Payment
-        } else {
-            downPaymentCategoryCol.style.display = "none"; // sembunyi
-            downPaymentCategorySelect.disabled = true;
-        }
-    }
-
-    // Event listener
-    paymentTypeSelect.addEventListener("change", updateCategoryVisibility);
-    updateCategoryVisibility(); // panggil sekali untuk inisialisasi
-
     onDOMReady(() => {
         initFinalPaymentBindings(teamData);
 
@@ -1480,36 +1441,12 @@ function generateFinalModal(teamData) {
 // PRICE TABLE
 const PRICE_TABLE = {
     "Full Hospitality": {
-        Full: {
-            "Bank Mandiri": 700000,
-            "Paypal": 55
-        },
-        DP: {
-            First: {
-                "Bank Mandiri": 400000,
-                "Paypal": 30
-            },
-            Last: {
-                "Bank Mandiri": 300000,
-                "Paypal": 20
-            }
-        }
+        "Bank Mandiri": 700000,
+        "Paypal": 55
     },
     "Excluding Accommodation": {
-        Full: {
-            "Bank Mandiri": 400000,
-            "Paypal": 30
-        },
-        DP: {
-            First: {
-                "Bank Mandiri": 300000,
-                "Paypal": 20
-            },
-            Last: {
-                "Bank Mandiri": 150000,
-                "Paypal": 12
-            }
-        }
+        "Bank Mandiri": 400000,
+        "Paypal": 30
     }
 };
 
@@ -1518,19 +1455,13 @@ function initFinalPaymentBindings(teamData) {
     console.log("initFinalPaymentBindings: running");
 
     const leaderHospitality = document.getElementById("leader-hospitality-type");
-    const leaderPaymentScheme = document.getElementById("leader-payment-type");
     const leaderPaymentMethod = document.getElementById("leader-payment-method");
-    const leaderCategory = document.getElementById("leader-down-payment-category");
     const leaderPriceSpan = document.getElementById("final-payment-price");
     const leaderInfoBox = document.getElementById("final-payment-method-info");
 
     // Ambil harga sesuai tabel, tanpa konversi Paypal tambahan
-    function getPrice(hosp, scheme, method, category = null) {
-        if (scheme === "Full") {
-            return PRICE_TABLE[hosp].Full[method];
-        } else { // DP
-            return PRICE_TABLE[hosp].DP[category][method];
-        }
+    function getPrice(hosp, method) {
+        return PRICE_TABLE[hosp][method];
     }
 
     function updatePaymentMethodInfo(infoBox, method) {
@@ -1548,11 +1479,9 @@ function initFinalPaymentBindings(teamData) {
 
     function updateLeaderPrice() {
         const hosp = leaderHospitality.value;
-        const scheme = leaderPaymentScheme.value;
         const method = leaderPaymentMethod.value;
-        const category = leaderCategory.value;
 
-        const price = getPrice(hosp, scheme, method, category);
+        const price = getPrice(hosp, method);
         leaderPriceSpan.textContent = method === "Paypal" 
             ? `$${price.toFixed(2)}` 
             : `IDR ${price.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -1561,9 +1490,7 @@ function initFinalPaymentBindings(teamData) {
     }
 
     leaderHospitality.addEventListener("change", updateLeaderPrice);
-    leaderPaymentScheme.addEventListener("change", updateLeaderPrice);
     leaderPaymentMethod.addEventListener("change", updateLeaderPrice);
-    leaderCategory.addEventListener("change", updateLeaderPrice);
 
     updateLeaderPrice(); // inisialisasi leader
 
@@ -1578,10 +1505,8 @@ function initFinalPaymentBindings(teamData) {
             function updateMemberPrice() {
                 const hospVal = hosp.value;
                 const methodVal = method.value;
-                const scheme = leaderPaymentScheme.value;
-                const category = leaderCategory.value;
 
-                const price = getPrice(hospVal, scheme, methodVal, category);
+                const price = getPrice(hospVal, methodVal);
                 priceSpan.textContent = methodVal === "Paypal" 
                     ? `$${price.toFixed(2)}` 
                     : `IDR ${price.toLocaleString('id-ID', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -1592,8 +1517,6 @@ function initFinalPaymentBindings(teamData) {
 
             hosp.addEventListener("change", updateMemberPrice);
             method.addEventListener("change", updateMemberPrice);
-            leaderPaymentScheme.addEventListener("change", updateMemberPrice);
-            leaderCategory.addEventListener("change", updateMemberPrice);
 
             updateMemberPrice();
         });
@@ -1601,8 +1524,6 @@ function initFinalPaymentBindings(teamData) {
 }
 
 function collectFinalFormData(teamData) {
-    const leaderPaymentType = document.getElementById("leader-payment-type").value;
-    const leaderPaymentCategory = document.getElementById("leader-down-payment-category").value;
     const leaderPaymentMethod = document.getElementById("leader-payment-method").value;
     const leaderHospitality = document.getElementById("leader-hospitality-type").value;
     const leaderFile = document.getElementById("final-leader-payment-submit").files[0];
@@ -1631,10 +1552,6 @@ function collectFinalFormData(teamData) {
         },
 
         members: membersData,
-
-        // digunakan untuk determinasi CASE di submitFinalRegistration()
-        paymentScheme: leaderPaymentType,
-        dpCategory: leaderPaymentCategory,
     };
 }
 
@@ -1686,18 +1603,15 @@ async function submitFinalRegistration(currentUID, formData, teamData) {
                     hospitality: formData.leader.hospitality,
                     paymentMethod: formData.leader.paymentMethod,
                     paymentProof: leaderURL || "-",
-                    lastPayment: "-",           // <── khusus leader
                 },
 
                 members: formData.members.map((m, i) => ({
                     hospitality: m.hospitality,
                     paymentMethod: m.paymentMethod,
                     paymentProof: memberPaymentURLs[i] || "-",
-                    lastPayment: "-",           // <── khusus member
                 })),
 
-                paymentScheme: formData.paymentScheme,
-                dpCategory: formData.dpCategory ?? "-",
+                paymentScheme: "Full",
                 createdAt: serverTimestamp(),
                 paymentStatus: "pending"
             }
@@ -1705,86 +1619,27 @@ async function submitFinalRegistration(currentUID, formData, teamData) {
     }
 
     // ======================================================
-    // CASE 2: FULL PAYMENT — overwrite semua
+    // CASE 2: SUBMIT ULANG — overwrite semua
     // ======================================================
-    if (formData.paymentScheme === "Full") {
-        return updateDoc(teamRef, {
-            final_reg: {
-                leader: {
-                    hospitality: formData.leader.hospitality,
-                    paymentMethod: formData.leader.paymentMethod,
-                    paymentProof: leaderURL || "-",
-                    lastPayment: "-", // reset
-                },
+    return updateDoc(teamRef, {
+        final_reg: {
+            leader: {
+                hospitality: formData.leader.hospitality,
+                paymentMethod: formData.leader.paymentMethod,
+                paymentProof: leaderURL || "-",
+            },
 
-                members: formData.members.map((m, i) => ({
-                    hospitality: m.hospitality,
-                    paymentMethod: m.paymentMethod,
-                    paymentProof: memberPaymentURLs[i] || "-",
-                    lastPayment: "-", // reset
-                })),
+            members: formData.members.map((m, i) => ({
+                hospitality: m.hospitality,
+                paymentMethod: m.paymentMethod,
+                paymentProof: memberPaymentURLs[i] || "-",
+            })),
 
-                paymentScheme: "Full",
-                dpCategory: "-",
-                updatedAt: serverTimestamp(),
-                paymentStatus : "pending"
-            }
-        });
-    }
-
-    // ======================================================
-    // CASE 3: DP LAST PAYMENT — SELURUH TIM SUBMIT SEKALIGUS
-    // ======================================================
-    if (formData.paymentScheme === "DP" && formData.dpCategory === "Last") {
-        const updatedMembers = existing.members.map((member, i) => {
-            return {
-                ...member,
-                lastPayment: memberPaymentURLs[i] || member.lastPayment || "-"
-            };
-        });
-        const updatedLeader = {
-            ...existing.leader,
-            lastPayment: leaderURL || existing.leader.lastPayment || "-"
-        };
-        return updateDoc(teamRef, {
-            "final_reg.leader": updatedLeader,
-            "final_reg.members": updatedMembers,  
-            "final_reg.dpCategory": "Last",
-            "final_reg.lastPaymentAt": serverTimestamp(),
-            "final_reg.paymentStatus": "pending"
-        });
-    }
-
-
-    // ======================================================
-    // CASE 4: DP FIRST PAYMENT OVERWRITE (kecuali lastPayment)
-    // ======================================================
-    if (formData.paymentScheme === "DP" && formData.dpCategory === "First") {
-        return updateDoc(teamRef, {
-            final_reg: {
-                leader: {
-                    hospitality: formData.leader.hospitality,
-                    paymentMethod: formData.leader.paymentMethod,
-                    paymentProof: leaderURL || existing?.leader?.paymentProof || "-",
-                    lastPayment: existing?.leader?.lastPayment ?? "-", // pertahankan
-                },
-
-                members: formData.members.map((m, i) => ({
-                    hospitality: m.hospitality,
-                    paymentMethod: m.paymentMethod,
-                    paymentProof: memberPaymentURLs[i] || existing?.members?.[i]?.paymentProof || "-",
-                    lastPayment: existing?.members?.[i]?.lastPayment ?? "-", // pertahankan
-                })),
-
-                paymentScheme: "DP",
-                dpCategory: "First",
-                updatedAt: serverTimestamp(),
-                paymentStatus : "pending"
-            }
-        });
-    }
-
-    console.warn("No case matched, check formData.");
+            paymentScheme: "Full",
+            updatedAt: serverTimestamp(),
+            paymentStatus : "pending"
+        }
+    });
 }
 
 
@@ -1794,32 +1649,11 @@ function setupFinalTab(finalStatus) {
 
     if (!finalTab) return;
 
-    // Buka Tab untuk Verified & DP Verified
-    if (finalStatus === "verified" || finalStatus === "down_payment_verified") {
+    // Buka Tab untuk Verified
+    if (finalStatus === "verified") {
         finalTab.style.pointerEvents = "auto";
         finalTab.style.opacity = "1";
         finalTab.style.cursor = "pointer";
-
-        // Kita kunci tombolnya HANYA jika statusnya "down_payment_verified"
-        if (finalStatus === "down_payment_verified") {
-            const finalSubmitBtn = document.getElementById("final-submit-btn");
-            const finalFileInput = document.getElementById("final-submit");
-
-            // 1. Matikan input file
-            if (finalFileInput) {
-                finalFileInput.disabled = true;
-            }
-
-            // 2. Cegah tombol submit dengan Alert
-            if (finalSubmitBtn) {
-                finalSubmitBtn.onclick = function (e) {
-                    e.preventDefault();
-                    alert("⚠️ Please complete your full payment to submit the file.");
-                };
-            }
-        }
-        // --- SELESAI TAMBAHAN ---
-
     } else {
         // Logic untuk yang belum bayar sama sekali
         finalTab.style.pointerEvents = "none";
