@@ -37,17 +37,17 @@ const COMPETITION_ALIASES = {
 }
 
 // Data pembayaran final ditulis src/pages/competition/delegates.js ke Team/{id}.final_reg:
-//   paymentStatus : "pending" | "down_payment_verified" | "verified"
-//   paymentScheme : "Full" | "DP"     dpCategory : "First" | "Last" | "-"
-//   leader / members[] : { hospitality, paymentMethod, paymentProof, lastPayment }
-//   createdAt / updatedAt / lastPaymentAt : Firestore Timestamp
+//   paymentStatus : "pending" | "verified"
+//   paymentScheme : "Full"
+//   leader / members[] : { hospitality, paymentMethod, paymentProof }
+//   createdAt / updatedAt : Firestore Timestamp
 const finalPaymentStatusOf = (team) => team.final_reg?.paymentStatus ?? null
 
 // Tim dianggap sudah mengirim pembayaran final kalau dokumen final_reg ada
 const hasFinalPayment = (team) => Boolean(team.final_reg)
 
 // Jumlah kolom tabel Final Payment (harus sama dengan <thead> di HTML)
-const PAYMENT_COLS = 9
+const PAYMENT_COLS = 8
 
 // Jumlah kolom tabel Database (harus sama dengan <thead> di HTML)
 const DB_COLS = 24
@@ -83,7 +83,6 @@ const esc = (value) => {
 const statusInfo = (raw) => {
     const v = String(raw ?? '').trim().toLowerCase()
     if (v === 'verified' || v === 'paid' || v === 'accepted') return { label: 'Verified', cls: 'verified' }
-    if (v === 'down_payment_verified') return { label: 'DP Verified', cls: 'partial' }
     if (v === 'rejected' || v === 'failed' || v === 'declined') return { label: 'Rejected', cls: 'rejected' }
     if (v === '' || v === 'pending' || v === 'pending_verification' || v === 'unverified') return { label: 'Pending', cls: 'pending' }
     return { label: v.charAt(0).toUpperCase() + v.slice(1), cls: 'pending' }
@@ -530,10 +529,7 @@ function renderPayment(teams) {
     const fragment = document.createDocumentFragment()
     finalTeams.forEach((team, index) => {
         const fr = team.final_reg || {}
-        const scheme = fr.paymentScheme === 'DP'
-            ? `DP (${esc(fr.dpCategory)})`
-            : esc(fr.paymentScheme)
-        const lastUpdate = fr.lastPaymentAt ?? fr.updatedAt ?? fr.createdAt
+        const lastUpdate = fr.updatedAt ?? fr.createdAt
 
         const row = document.createElement('tr')
         row.classList.add('payment-row')
@@ -543,9 +539,8 @@ function renderPayment(teams) {
             <td>${esc(team.leader?.university)}</td>
             <td>${esc(competitionName(team))}</td>
             <td>${statusBadge(finalPaymentStatusOf(team))}</td>
-            <td>${scheme}</td>
             <td>${esc(hospitalityOf(fr))}</td>
-            <td>${proofLinks(fr, 'paymentProof')}${fr.paymentScheme === 'DP' ? `<br><small>Last: ${proofLinks(fr, 'lastPayment')}</small>` : ''}</td>
+            <td>${proofLinks(fr, 'paymentProof')}</td>
             <td>${formatTime(lastUpdate)}</td>
         `
         fragment.appendChild(row)

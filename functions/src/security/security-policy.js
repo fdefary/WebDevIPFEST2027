@@ -13,7 +13,7 @@ const INFO_DOCS = {
 function assertPaymentUpdates(updates) {
   if (!Array.isArray(updates) || !updates.length || updates.length > 450 || updates.some((update) =>
     !update || typeof update !== 'object' || !validTeamId(update.teamId) || !['registration', 'final'].includes(update.kind)
-    || !(update.kind === 'registration' ? ['pending_verification', 'verified'] : ['pending', 'down_payment_verified', 'verified']).includes(update.status))
+    || !(update.kind === 'registration' ? ['pending_verification', 'verified'] : ['pending', 'verified']).includes(update.status))
     || new Set(updates.map((update) => update?.teamId)).size !== updates.length) {
     throw new Error('Invalid payment updates')
   }

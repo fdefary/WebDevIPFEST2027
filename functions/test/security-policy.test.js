@@ -3,7 +3,8 @@ const { test } = require('node:test')
 const { assertPaymentUpdates, assertResult, assertCase, INFO_DOCS, RELEASES } = require('../src/security/security-policy')
 
 test('validates payment batches and status enums', () => {
-  assert.doesNotThrow(() => assertPaymentUpdates([{ teamId: 't1', kind: 'final', status: 'down_payment_verified' }]))
+  assert.doesNotThrow(() => assertPaymentUpdates([{ teamId: 't1', kind: 'final', status: 'verified' }]))
+  assert.throws(() => assertPaymentUpdates([{ teamId: 't1', kind: 'final', status: 'down_payment_verified' }]))
   assert.throws(() => assertPaymentUpdates([{ teamId: 't1', kind: 'registration', status: 'approved' }]))
   assert.throws(() => assertPaymentUpdates([{ teamId: 't1/another/doc', kind: 'final', status: 'verified' }]))
   assert.throws(() => assertPaymentUpdates([

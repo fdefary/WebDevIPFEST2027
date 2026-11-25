@@ -17,20 +17,8 @@ const USD_TO_IDR = 16000
 // Harga final per orang — SALINAN dari PRICE_TABLE di src/pages/competition/delegates.js.
 // Kalau harga di delegates.js berubah, ubah juga di sini.
 const FINAL_PRICE_TABLE = {
-    'Full Hospitality': {
-        Full: { 'Bank Mandiri': 700000, 'Bank BCA': 700000, 'Gopay': 700000, 'Paypal': 55 },
-        DP: {
-            First: { 'Bank Mandiri': 400000, 'Bank BCA': 400000, 'Gopay': 400000, 'Paypal': 30 },
-            Last:  { 'Bank Mandiri': 300000, 'Bank BCA': 300000, 'Gopay': 300000, 'Paypal': 20 }
-        }
-    },
-    'Excluding Accommodation': {
-        Full: { 'Bank Mandiri': 400000, 'Bank BCA': 400000, 'Gopay': 400000, 'Paypal': 30 },
-        DP: {
-            First: { 'Bank Mandiri': 300000, 'Bank BCA': 300000, 'Gopay': 300000, 'Paypal': 20 },
-            Last:  { 'Bank Mandiri': 150000, 'Bank BCA': 150000, 'Gopay': 150000, 'Paypal': 12 }
-        }
-    }
+    'Full Hospitality':        { 'Bank Mandiri': 700000, 'Bank BCA': 700000, 'Gopay': 700000, 'Paypal': 55 },
+    'Excluding Accommodation': { 'Bank Mandiri': 400000, 'Bank BCA': 400000, 'Gopay': 400000, 'Paypal': 30 }
 }
 
 // Pilihan status di dropdown
@@ -41,7 +29,6 @@ const REG_STATUSES = [
 ]
 const FINAL_STATUSES = [
     { value: 'pending',               label: 'Pending' },
-    { value: 'down_payment_verified', label: 'DP Verified' },
     { value: 'verified',              label: 'Verified' }
 ]
 
@@ -119,40 +106,22 @@ const regFeeOf = (t) => {
 }
 
 // Uang final yang sudah DIVERIFIKASI untuk satu tim (IDR).
-// - verified + Full : harga Full tiap orang
-// - verified + DP   : First + Last tiap orang
-// - down_payment_verified : First tiap orang
-const finalPersonPrice = (person, scheme, part) => {
-    const hosp = FINAL_PRICE_TABLE[person?.hospitality]
-    const method = person?.paymentMethod
-    if (!hosp || !method) return 0
-    const raw = scheme === 'Full' ? hosp.Full?.[method] : hosp.DP?.[part]?.[method]
+// - verified : harga tiap orang
+const finalPersonPrice = (person) => {
+    const raw = FINAL_PRICE_TABLE[person?.hospitality]?.[person?.paymentMethod]
     if (typeof raw !== 'number') return 0
-    return method === 'Paypal' ? raw * USD_TO_IDR : raw
+    return person.paymentMethod === 'Paypal' ? raw * USD_TO_IDR : raw
 }
 
 const finalFeeOf = (t) => {
     const fr = t.final_reg
-    if (!fr) return 0
-    const status = finalStatusOf(t)
+    if (!fr || finalStatusOf(t) !== 'verified') return 0
     const people = [fr.leader, ...(Array.isArray(fr.members) ? fr.members : [])].filter(Boolean)
-    const scheme = fr.paymentScheme === 'Full' ? 'Full' : 'DP'
-
-    return people.reduce((sum, p) => {
-        if (status === 'verified') {
-            return sum + (scheme === 'Full'
-                ? finalPersonPrice(p, 'Full')
-                : finalPersonPrice(p, 'DP', 'First') + finalPersonPrice(p, 'DP', 'Last'))
-        }
-        if (status === 'down_payment_verified') {
-            return sum + finalPersonPrice(p, 'DP', 'First')
-        }
-        return sum
-    }, 0)
+    return people.reduce((sum, p) => sum + finalPersonPrice(p), 0)
 }
 
 const regStatusClass = (v) => v === 'verified' ? 'bg-success' : v === 'rejected' ? 'bg-danger' : 'bg-warning'
-const finalStatusClass = (v) => v === 'verified' ? 'bg-success' : v === 'down_payment_verified' ? 'bg-info' : 'bg-warning'
+const finalStatusClass = (v) => v === 'verified' ? 'bg-success' : 'bg-warning'
 
 const statusSelect = (options, current, extraAttrs, clsFn) => `
     <select class="form-select form-select-sm ${clsFn(current)}" ${extraAttrs}>
@@ -192,7 +161,7 @@ const el = {
 }
 
 const REG_COLS = 10
-const FINAL_COLS = 12
+const FINAL_COLS = 9
 
 let unsubscribeTeams = null
 let latestTeams = []
@@ -313,7 +282,7 @@ function renderVerification(teams) {
 function renderFinal(teams) {
     if (!el.finalList) return
     const finalTeams = teams.filter(t => t.final_reg).sort((a, b) => {
-        const order = (t) => ({ pending: 0, down_payment_verified: 1, verified: 2 }[finalStatusOf(t)] ?? 0)
+        const order = (t) => ({ pending: 0, verified: 1 }[finalStatusOf(t)] ?? 0)
         return order(a) - order(b) || String(a.teamName ?? '').localeCompare(String(b.teamName ?? ''))
     })
 
@@ -333,7 +302,6 @@ function renderFinal(teams) {
         ]
         const span = people.length
         const current = pendingFinal.get(t.id) ?? finalStatusOf(t)
-        const isDP = fr.paymentScheme === 'DP'
 
         people.forEach((p, pi) => {
             const row = document.createElement('tr')
@@ -343,8 +311,7 @@ function renderFinal(teams) {
             const personCells = `
                 <td>${esc(p.pay.paymentMethod)}</td>
                 <td><span class="d-block">${esc(p.name)}</span><small class="text-muted">${p.role}</small></td>
-                <td>${linkCell(p.pay.paymentProof, 'First')}</td>
-                <td>${isDP ? linkCell(p.pay.lastPayment, 'Last') : '-'}</td>
+                <td>${linkCell(p.pay.paymentProof, 'Proof')}</td>
                 <td>${esc(p.pay.hospitality)}</td>
             `
 
@@ -354,8 +321,6 @@ function renderFinal(teams) {
                     <td rowspan="${span}">${esc(t.teamName)}</td>
                     <td rowspan="${span}">${esc(t.leader?.university)}</td>
                     <td rowspan="${span}">${esc(competitionName(t))}</td>
-                    <td rowspan="${span}">${esc(fr.paymentScheme)}</td>
-                    <td rowspan="${span}">${isDP ? esc(fr.dpCategory) : '-'}</td>
                     ${personCells}
                     <td rowspan="${span}">${statusSelect(FINAL_STATUSES, current, `data-team-id="${esc(t.id)}" data-kind="final"`, finalStatusClass)}</td>
                 `
