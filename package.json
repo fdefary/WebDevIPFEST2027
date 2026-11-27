@@ -5,9 +5,11 @@
   "main": "index.js",
   "scripts": {
     "dev": "webpack serve --config webpack.config.babel.js --mode development",
+    "dev:exam:emulators": "firebase emulators:start --config firebase.exam-emulators.json --project demo-ipfest-local",
+    "seed:exam:emulators": "node functions/scripts/seed-exam-emulator.js",
     "start": "webpack serve --config webpack.config.babel.js --mode development",
     "build": "webpack --config webpack.config.babel.js --mode production",
-    "test": "node scripts/check-frontend-layout.js && node scripts/check-public-references.js && node scripts/check-registration-flow.js && node scripts/check-storage-path.js && node scripts/check-firebase-project.js && node --test tests/public-references.test.js tests/public-image-organization.test.js tests/previous-event-photos.test.js tests/registration-fields.test.js tests/registration-pricing.test.js tests/registration-deadline.test.js tests/email-verification-grace.test.js tests/dom-ready.test.js tests/dom-ready-usage.test.js tests/login-credentials.test.js tests/compe-manager-auth-gate.test.js tests/team-search.test.js && npm run test:rules",
+    "test": "node scripts/check-frontend-layout.js && node scripts/check-public-references.js && node scripts/check-registration-flow.js && node scripts/check-storage-path.js && node scripts/check-firebase-project.js && node --test tests/public-references.test.js tests/public-image-organization.test.js tests/previous-event-photos.test.js tests/registration-fields.test.js tests/registration-pricing.test.js tests/registration-deadline.test.js tests/email-verification-grace.test.js tests/dom-ready.test.js tests/dom-ready-usage.test.js tests/login-credentials.test.js tests/compe-manager-auth-gate.test.js tests/team-search.test.js tests/team-documents.test.js tests/page-entry-bootstrap.test.js tests/smart-comp-admin-login.test.js tests/exam-packet-import.test.js tests/sc-exam-admin-auth-gate.test.js tests/sc-exam-admin-sessions.test.js tests/sc-exam-page.test.js tests/sc-team-access.test.js tests/deploy-docs.test.js tests/firebase-emulator-mode.test.js && npm run test:rules",
     "check:public": "node scripts/check-public-references.js",
     "test:rules": "firebase emulators:exec --project demo-ipfest-p0 --only auth,firestore,storage \"node --test --test-concurrency=1 tests/rules/access.test.js tests/registration-integration.test.js\""
   },
@@ -40,7 +42,9 @@
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "firebase": "^9.14.0",
-    "googleapis": "^183.0.0"
+    "googleapis": "^183.0.0",
+    "papaparse": "^5.7.1",
+    "pdfjs-dist": "^6.5.438"
   },
   "type": "module"
 }

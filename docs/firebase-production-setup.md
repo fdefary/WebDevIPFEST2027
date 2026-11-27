@@ -11,7 +11,7 @@ This setup starts with empty application data. It does **not** copy users, Fires
 
 - `.firebaserc` defaults to `ipfest-2027`.
 - `firebase.json` targets Hosting site `ipfest-2027`.
-- `src/index.js` uses the Web App configuration registered in project `ipfest-2027`.
+- `src/app/index.js` uses the Web App configuration registered in project `ipfest-2027`.
 - Functions use Node.js 22 and the web-to-Functions region is `asia-southeast2`.
 - Firestore `(default)` Standard was created in Jakarta (`asia-southeast2`); repo Rules and indexes were deployed on 2026-10-31.
 - The four core callable Functions are deployed in `asia-southeast2`; certificate issuance and email-trigger Functions remain intentionally undeployed.
@@ -41,14 +41,14 @@ In Firebase Console for `ipfest-2027`:
 2. Add `ipfest-2027.web.app` and any production custom domain under **Authentication → Settings → Authorized domains**.
 3. Configure and test the email verification template.
 
-No users are migrated from the old project; users register again. Create and verify new staff accounts before assigning claims.
+No users are migrated from the old project, so people registered only in `ipfest-2026` register again in `ipfest-2027`. Existing `ipfest-2027` registrations stay valid; for the exam, see [`smart-competition-exam-go-live.md`](smart-competition-exam-go-live.md). Create and verify new staff accounts before assigning claims.
 
 ## 3. Create/check Firestore and Storage
 
 1. The `(default)` Standard Firestore database has been created in `asia-southeast2` (Jakarta). Its location cannot be changed. The new database starts with closed rules; deploy `firestore.rules` before the app needs access.
-2. Create/check the default Storage bucket from `src/index.js`: `ipfest-2027.firebasestorage.app`.
+2. Create/check the default Storage bucket from `src/app/index.js`: `ipfest-2027.firebasestorage.app`.
 3. The certificate function separately reads `template_sertif/dummy_sertif_template.pdf`. Verify that this bucket and PDF exist and that the Functions runtime service account can read them; this is not automatically the default bucket.
-4. Review `firestore.rules`, `firestore.indexes.json`, and `storage.rules`. Indexes are currently empty; add any index Firestore reports during tests before deploying.
+4. Review `firestore.rules`, `firestore.indexes.json`, and `storage.rules`. `firestore.indexes.json` holds one collection-group field index that the Smart Competition exam image lookup needs; add any other index Firestore reports during tests.
 5. Seed the required `Information` documents and other initial data using an approved, repeatable process. Empty Firestore means these documents will not appear automatically.
 
 ## 4. Prepare Cloud Functions and email
@@ -61,11 +61,11 @@ If the Mailgun SMTP secret is not already configured, set it directly through th
 firebase functions:secrets:set MAILGUN_SMTP_PASSWORD --project ipfest-2027
 ```
 
-Verify the Mailgun sender/domain currently hardcoded in `functions/index.js`, the secret, and the certificate template before enabling certificate issuance. No SMTP password has been provided or set by this guide.
+Verify the Mailgun sender/domain currently hardcoded in `functions/src/index.js`, the secret, and the certificate template before enabling certificate issuance. No SMTP password has been provided or set by this guide.
 
 ## 5. Prepare staff claims
 
-Review the email-to-role mapping in `functions/role-assignments.js` and update it to the approved IPFEST 2027 staff accounts. After creating and verifying those accounts, authenticate with Google Cloud ADC and do a dry run:
+Review the email-to-role mapping in `functions/src/auth/role-assignments.js` and update it to the approved IPFEST 2027 staff accounts. After creating and verifying those accounts, authenticate with Google Cloud ADC and do a dry run:
 
 ```powershell
 gcloud auth application-default login
@@ -104,12 +104,14 @@ Use Firebase CLI only as an alternative when GitHub Actions is unavailable or wh
 firebase deploy --only firestore:rules,firestore:indexes,storage --project ipfest-2027
 
 # Core Functions only when backend code changed
-firebase deploy --only functions:createPrivateDownloadUrl,functions:updatePaymentVerifications,functions:updateCompetitionResult,functions:publishCompetitionCase --project ipfest-2027
+firebase deploy --only functions:createPrivateDownloadUrl,functions:updatePaymentVerifications,functions:listLeaderAccountStatus,functions:updateCompetitionResult,functions:publishCompetitionCase,functions:createExamPacket,functions:listExamPackets,functions:getAdminExamPacket,functions:removeExamPacket,functions:assignExamSession,functions:getAdminExamData,functions:exportExamSubmissions,functions:getExamAssetUrl,functions:getParticipantExamSchedule,functions:getParticipantExamState,functions:saveParticipantDraft,functions:advanceExamQuestion,functions:submitExam,functions:finalizeSmartCompetitionExamAttempts --project ipfest-2027
 
 # Hosting alternative to the GitHub Actions merge workflow
 npm run build
 firebase deploy --only hosting --project ipfest-2027
 ```
+
+**Smart Competition exam:** deploy the Functions, Rules, and indexes **before** merging the website to `main`; otherwise the live pages call functions that do not exist yet. `finalizeSmartCompetitionExamAttempts` is a scheduled function, so the CLI also sets up Cloud Scheduler. Question images are served through `getExamAssetUrl`, whose runtime service account must be able to sign URLs (`iam.serviceAccounts.signBlob`).
 
 Review the CLI deployment plan before confirming. If it proposes deleting a remote function, stop and review that change. **Do not use `--only functions` while certificate issuance is deferred**; that would also deploy `issueAttendanceCertificate` and `generateCertificate`. Authentication providers/domains, billing, secrets, staff accounts/claims, bucket contents, and Firestore seed data are not deployed by these commands.
 

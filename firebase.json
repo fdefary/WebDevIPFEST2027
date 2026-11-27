@@ -10,6 +10,7 @@
       "ignore": [
         "node_modules",
         ".git",
+        ".env.demo-ipfest-local",
         "firebase-debug.log",
         "firebase-debug.*.log",
         "*.local"

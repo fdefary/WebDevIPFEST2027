@@ -327,6 +327,26 @@ body.scp-page {
 .scp-page .answer-q button[type="submit"]:focus-visible { outline: 2px solid var(--sp-ivory); outline-offset: 3px; }
 .scp-page .answer-q button[type="submit"]:disabled { filter: grayscale(.7); opacity: .55; cursor: not-allowed; box-shadow: none; }
 
+/* ---------- Notifications: navy surface, ivory text; the left edge shows the kind ---------- */
+.scp-page .alert { --edge: var(--sp-gold); background: #0F1830; color: var(--sp-ivory); border: 1px solid var(--edge); border-left-width: 6px; border-radius: 6px; }
+.scp-page .alert-success { --edge: var(--sp-green); }
+.scp-page .alert-warning { --edge: var(--sp-orange); }
+.scp-page .alert-danger { --edge: var(--sp-red); }
+
+/* ---------- Teks & tombol di panel soal (Bootstrap defaults are too dim on navy) ---------- */
+.scp-page .form-text { color: rgba(248, 245, 242, .82); }
+.scp-page code { color: var(--sp-gold); }
+.scp-page #exam-continue {
+	padding: .55rem 1.9rem;
+	border: none !important;
+	background: linear-gradient(135deg, var(--sp-gold), var(--sp-orange));
+	color: var(--sp-navy);
+	font-weight: 700;
+}
+.scp-page #exam-continue:hover:not(:disabled) { filter: brightness(1.08); }
+.scp-page #exam-continue:focus-visible { outline: 2px solid var(--sp-ivory); outline-offset: 3px; }
+.scp-page #exam-continue:disabled { opacity: .55; }
+
 /* ---------- Mobile ---------- */
 @media (max-width: 576px) {
 	.scp-navbar-inner { height: 62px; }

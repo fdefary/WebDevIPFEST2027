@@ -1,16 +1,15 @@
 const admin = require('firebase-admin')
 const { onDocumentCreated } = require('firebase-functions/v2/firestore')
 const { onCall, HttpsError } = require('firebase-functions/v2/https')
+const { onSchedule } = require('firebase-functions/v2/scheduler')
 const { defineSecret } = require('firebase-functions/params')
-const { PDFDocument, rgb } = require('pdf-lib')
-const { Storage } = require('@google-cloud/storage')
-const nodeMailer = require('nodemailer')
 const { authorizeStoragePath, signedReadOptions } = require('./security/storage-access')
 const { assertPaymentUpdates, assertResult, assertCase, validTeamId, certificateId, validateCertificateAttendance } = require('./security/security-policy')
 const { assertTeamIds, chunk, summarizeAccounts } = require('./security/account-status')
+const examService = require('./exam/service')
+const { examAssetUrl } = require('./exam/asset-url')
 
 admin.initializeApp()
-const storage = new Storage()
 const mailgunSmtpPassword = defineSecret('MAILGUN_SMTP_PASSWORD')
 
 exports.createPrivateDownloadUrl = onCall({ region: 'asia-southeast2' }, async (request) => {
@@ -115,12 +114,58 @@ exports.issueAttendanceCertificate = onCall({ region: 'asia-southeast2' }, async
   return { queued: true, id }
 })
 
+function examCall(operation) {
+  return onCall({ region: 'asia-southeast2' }, async (request) => {
+    try {
+      return await operation(admin.firestore(), request.auth, request.data || {})
+    } catch (error) {
+      if (error instanceof HttpsError) throw error
+      const callableCodes = ['unauthenticated', 'permission-denied', 'invalid-argument', 'not-found', 'failed-precondition', 'already-exists']
+      if (callableCodes.includes(error.code)) throw new HttpsError(error.code, error.message)
+      console.error('Smart Competition exam operation failed', error)
+      throw new HttpsError('internal', 'Exam operation failed.')
+    }
+  })
+}
+
+exports.createExamPacket = examCall((db, auth, data) => examService.createExamPacket(db, auth, data))
+exports.listExamPackets = examCall((db, auth) => examService.listExamPackets(db, auth))
+exports.getAdminExamPacket = examCall((db, auth, data) => examService.getAdminExamPacket(db, auth, data.packetId))
+exports.removeExamPacket = examCall((db, auth, data) => examService.removeExamPacket(db, auth, data.packetId))
+exports.assignExamSession = examCall((db, auth, data) => examService.assignExamSession(db, auth, data))
+exports.getAdminExamData = examCall((db, auth) => examService.getAdminExamData(db, auth))
+exports.exportExamSubmissions = examCall((db, auth, data) => examService.exportExamSubmissions(db, auth, data))
+exports.getExamAssetUrl = onCall({ region: 'asia-southeast2' }, async (request) => {
+  try {
+    const path = await examService.authorizeExamAssetAccess(admin.firestore(), request.auth, request.data?.path)
+    return { url: await examAssetUrl(admin.storage().bucket().file(path)) }
+  } catch (error) {
+    if (error instanceof HttpsError) throw error
+    const callableCodes = ['unauthenticated', 'permission-denied', 'invalid-argument', 'not-found', 'failed-precondition']
+    if (callableCodes.includes(error.code)) throw new HttpsError(error.code, error.message)
+    console.error('Smart Competition exam asset link failed', error)
+    throw new HttpsError('internal', 'Could not create an exam asset link.')
+  }
+})
+exports.getParticipantExamSchedule = examCall((db, auth) => examService.getParticipantExamSchedule(db, auth))
+exports.getParticipantExamState = examCall((db, auth, data) => examService.getParticipantExamState(db, auth, data))
+exports.saveParticipantDraft = examCall((db, auth, data) => examService.saveParticipantDraft(db, auth, data))
+exports.advanceExamQuestion = examCall((db, auth, data) => examService.advanceExamQuestion(db, auth, data))
+exports.submitExam = examCall((db, auth, data) => examService.submitExam(db, auth, data))
+exports.finalizeSmartCompetitionExamAttempts = onSchedule({
+  schedule: 'every 1 minutes', timeZone: 'Asia/Jakarta', region: 'asia-southeast2'
+}, async () => examService.finalizeExpiredExamAttempts(admin.firestore()))
+
 exports.generateCertificate = onDocumentCreated({
   document: 'Certificates/{docId}',
   region: 'asia-southeast2',
   retry: true,
   secrets: [mailgunSmtpPassword]
 }, async (event) => {
+   // Loaded here so the other functions do not pay for them on every cold start.
+   const { PDFDocument, rgb } = require('pdf-lib')
+   const { Storage } = require('@google-cloud/storage')
+   const nodeMailer = require('nodemailer')
    const request = event.data.data()
    if (!request || request.status !== 'queued' || certificateId(request.event, request.attendeeId) !== event.params.docId) {
      throw new Error('Invalid certificate request')
@@ -143,7 +188,7 @@ exports.generateCertificate = onDocumentCreated({
 	}
 })
 
-   const templateBucket = storage.bucket('template_sertif')
+   const templateBucket = new Storage().bucket('template_sertif')
    const [templateFile] = await templateBucket.file('dummy_sertif_template.pdf').download()
 
    const pdfDoc = await PDFDocument.load(templateFile)

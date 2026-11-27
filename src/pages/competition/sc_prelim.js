@@ -1,269 +1,289 @@
-import { doc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
-
-import { DB, AUTH } from '../../app/index.js'
-import { SC_TEST_WINDOW, scTestStatus } from '../../shared/sc-schedule.js'
-
-// =====================================================================
-//   KONFIGURASI TES
-// =====================================================================
-// id      = id elemen .accordion-item di HTML, sekaligus nama field di SC_Del_Answer
-// optId   = name radio jawaban
-// timer   = detik untuk soal ini
-const QUESTIONS = [
-    { id: 'question1', optId: 'q-1-a', timer: 15, timerId: 'timer-q-1' },
-    { id: 'question2', optId: 'q-2-a', timer: 20, timerId: 'timer-q-2' }
-]
-
-// false = semua soal dibuka & semua timer berjalan bersamaan (perilaku lama)
-// true  = soal dibuka satu per satu; soal berikutnya mulai setelah soal sebelumnya terkirim
-// TODO: pilih sesuai aturan tes SC 2027
-const SEQUENTIAL = false
+import { httpsCallable } from 'firebase/functions'
+import { AUTH, FUNCTIONS } from '../../app/index.js'
+import { answerLayout, submitLabel } from '../../shared/sc-question-view.js'
 
 const LOGIN_PAGE = 'loginsc.html'
+// Timed answers are sent this long before the server deadline to cover network and processing delay.
+// The server rejects late answers, so raise this if slow connections still miss it.
+const SUBMIT_LEAD_MS = 1500
+const WARN_SECONDS = 10
+const DANGER_SECONDS = 5
+const DRAFT_IDLE_MS = 500
+const DRAFT_MAX_WAIT_MS = 2000
+const RETRY_FIRST_MS = 1000
+const RETRY_MAX_MS = 10000
+// Retrying cannot fix these.
+const PERMANENT_ERRORS = ['unauthenticated', 'permission-denied', 'not-found', 'failed-precondition', 'invalid-argument']
+  .map((code) => `functions/${code}`)
+const byId = (id) => document.getElementById(id)
+const call = (name, data = {}) => httpsCallable(FUNCTIONS, name)(data).then((result) => result.data)
+let state = null
+let timerId = null
+let saveId = null
+let reloadId = null
+let advancing = false
+// Whether the team has typed in the current question's box since this page showed it.
+let edited = false
+let draftPendingSince = null
+let retryMs = RETRY_FIRST_MS
+let assetLoad = 0
+let signedInEmail = ''
 
-// =====================================================================
-//   STATE
-// =====================================================================
-let answerRef = null
-let answers = {}                 // isi dokumen SC_Del_Answer/{uid}
-const timers = new Map()         // questionId -> intervalId
-const sent = new Set()           // soal yang sudah terkirim
+function showMessage(text, kind = 'info') {
+  const box = byId('exam-status')
+  box.className = `alert alert-${kind}`
+  box.textContent = text
+}
 
-// =====================================================================
-//   AUTH
-// =====================================================================
-onAuthStateChanged(AUTH, async (user) => {
-    if (!user) {
-        localStorage.setItem('currentURL', window.location.href)
-        window.location.href = LOGIN_PAGE
-        return
-    }
+function showFinished(message = 'Your submitted answers have been saved. You may now log out and close this page.') {
+  clearInterval(timerId)
+  byId('exam-note').classList.add('d-none')
+  byId('exam-panel').classList.add('d-none')
+  byId('exam-finished').classList.remove('d-none')
+  byId('exam-finished').querySelector('.scp-finished-text').textContent = message
+}
 
+function currentResponse() {
+  return byId('exam-answer-long').classList.contains('d-none')
+    ? byId('exam-answer-short').value.trim()
+    : byId('exam-answer-long').value.trim()
+}
+
+// An empty box nobody has typed in is not the team's answer: after a reload, the server can still
+// receive a draft that this page never saw.
+const isUntouched = () => !edited && !currentResponse()
+
+// Typed text also stays in the tab, so a reload shows it again even while its draft is still being
+// saved. Storage can be blocked by browser settings; the server draft still works then.
+const typedKey = () => `sc-typed:${state.sessionId}:${state.questionNumber}`
+function rememberTyped() {
+  try { sessionStorage.setItem(typedKey(), currentResponse()) } catch {}
+}
+function recallTyped() {
+  try { return sessionStorage.getItem(typedKey()) } catch { return null }
+}
+
+function tooManyWords(question, response) {
+  return question.category === 'Short Answer' && response.split(/\s+/).filter(Boolean).length > 4
+}
+
+function setControlsDisabled(disabled) {
+  for (const id of ['exam-continue', 'exam-answer-long', 'exam-answer-short']) byId(id).disabled = disabled
+}
+
+function renderAnswer(question, answer) {
+  const layout = answerLayout(question.category)
+  const long = byId('exam-answer-long')
+  const short = byId('exam-answer-short')
+  long.classList.toggle('d-none', !layout.long)
+  short.classList.toggle('d-none', layout.long)
+  // The type is set first: a number field discards text that is already in it.
+  short.type = layout.inputType
+  if (layout.inputType === 'number') short.step = 'any'
+  long.value = layout.long ? answer : ''
+  short.value = layout.long ? '' : answer
+  byId('answer-hint').classList.toggle('d-none', !layout.listHint)
+  byId('exam-continue').textContent = submitLabel(question.number, state.questionCount)
+}
+
+async function loadAssets(paths, load) {
+  for (const path of paths) {
     try {
-        // Hanya peserta SC (punya dokumen SC_Selection/{uid}) yang boleh ikut tes
-        const delegate = await getDoc(doc(DB, 'SC_Selection', user.uid))
-        if (!delegate.exists()) {
-            alert('This account is not registered as a Smart Competition participant.')
-            await signOut(AUTH)
-            window.location.href = LOGIN_PAGE
-            return
-        }
+      const { url } = await call('getExamAssetUrl', { path })
+      if (load !== assetLoad) return
+      const image = document.createElement('img')
+      image.src = url
+      image.alt = 'Question illustration'
+      image.className = 'img-fluid rounded mb-2'
+      image.style.maxHeight = '360px'
+      byId('question-assets').append(image)
+    } catch (error) { console.error('Cannot load question asset', error) }
+  }
+}
 
-        answerRef = doc(DB, 'SC_Del_Answer', user.uid)
-        const snap = await getDoc(answerRef)
-        answers = snap.exists() ? snap.data() : {}
+// The server only moves forward, so an earlier question or a reopened exam is a late reply.
+function isStale(next) {
+  if (state?.status === 'submitted') return next.status !== 'submitted'
+  return state?.status === 'in_progress' && next.status === 'in_progress' && next.questionNumber < state.questionNumber
+}
 
-        // Di luar jadwal tes → jangan mulai timer, kecuali peserta sudah menyelesaikan semua soal
-        if (scTestStatus() !== 'open' && !QUESTIONS.every(isAnswered)) {
-            showOutsideSchedule(scTestStatus())
-            return
-        }
+function renderQuestion(next) {
+  if (isStale(next)) return
+  const sameQuestion = state?.status === 'in_progress' && next.status === 'in_progress'
+    && state.questionNumber === next.questionNumber
+  state = next
+  clearTimeout(reloadId)
+  retryMs = RETRY_FIRST_MS
+  byId('exam-account').classList.add('d-none')
+  if (next.status === 'submitted') return showFinished()
+  if (next.status === 'scheduled') {
+    byId('exam-panel').classList.remove('d-none')
+    byId('exam-question').classList.add('d-none')
+    byId('exam-status').classList.remove('d-none')
+    showMessage(`Your exam opens at ${new Date(next.opensAtMs).toLocaleString()}. This page will check again automatically.`)
+    reloadId = setTimeout(() => loadState(false), 10000)
+    return
+  }
+  if (next.status === 'closed') return showFinished('The session closed before an attempt could be started.')
 
-        startExam()
-    } catch (err) {
-        console.error('Cannot start exam', err)
-        alert('Cannot load the test. Please check your connection and refresh the page. If this keeps happening, contact the committee.')
-    }
-})
+  byId('exam-note').classList.remove('d-none')
+  byId('exam-panel').classList.remove('d-none')
+  byId('exam-question').classList.remove('d-none')
+  byId('exam-status').classList.add('d-none')
+  byId('question-heading').textContent = `Question ${next.questionNumber} of ${next.questionCount} · ${next.question.category}`
+  byId('question-text').textContent = next.question.question
+  if (!sameQuestion) {
+    clearTimeout(saveId)
+    draftPendingSince = null
+    const typed = recallTyped()
+    edited = typed !== null
+    renderAnswer(next.question, typed ?? next.answer ?? '')
+    if (edited && typed !== (next.answer || '')) scheduleDraftSave()
+  } else if (isUntouched()) {
+    renderAnswer(next.question, next.answer || '')
+  } else if (currentResponse() !== (next.answer || '')) {
+    // What is on screen is newer than the server's draft: keep it and save it again.
+    scheduleDraftSave()
+  }
+  if (!advancing) setControlsDisabled(false)
+  const formula = byId('question-formula')
+  formula.replaceChildren()
+  if (next.question.formulaLatex) {
+    const code = document.createElement('code')
+    code.textContent = next.question.formulaLatex
+    formula.append(code)
+  }
+  startTimer(next.remainingMs)
+  const paths = next.question.assets || []
+  const assets = byId('question-assets')
+  if (!sameQuestion || assets.children.length < paths.length) {
+    assets.replaceChildren()
+    loadAssets(paths, ++assetLoad)
+  }
+}
 
-// =====================================================================
-//   ALUR TES
-// =====================================================================
-const qEl = (q) => document.getElementById(q.id)
-const isAnswered = (q) => answers[q.id]?.answer !== undefined
+function startTimer(remainingMs) {
+  clearInterval(timerId)
+  const submitAt = Date.now() + remainingMs - SUBMIT_LEAD_MS
+  const update = () => {
+    const seconds = Math.max(0, Math.ceil((submitAt - Date.now()) / 1000))
+    byId('exam-timer').textContent = String(seconds).padStart(2, '0')
+    const box = byId('exam-timer-box')
+    box.classList.toggle('is-warn', seconds <= WARN_SECONDS && seconds > DANGER_SECONDS)
+    box.classList.toggle('is-danger', seconds <= DANGER_SECONDS)
+    if (!seconds) advance(true)
+  }
+  // The interval must exist before the first update, so that advance() can clear it.
+  timerId = setInterval(update, 250)
+  update()
+}
 
-let examStarted = false
+// The server will not give this account an exam, so take any question down and offer another sign-in.
+function showBlocked(error) {
+  clearInterval(timerId)
+  clearTimeout(saveId)
+  state = null
+  byId('exam-note').classList.add('d-none')
+  byId('exam-question').classList.add('d-none')
+  // The two replies assertTeamLeader gives in functions/src/exam/service.js.
+  const notATeam = error.code === 'functions/permission-denied' || error.message === 'Registered team not found.'
+  const reason = notATeam ? 'This account isn’t a registered team.' : error.message
+  showMessage(`${reason} Signed in as ${signedInEmail}. If this isn’t your team account, log out and sign in with it.`, 'danger')
+  byId('exam-account').classList.remove('d-none')
+}
 
-function startExam() {
-    // onAuthStateChanged bisa terpanggil lebih dari sekali; jangan pasang timer dobel
-    if (examStarted) return
-    examStarted = true
+async function logOut() {
+  await signOut(AUTH)
+  window.location.href = LOGIN_PAGE
+}
 
-    // Soal yang sudah dijawab sebelumnya (misalnya setelah refresh) langsung dikunci
-    QUESTIONS.filter(isAnswered).forEach(q => {
-        sent.add(q.id)
-        lockQuestion(q, answers[q.id].answer)
+async function loadState(resume = true) {
+  clearTimeout(reloadId)
+  try {
+    const next = await call('getParticipantExamState', { resume })
+    // While an answer is being sent, a reply for the same question must not unlock it.
+    if (advancing && state && next.questionNumber === state.questionNumber) return
+    renderQuestion(next)
+  } catch (error) {
+    if (state?.status === 'submitted') return
+    byId('exam-panel').classList.remove('d-none')
+    byId('exam-status').classList.remove('d-none')
+    if (PERMANENT_ERRORS.includes(error?.code)) return showBlocked(error)
+    // Keep a question already on screen so the team can keep typing through a short outage.
+    if (state?.status !== 'in_progress') byId('exam-question').classList.add('d-none')
+    showMessage(error?.message || 'Cannot load the exam. Check your connection and try again.', 'danger')
+    clearTimeout(reloadId)
+    reloadId = setTimeout(() => loadState(resume), retryMs)
+    retryMs = Math.min(retryMs * 2, RETRY_MAX_MS)
+  }
+}
+
+function scheduleDraftSave() {
+  clearTimeout(saveId)
+  draftPendingSince ??= Date.now()
+  const maxWaitLeft = draftPendingSince + DRAFT_MAX_WAIT_MS - Date.now()
+  saveId = setTimeout(saveDraft, Math.max(0, Math.min(DRAFT_IDLE_MS, maxWaitLeft)))
+}
+
+async function saveDraft() {
+  draftPendingSince = null
+  if (!state || state.status !== 'in_progress' || advancing) return
+  const response = currentResponse()
+  if (tooManyWords(state.question, response)) return
+  try {
+    const result = await call('saveParticipantDraft', { questionNumber: state.questionNumber, response })
+    if (!result.saved) await loadState(false)
+  } catch (error) { console.warn('Draft save will be retried on the next edit or refresh.', error) }
+}
+
+async function advance(byTimer = false) {
+  if (advancing || !state || state.status !== 'in_progress') return
+  const response = currentResponse()
+  const tooLong = tooManyWords(state.question, response)
+  if (tooLong && !byTimer) {
+    return showMessage('Short answers can be at most four words. Shorten your answer, then submit.', 'warning')
+  }
+  const leaveOut = tooLong || isUntouched()
+  advancing = true
+  clearTimeout(saveId)
+  clearInterval(timerId)
+  setControlsDisabled(true)
+  try {
+    // A too-long or untouched empty answer is left out, so the server uses the last saved draft.
+    const next = await call(state.questionNumber === state.questionCount ? 'submitExam' : 'advanceExamQuestion', {
+      questionNumber: state.questionNumber, ...(leaveOut ? {} : { response })
     })
-
-    if (allDone()) {
-        showFinished()
-        return
-    }
-
-    if (SEQUENTIAL) {
-        openNextQuestion()
-    } else {
-        QUESTIONS.filter(q => !sent.has(q.id)).forEach(openQuestion)
-    }
+    renderQuestion(next)
+  } catch (error) {
+    showMessage(byTimer ? 'Reconnecting. The server timer will continue and advance the exam when available.' : (error?.message || 'Could not save the answer. Reconnecting…'), 'warning')
+    clearTimeout(reloadId)
+    reloadId = setTimeout(() => loadState(false), 1200)
+  } finally {
+    advancing = false
+    if (state?.status === 'in_progress') setControlsDisabled(false)
+  }
 }
 
-function openNextQuestion() {
-    const next = QUESTIONS.find(q => !sent.has(q.id))
-    if (next) openQuestion(next)
+byId('exam-continue').addEventListener('click', () => advance(false))
+function onAnswerInput() {
+  edited = true
+  if (state?.status === 'in_progress') rememberTyped()
+  scheduleDraftSave()
 }
-
-function openQuestion(q) {
-    const el = qEl(q)
-    if (!el) return
-    const btn = el.querySelector('.accordion-button')
-    const body = el.querySelector('.accordion-collapse')
-    const form = el.querySelector('form')
-
-    btn.disabled = false
-    btn.classList.remove('collapsed')
-    btn.setAttribute('aria-expanded', 'true')
-    body.classList.add('show')
-
-    form.addEventListener('submit', (e) => {
-        e.preventDefault()
-        submitQuestion(q)
-    })
-
-    startTimer(q)
-}
-
-// Timer berdasarkan waktu mulai yang DISIMPAN di Firestore,
-// sehingga refresh tidak mengembalikan waktu menjadi penuh.
-async function startTimer(q) {
-    const display = document.getElementById(q.timerId)
-    let startedAt = answers[q.id]?.startedAt
-
-    if (typeof startedAt !== 'number') {
-        startedAt = Date.now()
-        answers[q.id] = { ...(answers[q.id] || {}), startedAt }
-        try {
-            await setDoc(answerRef, { [q.id]: { startedAt } }, { merge: true })
-        } catch (err) {
-            console.error('Cannot save start time', err)
-        }
-    }
-
-    const deadline = startedAt + q.timer * 1000
-    const render = () => {
-        const left = Math.max(0, Math.ceil((deadline - Date.now()) / 1000))
-        if (display) display.textContent = String(left).padStart(2, '0')
-        return left
-    }
-
-    if (render() <= 0) {
-        submitQuestion(q)          // waktu sudah habis (misalnya saat halaman ditutup)
-        return
-    }
-
-    const id = setInterval(() => {
-        if (render() <= 0) submitQuestion(q)
-    }, 250)
-    timers.set(q.id, id)
-}
-
-function stopTimer(q) {
-    const id = timers.get(q.id)
-    if (id) clearInterval(id)
-    timers.delete(q.id)
-}
-
-async function submitQuestion(q) {
-    if (sent.has(q.id)) return     // cegah terkirim dua kali (submit + timeout)
-    sent.add(q.id)
-    stopTimer(q)
-
-    const chosen = document.querySelector(`input[name="${q.optId}"]:checked`)
-    const answer = chosen ? chosen.value : '0'
-    lockQuestion(q, answer, 'saving')
-
-    const ok = await saveAnswer(q, answer)
-    lockQuestion(q, answer, ok ? 'saved' : 'failed')
-
-    if (SEQUENTIAL) openNextQuestion()
-    if (allDone()) showFinished()
-}
-
-// Simpan jawaban; coba ulang beberapa kali kalau koneksi bermasalah
-async function saveAnswer(q, answer, attempts = 3) {
-    for (let i = 1; i <= attempts; i++) {
-        try {
-            await setDoc(answerRef, {
-                [q.id]: { answer, submittedAt: serverTimestamp() }
-            }, { merge: true })
-            answers[q.id] = { ...(answers[q.id] || {}), answer }
-            return true
-        } catch (err) {
-            console.error(`Save attempt ${i} failed for ${q.id}`, err)
-            if (i < attempts) await new Promise(r => setTimeout(r, 1500 * i))
-        }
-    }
-    alert(`Your answer for ${q.id.replace('question', 'Question #')} could not be saved. Please screenshot this page and contact the committee immediately.`)
-    return false
-}
-
-// Kunci tampilan soal setelah terkirim
-function lockQuestion(q, answer, state = 'saved') {
-    const el = qEl(q)
-    if (!el) return
-    const btn = el.querySelector('.accordion-button')
-    const body = el.querySelector('.accordion-collapse')
-
-    el.querySelectorAll('input, button[type="submit"]').forEach(x => { x.disabled = true })
-    btn.disabled = true
-    btn.classList.add('collapsed')
-    btn.setAttribute('aria-expanded', 'false')
-    body.classList.remove('show')
-
-    el.classList.remove('is-saving', 'is-answered', 'is-failed')
-    el.classList.add(state === 'saving' ? 'is-saving' : state === 'failed' ? 'is-failed' : 'is-answered')
-    el.dataset.status = state === 'saving' ? 'Saving...' : state === 'failed' ? 'Not saved' : (answer === '0' ? 'No answer' : 'Answered')
-
-    // Pilihan yang dikirim tetap terlihat tercentang
-    if (answer && answer !== '0') {
-        const radio = el.querySelector(`input[name="${q.optId}"][value="${answer}"]`)
-        if (radio) radio.checked = true
-    }
-}
-
-const allDone = () => QUESTIONS.every(q => sent.has(q.id))
-
-// =====================================================================
-//   LAYAR SELESAI
-// =====================================================================
-function showOutsideSchedule(status) {
-    document.getElementById('exam-panel')?.classList.add('d-none')
-    const note = document.getElementById('exam-note')
-    if (!note) return
-    note.textContent = status === 'before'
-        ? `The test has not started yet. It opens on ${SC_TEST_WINDOW.open.label}.`
-        : `The test closed on ${SC_TEST_WINDOW.close.label}.`
-}
-
-function showFinished() {
-    const finished = document.getElementById('exam-finished')
-    const panel = document.getElementById('exam-panel')
-    const note = document.getElementById('exam-note')
-    const failed = QUESTIONS.some(q => qEl(q)?.classList.contains('is-failed'))
-
-    if (failed) return     // jangan tampilkan "selesai" kalau ada jawaban yang gagal tersimpan
-
-    if (note) note.classList.add('d-none')
-    if (panel) panel.classList.add('d-none')
-    if (finished) {
-        const count = QUESTIONS.filter(q => answers[q.id]?.answer && answers[q.id].answer !== '0').length
-        const summary = document.getElementById('exam-finished-summary')
-        if (summary) summary.textContent = `${count} of ${QUESTIONS.length} questions answered`
-        finished.classList.remove('d-none')
-        finished.focus()
-    }
-}
-
-document.getElementById('exam-logout')?.addEventListener('click', async () => {
-    try { await signOut(AUTH) } catch (err) { console.error(err) }
-    localStorage.removeItem('currentURL')
+byId('exam-answer-long').addEventListener('input', onAnswerInput)
+byId('exam-answer-short').addEventListener('input', onAnswerInput)
+byId('exam-logout').addEventListener('click', logOut)
+byId('exam-switch-account').addEventListener('click', logOut)
+document.addEventListener('visibilitychange', () => { if (!document.hidden) loadState(false) })
+// Coming back online is a reconnection, which the server logs for the exam admin.
+window.addEventListener('online', () => loadState(true))
+onAuthStateChanged(AUTH, (user) => {
+  if (!user) {
+    localStorage.setItem('currentURL', window.location.href)
     window.location.href = LOGIN_PAGE
-})
-
-// Peringatan kalau peserta mencoba menutup halaman di tengah tes
-window.addEventListener('beforeunload', (e) => {
-    if (answerRef && !allDone()) {
-        e.preventDefault()
-        e.returnValue = ''
-    }
+    return
+  }
+  signedInEmail = user.email
+  loadState(true)
 })

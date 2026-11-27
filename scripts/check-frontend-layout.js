@@ -10,7 +10,7 @@ const entries = [...config.matchAll(/:\s*['"](\.\/[^'"]+\.js)['"]/g)].map((match
 
 assert(entries.length > 0, 'Webpack must declare frontend entry points');
 assert.deepEqual(readdirSync(srcRoot).filter((name) => name.endsWith('.js')), [], 'JavaScript source files must be grouped into subdirectories');
-assert.match(config, /splitChunks:\s*\{\s*chunks:\s*['"]all['"],\s*maxSize:\s*200_000/s, 'Dynamic page imports must split oversized dependency chunks');
+assert.match(config, /splitChunks:\s*argv\.mode\s*===\s*['"]development['"]\s*\?\s*false\s*:\s*\{\s*chunks:\s*['"]all['"],\s*maxSize:\s*200_000/s, 'Production builds must split oversized dependency chunks');
 assert(!entries.some((entry) => entry.startsWith('./public/src/')), 'Webpack sources belong outside public/');
 for (const entry of entries) {
   assert(statSync(path.resolve(root, entry)).isFile(), `Missing Webpack entry: ${entry}`);
@@ -41,13 +41,13 @@ for (const file of htmlFiles(path.join(root, 'public'))) {
   assert(!/\bsrc\/[^"']+\.js/.test(readFileSync(file, 'utf8')), `HTML must load built bundles, not source: ${path.relative(root, file)}`);
 }
 
-const dynamicEntries = ['registration', 'login', 'resetPassword', 'treasury', 'delegates_relation', 'delegates', 'compe_manager', 'delegates_sc', 'compe_manager_sc', 'sc_prelim', 'login_sc', 'ct_start', 'ct_finish', 'gi_start', 'gi_finish', 'event_attendance', 'merchandise', 'merchmanager', 'index'];
+const dynamicEntries = ['registration', 'login', 'resetPassword', 'treasury', 'delegates_relation', 'delegates', 'compe_manager', 'delegates_sc', 'compe_manager_sc', 'sc_prelim', 'sc_exam_admin', 'login_sc', 'ct_start', 'ct_finish', 'gi_start', 'gi_finish', 'event_attendance', 'merchandise', 'merchmanager', 'index'];
 for (const entry of dynamicEntries) {
   assert.match(bootstrap, new RegExp(`${entry}:\\s*\\(\\)\\s*=>\\s*import\\(`), `${entry} must be dynamically loaded by the bootstrap`);
 }
 for (const file of htmlFiles(path.join(root, 'public'))) {
   const html = readFileSync(file, 'utf8').replace(/<!--[\s\S]*?-->/g, '');
-  assert.doesNotMatch(html, /dist\/(?:index|registration|login|resetPassword|treasury|delegates_relation|delegates|compe_manager|delegates_sc|compe_manager_sc|sc_prelim|login_sc|ct_start|ct_finish|gi_start|gi_finish|event_attendance|merchandise|merchmanager)\.bundle\.js/, `HTML must use the dynamic bootstrap: ${path.relative(root, file)}`);
+  assert.doesNotMatch(html, /dist\/(?:index|registration|login|resetPassword|treasury|delegates_relation|delegates|compe_manager|delegates_sc|compe_manager_sc|sc_prelim|sc_exam_admin|login_sc|ct_start|ct_finish|gi_start|gi_finish|event_attendance|merchandise|merchmanager)\.bundle\.js/, `HTML must use the dynamic bootstrap: ${path.relative(root, file)}`);
   for (const [, entry] of html.matchAll(/src=["'][^"']*dist\/bootstrap\.bundle\.js["'][^>]*data-entry=["']([^"']+)["']/g)) {
     assert.ok(dynamicEntries.includes(entry), `Unknown bootstrap entry "${entry}" in ${path.relative(root, file)}`);
   }

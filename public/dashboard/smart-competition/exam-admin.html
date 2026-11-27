@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Smart Competition Exam Admin | IPFEST 2027</title>
+	<link rel="icon" href="../../static/images/brand/logos/ipfest_2027_logo.webp">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Great+Vibes&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+	<link href="../../static/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../../static/css/style.css" rel="stylesheet">
+	<link href="../../static/css/grand-theme.css" rel="stylesheet">
+	<link href="../../static/css/compe-manager-grand.css" rel="stylesheet">
+	<link rel="stylesheet" href="../../static/css/navbar-unified.css">
+	<style>
+		body { visibility: hidden; }
+		.exam-admin-nav { gap: .75rem; }
+		.exam-admin-nav .navbar-brand img { height: 42px; width: auto; }
+		.exam-question-table textarea { min-width: 15rem; }
+		.exam-question-table input[type="text"] { min-width: 8rem; }
+		.exam-question-table select { min-width: 9rem; }
+		.exam-warning { white-space: pre-wrap; }
+		.manager-stage .dashboard-panel + .dashboard-panel { margin-top: 1.5rem; }
+		/* Buttons on the navy panels */
+		.manager-stage .btn.btn-primary { background: #E6C72A !important; border-color: #E6C72A !important; color: #16213E !important; font-weight: 600; }
+		.manager-stage .btn.btn-primary:hover { background: #F8F5F2 !important; border-color: #F8F5F2 !important; }
+		.manager-stage .btn-outline-primary,
+		.manager-stage .btn-outline-success { border-color: #E6C72A; color: #E6C72A; }
+		.manager-stage .btn-outline-secondary { border-color: rgba(248, 245, 242, .6); color: #F8F5F2; }
+		.manager-stage .btn-outline-danger { border-color: #fda4af; color: #fda4af; }
+		.manager-stage .btn-outline-primary:hover,
+		.manager-stage .btn-outline-success:hover,
+		.manager-stage .btn-outline-secondary:hover,
+		.manager-stage .btn-outline-danger:hover { background: #F8F5F2; color: #16213E; }
+		/* Notifications: navy surface and ivory text; the left edge shows the kind */
+		.manager-stage .alert { --edge: #E6C72A; background: #0F1830; color: #F8F5F2; border: 1px solid var(--edge); border-left-width: 6px; border-radius: 6px; }
+		.manager-stage .alert-success { --edge: #4ade80; }
+		.manager-stage .alert-warning { --edge: #D97706; }
+		.manager-stage .alert-danger { --edge: #f87171; }
+		/* Review-table text boxes: stay dark on ivory like the other fields */
+		.manager-stage .table tbody td textarea.form-control { background-color: #F8F5F2 !important; color: #16213E !important; -webkit-text-fill-color: #16213E !important; }
+		.manager-stage .table tbody td input.form-control::placeholder,
+		.manager-stage .table tbody td textarea.form-control::placeholder { color: rgba(22, 33, 62, .72) !important; -webkit-text-fill-color: rgba(22, 33, 62, .72) !important; }
+		.manager-stage summary { cursor: pointer; color: #E6C72A; }
+		#exam-preview-frame { width: 100%; height: 720px; border: 0; border-radius: 12px; background: #16213E; }
+	</style>
+</head>
+<body class="event-page manager-page">
+	<div class="container-fluid p-0 event-nav-layer">
+		<nav class="navbar event-navbar navbar-dark bg-transparent fixed-top px-4 px-lg-5 py-3 exam-admin-nav">
+			<a href="../../index.html" class="navbar-brand p-0 d-flex align-items-center" aria-label="IPFEST 2027 home">
+				<img src="../../static/images/brand/logos/ipfest_2027_logo.webp" alt="IPFEST 2027 logo">
+				<img src="../../static/images/brand/logos/ipfest_2027_text.webp" alt="">
+			</a>
+			<div class="d-flex align-items-center gap-2 ms-auto">
+				<a class="btn btn-light border border-primary rounded-pill text-primary py-2 px-4" href="manager.html">Team database</a>
+				<button id="exam-admin-logout" type="button" class="btn btn-light border border-primary rounded-pill text-primary py-2 px-4">Log Out</button>
+			</div>
+		</nav>
+	</div>
+
+	<main class="container-fluid py-5 dashboard-stage manager-stage">
+		<div class="container py-4 flex-column align-items-stretch">
+			<div class="mb-4">
+				<h1 class="display-6 text-primary lead">Exam administration</h1>
+				<p class="mb-0">Smart Competition: import question packets, assign team sessions, and preview what teams see.</p>
+			</div>
+			<div id="exam-admin-message" class="alert d-none" role="status" aria-live="polite"></div>
+
+			<section class="dashboard-panel" aria-labelledby="packet-upload-heading">
+				<h2 id="packet-upload-heading" class="h4 text-primary">Upload and review a packet</h2>
+				<p>Select a CSV or selectable-text PDF with columns No, Question, Answer, Category. Review all extracted rows before saving.</p>
+				<div class="row g-3 align-items-end mb-3">
+					<div class="col-lg-4">
+						<label for="packet-name" class="form-label">Packet name</label>
+						<input id="packet-name" class="form-control" maxlength="100" required>
+					</div>
+					<div class="col-lg-6">
+						<label for="packet-file" class="form-label">CSV or PDF file</label>
+						<input id="packet-file" type="file" class="form-control" accept=".csv,text/csv,.pdf,application/pdf">
+					</div>
+					<div class="col-lg-2 d-grid">
+						<button id="packet-import" type="button" class="btn btn-outline-primary">Import</button>
+					</div>
+				</div>
+				<div id="packet-notices" class="alert alert-warning d-none" role="status">
+					<p class="fw-semibold mb-1">Check these against your file</p>
+					<div id="packet-notice-list" class="exam-warning"></div>
+					<button id="packet-confirm-notices" type="button" class="btn btn-sm btn-outline-primary mt-2">I have checked these</button>
+				</div>
+				<div id="packet-warnings" class="alert alert-warning exam-warning d-none" role="status"></div>
+				<div id="packet-review" class="d-none">
+					<div class="d-flex justify-content-between align-items-center mb-2">
+						<h3 class="h6 mb-0">Review rows (<span id="packet-row-count">0</span>)</h3>
+						<button id="packet-add-row" type="button" class="btn btn-sm btn-outline-secondary">Add question</button>
+					</div>
+					<div class="table-responsive overflow-auto" style="max-height: 60vh">
+						<table class="table table-sm table-bordered align-middle exam-question-table">
+							<thead><tr><th>No</th><th>Question</th><th>Answer key</th><th>Category</th><th>Tolerance (±)</th><th>Image/diagram</th><th>LaTeX</th><th>Remove</th></tr></thead>
+							<tbody id="packet-question-list"></tbody>
+						</table>
+					</div>
+					<div class="d-flex justify-content-end mt-3">
+						<button id="packet-save" type="button" class="btn btn-primary" disabled>Save immutable packet</button>
+					</div>
+				</div>
+			</section>
+
+			<section class="dashboard-panel" aria-labelledby="packet-library-heading">
+				<h2 id="packet-library-heading" class="h4 text-primary">Packet library</h2>
+				<div class="table-responsive"><table class="table table-hover table-bordered align-middle mb-0">
+					<thead><tr><th>Packet</th><th>Questions</th><th>Assigned / used</th><th>Actions</th></tr></thead>
+					<tbody id="packet-library-list"><tr><td colspan="4">Loading packets…</td></tr></tbody>
+				</table></div>
+			</section>
+
+			<section class="dashboard-panel" aria-labelledby="session-heading">
+				<h2 id="session-heading" class="h4 text-primary">Create or update a team session</h2>
+				<p>Choose “None (draft)” to prepare a session before assigning its team. Packet reuse is allowed. Each team has one session: to change it, use Edit on its row below.</p>
+				<form id="exam-session-form" class="row g-3 align-items-end mb-3">
+					<input id="session-id" type="hidden">
+					<div class="col-lg-6"><label for="session-packet" class="form-label">Packet</label><select id="session-packet" class="form-select" required></select></div>
+					<div class="col-lg-6"><label for="session-team" class="form-label">Team</label><select id="session-team" class="form-select"><option value="">None (draft)</option></select></div>
+					<div class="col-lg-5"><label for="session-opens" class="form-label">Opens</label><input id="session-opens" type="datetime-local" class="form-control" required></div>
+					<div class="col-lg-5"><label for="session-closes" class="form-label">Closes</label><input id="session-closes" type="datetime-local" class="form-control" required></div>
+					<div class="col-lg-2 d-grid"><button class="btn btn-primary" type="submit">Save session</button></div>
+				</form>
+				<div id="session-message" class="alert d-none" role="status" aria-live="polite"></div>
+				<div class="d-flex justify-content-between align-items-center mt-4 mb-2"><h3 class="h6 mb-0">Session assignments and history</h3><button type="button" id="session-reset" class="btn btn-sm btn-outline-secondary">New draft</button></div>
+				<p class="small">Refresh the page to see the latest attempt status and history.</p>
+				<div class="table-responsive"><table class="table table-hover table-bordered align-middle mb-0">
+					<thead><tr><th>Team</th><th>Packet</th><th>Access window</th><th>Status</th><th>Actions and history</th></tr></thead>
+					<tbody id="exam-session-list"><tr><td colspan="5">Loading sessions…</td></tr></tbody>
+				</table></div>
+			</section>
+
+			<section id="exam-preview" class="dashboard-panel d-none" aria-labelledby="preview-heading">
+				<div class="d-flex justify-content-between align-items-center"><h2 id="preview-heading" class="h4 text-primary">Participant preview</h2><button id="preview-close" type="button" class="btn btn-sm btn-outline-secondary">Close preview</button></div>
+				<p>This is the participant page filled with the packet's questions. Answer keys are not shown.</p>
+				<div id="preview-session-meta" class="small mb-3 d-none"></div>
+				<div class="d-flex align-items-center justify-content-between gap-2 mb-2">
+					<button id="preview-previous" type="button" class="btn btn-sm btn-outline-secondary">Previous question</button>
+					<span id="preview-count" class="small"></span>
+					<button id="preview-next" type="button" class="btn btn-sm btn-outline-primary">Next question</button>
+				</div>
+				<iframe id="exam-preview-frame" title="Participant page preview" sandbox="allow-same-origin"></iframe>
+			</section>
+		</div>
+	</main>
+	<script src="../../dist/bootstrap.bundle.js" data-entry="sc_exam_admin"></script>
+</body>
+</html>

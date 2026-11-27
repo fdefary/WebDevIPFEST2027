@@ -1,5 +1,5 @@
 import { signInWithEmailAndPassword, signOut } from 'firebase/auth'
-import { getDoc, setDoc, doc } from 'firebase/firestore'
+import { getDoc, doc } from 'firebase/firestore'
 
 import { AUTH, DB } from '../../app/index.js'
 import { failedLogin } from '../../shared/alert.js'
@@ -19,20 +19,11 @@ const ERROR_PAGE = '../../400.html'
 //   HELPERS
 // =====================================================================
 
-// Peserta SC yang sah = punya dokumen SC_Selection/{uid}
-// (dulu: membaca SELURUH koleksi lalu mencari satu per satu)
-async function getSCDelegate(uid) {
-    const snap = await getDoc(doc(DB, 'SC_Selection', uid))
-    return snap.exists() ? snap.data() : null
-}
-
-// Siapkan dokumen jawaban HANYA untuk peserta yang sedang login.
-// merge: true → jawaban yang sudah ada tidak tertimpa.
-async function ensureAnswerDoc(uid, delegate) {
-    await setDoc(doc(DB, 'SC_Del_Answer', uid), {
-        university: delegate.university ?? null,
-        team: delegate.team ?? null
-    }, { merge: true })
+// Peserta SC yang sah = tim terdaftar Smart Competition (Team/{uid}).
+// Sesi dan jadwal ujiannya diperiksa di server oleh fungsi ujian.
+async function isSmartCompetitionTeam(uid) {
+    const snap = await getDoc(doc(DB, 'Team', uid))
+    return snap.exists() && snap.data().competition === 'smart competition'
 }
 
 // Hanya izinkan kembali ke halaman di situs yang sama (cegah redirect ke situs lain)
@@ -78,8 +69,7 @@ loginForm?.addEventListener('submit', async (e) => {
     try {
         const { user } = await signInWithEmailAndPassword(AUTH, userEmail, userPassword)
 
-        const delegate = await getSCDelegate(user.uid)
-        if (!delegate) {
+        if (!await isSmartCompetitionTeam(user.uid)) {
             // Akun valid tapi bukan peserta SC → jangan biarkan tetap login
             console.log('Not a SC delegate')
             await signOut(AUTH)
@@ -87,8 +77,6 @@ loginForm?.addEventListener('submit', async (e) => {
             failedLogin()
             return
         }
-
-        await ensureAnswerDoc(user.uid, delegate)
 
         const savedURL = safeReturnURL(localStorage.getItem('currentURL'))
         localStorage.removeItem('currentURL')

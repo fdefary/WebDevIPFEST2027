@@ -29,7 +29,7 @@ Website IPFEST 2027: landing page, pendaftaran, acara, kompetisi, absensi, dan d
 - `public/dist/` adalah output build yang dimuat oleh halaman. Isinya dibersihkan dan dibuat ulang saat build; edit source di `src/`, bukan bundle di `dist/`.
 - `npm run check:public` memeriksa referensi lokal pada HTML, CSS, dan SCSS agar pemindahan aset tidak meninggalkan URL rusak.
 - `public/static/images/` mengelompokkan gambar berdasarkan fungsi; lihat `docs/public-image-assets.json` untuk manifest aset yang sudah diorganisasi.
-- `functions/` adalah backend; `functions/index.js` menjadi entry point, sedangkan `functions/package.json` mengelola dependensi dan perintahnya sendiri.
+- `functions/` adalah backend; `functions/src/index.js` menjadi entry point, sedangkan `functions/package.json` mengelola dependensi dan perintahnya sendiri.
 - `design/` untuk referensi desain. `static/` di root tidak dipublikasikan oleh Hosting kecuali disalin ke `public/` atau konfigurasi Hosting diubah.
 - `firebase.json`, `.firebaserc`, `firestore.rules`, `firestore.indexes.json`, dan `storage.rules` mengatur Firebase. `webpack.config.babel.js` mengatur entry frontend dan output build.
 
@@ -42,13 +42,26 @@ npm ci
 npm run dev
 ```
 
-Buka `http://localhost:9000/` dan biarkan terminal berjalan. Perintah ini hanya menjalankan frontend/Webpack; **belum menghubungkan aplikasi ke Firebase Emulator**. Konfigurasi di `src/index.js` menunjuk ke project produksi `ipfest-2027`, jadi aksi dari halaman lokal dapat membaca atau mengubah data produksi. Jangan gunakan akun atau data peserta sungguhan untuk uji coba lokal.
+Buka `http://localhost:9000/` dan biarkan terminal berjalan. Dalam mode development, halaman yang dibuka lewat `localhost` atau `127.0.0.1` memakai Firebase Emulator dengan project demo `demo-ipfest-local` (lihat `src/app/index.js`). **Alamat lain, termasuk IP jaringan komputer ini, tetap terhubung ke project produksi `ipfest-2027`**, begitu juga hasil `npm run build`. Jangan gunakan akun atau data peserta sungguhan untuk uji coba lokal.
+
+### Latihan ujian Smart Competition di emulator
+
+```sh
+npm run dev:exam:emulators   # terminal 1: emulator Auth, Firestore, Functions, Storage, Pub/Sub
+npm run seed:exam:emulators  # terminal 2: reset sesi demo dan cetak akun uji (jendela 30 menit)
+npm run dev                  # terminal 3: situs di http://localhost:9000
+```
+
+- Admin masuk di `/login.html`. Tim masuk di `/login.html` atau `/dashboard/smart-competition/loginsc.html`.
+- Pakai sesi browser terpisah (jendela privat atau profil lain) untuk admin dan tim, karena satu browser hanya menyimpan satu login.
+- Menjalankan seed menghapus attempt tim demo dan mengembalikan sesinya ke paket demo. Paket yang sudah diimpor tetap tersimpan sampai emulator dihentikan.
+- Pemeriksaan terjadwal `finalizeSmartCompetitionExamAttempts` mungkin tidak berjalan di emulator; status attempt diperbarui saat peserta terhubung lagi.
 
 ### Firebase: layanan dan batas lingkungan
 
 | Layanan | Fungsi di aplikasi | Konfigurasi/kontrol utama |
 | --- | --- | --- |
-| Authentication | Login, pendaftaran, dan custom claims staf (`ipfestRole`, `ipfestCompetition`) | Provider Email/Password dan akun ada di Firebase Console; pemetaan claim ada di `functions/role-assignments.js`. |
+| Authentication | Login, pendaftaran, dan custom claims staf (`ipfestRole`, `ipfestCompetition`) | Provider Email/Password dan akun ada di Firebase Console; pemetaan claim ada di `functions/src/auth/role-assignments.js`. |
 | Firestore | Data tim, informasi kompetisi, hasil, dan status pembayaran | `firestore.rules` membatasi akses; `firestore.indexes.json` menyimpan indeks. Perubahan claim memerlukan login ulang agar token diperbarui. |
 | Storage | Berkas pendaftaran, bukti pembayaran, dan berkas kompetisi | `storage.rules` mengatur akses langsung ke object. Dokumen privat yang dibuka lewat dashboard menggunakan callable `createPrivateDownloadUrl` untuk membuat signed URL sementara. |
 | Cloud Functions | Operasi terotorisasi di server, seperti verifikasi pembayaran, hasil kompetisi, distribusi case, dan signed URL | Source di `functions/`; runtime Node.js 22, region `asia-southeast2`. Fungsi memakai Admin SDK sehingga validasi aksesnya ada di kode Function, bukan hanya di Rules. |
@@ -56,10 +69,10 @@ Buka `http://localhost:9000/` dan biarkan terminal berjalan. Perintah ini hanya 
 
 **Mode lokal dan pengujian:**
 
-- `npm run dev` menjalankan situs lokal di port `9000`, tetapi Firebase-nya tetap project produksi. Perubahan konfigurasi Firebase atau operasi tulis dari situs ini berisiko menyentuh data produksi.
+- `npm run dev` menjalankan situs lokal di port `9000`. Hanya `localhost`/`127.0.0.1` yang diarahkan ke emulator ujian; tanpa emulator yang berjalan, operasi Firebase di halaman lokal gagal.
 - `npm test` menjalankan pemeriksaan frontend dan pengujian Auth, Firestore, serta Storage Rules melalui emulator dengan project demo `demo-ipfest-p0`. Pengujian integrasi menghubungkan SDK-nya langsung ke emulator; ini **tidak** berarti halaman `localhost:9000` memakai emulator.
-- Firebase Emulator di `firebase.json` menggunakan Auth `9099`, Firestore `8080`, dan Storage `9199`; UI emulator nonaktif. Frontend belum memanggil `connectAuthEmulator`, `connectFirestoreEmulator`, `connectStorageEmulator`, atau `connectFunctionsEmulator`. Jangan menganggap menjalankan emulator saja sudah membuat situs lokal terisolasi dari produksi.
-- `npm --prefix functions test` menjalankan unit test backend di Node.js, bukan Cloud Functions Emulator. Repo belum mengonfigurasi emulator Functions.
+- Firebase Emulator di `firebase.json` menggunakan Auth `9099`, Firestore `8080`, dan Storage `9199`; UI emulator nonaktif. Port ini dipakai pengujian. Emulator ujian lokal memakai port lain di `firebase.exam-emulators.json` (termasuk Functions).
+- `npm --prefix functions test` menjalankan unit test backend di Node.js, bukan Cloud Functions Emulator, dan tidak termasuk dalam `npm test`.
 
 Untuk membuka PDF privat, callable harus lolos validasi role/path dan service account runtime harus dapat menandatangani URL (`iam.serviceAccounts.signBlob`). Jika log `createPrivateDownloadUrl` menunjukkan izin `signBlob` ditolak, deploy Storage Rules saja tidak memperbaikinya; minta pemilik project meninjau IAM service account Function. Jangan memberikan role IAM yang lebih luas pada project tanpa peninjauan.
 
@@ -124,7 +137,7 @@ Deploy backend hanya jika Cloud Functions inti berubah. Pasang dependensi backen
 ```sh
 npm --prefix functions ci
 npm --prefix functions test
-firebase deploy --only functions:createPrivateDownloadUrl,functions:updatePaymentVerifications,functions:updateCompetitionResult,functions:publishCompetitionCase --project ipfest-2027
+firebase deploy --only functions:createPrivateDownloadUrl,functions:updatePaymentVerifications,functions:listLeaderAccountStatus,functions:updateCompetitionResult,functions:publishCompetitionCase,functions:createExamPacket,functions:listExamPackets,functions:getAdminExamPacket,functions:removeExamPacket,functions:assignExamSession,functions:getAdminExamData,functions:exportExamSubmissions,functions:getExamAssetUrl,functions:getParticipantExamSchedule,functions:getParticipantExamState,functions:saveParticipantDraft,functions:advanceExamQuestion,functions:submitExam,functions:finalizeSmartCompetitionExamAttempts --project ipfest-2027
 ```
 
 Periksa rencana perubahan yang ditampilkan CLI sebelum mengonfirmasi, terutama jika ada penghapusan Function. **Jangan jalankan deploy Functions tanpa target spesifik** (`firebase deploy --only functions` atau `npm --prefix functions run deploy`): perintah tersebut dapat menerbitkan Function sertifikat dan pemicu email yang masih ditunda. Setelah deploy layanan, uji dengan akun uji yang disetujui.

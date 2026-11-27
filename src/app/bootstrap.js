@@ -9,6 +9,7 @@ const entries = {
   delegates_sc: () => import(/* webpackChunkName: 'page-delegates-sc' */ '../pages/competition/delegates-sc.js'),
   compe_manager_sc: () => import(/* webpackChunkName: 'page-compe-manager-sc' */ '../pages/competition/compe-manager-sc.js'),
   sc_prelim: () => import(/* webpackChunkName: 'page-sc-prelim' */ '../pages/competition/sc_prelim.js'),
+  sc_exam_admin: () => import(/* webpackChunkName: 'page-sc-exam-admin' */ '../pages/competition/sc-exam-admin.js'),
   login_sc: () => import(/* webpackChunkName: 'page-login-sc' */ '../pages/auth/login-sc.js'),
   ct_start: () => import(/* webpackChunkName: 'page-ct-start' */ '../pages/attendance/ct-start.js'),
   ct_finish: () => import(/* webpackChunkName: 'page-ct-finish' */ '../pages/attendance/ct-finish.js'),
@@ -20,5 +21,21 @@ const entries = {
   index: () => import(/* webpackChunkName: 'firebase-index' */ './index.js')
 };
 
-const entry = document.currentScript?.dataset.entry;
-entries[entry]?.().catch((error) => console.error(`Could not load page entry "${entry}"`, error));
+const entry = document.currentScript?.dataset.entry
+  ?? document.querySelector('script[data-entry]')?.dataset.entry;
+const bootStatus = { entry: entry || null, status: 'starting' };
+if (process.env.NODE_ENV === 'development') window.__IPFEST_BOOT__ = bootStatus;
+
+if (!entries[entry]) {
+  bootStatus.status = 'unknown-entry';
+  console.error(`Unknown page entry "${entry || '(missing)'}"`);
+} else {
+  if (process.env.NODE_ENV === 'development') console.info(`[IPFEST] Starting page entry "${entry}"`);
+  entries[entry]().then(() => {
+    bootStatus.status = 'loaded';
+    if (process.env.NODE_ENV === 'development') console.info(`[IPFEST] Page entry "${entry}" loaded`);
+  }).catch((error) => {
+    bootStatus.status = 'failed';
+    console.error(`Could not load page entry "${entry}"`, error);
+  });
+}

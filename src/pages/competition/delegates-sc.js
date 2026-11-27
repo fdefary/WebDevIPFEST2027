@@ -4,43 +4,18 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 
 import { ref, uploadBytes } from 'firebase/storage'
 
-import { DB, AUTH, STORAGE } from '../../app/index.js'
+import { DB, AUTH, STORAGE, FUNCTIONS } from '../../app/index.js'
+import { httpsCallable } from 'firebase/functions'
 import { setToastAlert } from '../../shared/alert.js'
-import { SC_TEST_WINDOW, scTestStatus } from '../../shared/sc-schedule.js'
+import { watchTestLink } from '../../shared/sc-test-link.js'
 import { showVerificationReminder } from '../../shared/email-verification.js'
 
 // =========================
 // START TEST BUTTON
 // =========================
-// Kartu tes disembunyikan sebelum jadwal dibuka; link hanya aktif selama
-// jadwal tes. Dicek ulang tiap 30 detik supaya berubah sendiri tanpa refresh.
-const testCard = document.querySelector('#SC-Test-Card')
-const testLink = document.querySelector('#SC-Test-Link')
-
-function updateTestLink() {
-	if (!testLink) return
-	const status = scTestStatus()
-
-	testCard?.classList.toggle('d-none', status === 'before')
-
-	if (status === 'open') {
-		testLink.href = 'sesi-1.html'
-		testLink.textContent = 'Start Test'
-		testLink.removeAttribute('aria-disabled')
-		testLink.classList.remove('pe-none', 'opacity-50')
-		return
-	}
-
-	testLink.removeAttribute('href')
-	testLink.setAttribute('aria-disabled', 'true')
-	testLink.classList.add('pe-none', 'opacity-50')
-	testLink.textContent = status === 'before'
-		? `Opens on ${SC_TEST_WINDOW.open.label}`
-		: 'Test Closed'
-}
-
-updateTestLink()
-setInterval(updateTestLink, 30000)
+// Hanya membaca jadwal: membuka dashboard tidak boleh memulai tes.
+const loadExamSchedule = () => httpsCallable(FUNCTIONS, 'getParticipantExamSchedule')()
+	.then((result) => result.data)
 
 // =========================
 // AUTH STATE
@@ -54,6 +29,11 @@ onAuthStateChanged(AUTH, (user) => {
 	}
 
 	currentUserID = user.uid;
+	watchTestLink({
+		card: document.querySelector('#SC-Test-Card'),
+		link: document.querySelector('#SC-Test-Link'),
+		loadSchedule: loadExamSchedule
+	})
 	showVerificationReminder(user);
 	fetchUserData();
 });

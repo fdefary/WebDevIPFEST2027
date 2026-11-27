@@ -105,6 +105,15 @@ service firebase.storage {
       allow create: if signedIn() && request.auth.uid == uid && validUpload();
     }
 
+    match /SC_ExamAssets/{uid}/{fileName} {
+      allow read: if managerFor('smart competition');
+      allow create: if signedIn() && request.auth.uid == uid
+        && managerFor('smart competition')
+        && resource == null
+        && request.resource.size <= 5 * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+    }
+
     match /{allPaths=**} {
       allow read, write: if false;
     }

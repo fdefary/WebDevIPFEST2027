@@ -117,6 +117,30 @@ describe('Firestore Team access', () => {
 })
 
 describe('Firestore active collection access', () => {
+  it('denies clients direct access to exam packets, keys, sessions, and attempts', async () => {
+    await env.withSecurityRulesDisabled(async (context) => {
+      const db = context.firestore()
+      await setDoc(doc(db, 'SC_ExamPackets', 'packet-1'), { name: 'Private packet' })
+      await setDoc(doc(db, 'SC_ExamPackets/packet-1/Questions', '1'), { question: 'Question' })
+      await setDoc(doc(db, 'SC_ExamPackets/packet-1/AnswerKeys', '1'), { answer: 'Private key' })
+      await setDoc(doc(db, 'SC_ExamSessions', 'session-1'), { teamId: 'sc-owner' })
+      await setDoc(doc(db, 'SC_ExamAssignments', 'sc-owner'), { sessionId: 'session-1' })
+      await setDoc(doc(db, 'SC_ExamAttempts', 'sc-owner'), { status: 'in_progress' })
+    })
+    const participant = env.authenticatedContext('sc-owner').firestore()
+    const manager = env.authenticatedContext('sc-manager', {
+      ipfestRole: 'competition_manager', ipfestCompetition: 'smart competition'
+    }).firestore()
+    for (const db of [participant, manager]) {
+      await assertFails(getDoc(doc(db, 'SC_ExamPackets', 'packet-1')))
+      await assertFails(getDoc(doc(db, 'SC_ExamPackets/packet-1/AnswerKeys', '1')))
+      await assertFails(getDoc(doc(db, 'SC_ExamSessions', 'session-1')))
+      await assertFails(getDoc(doc(db, 'SC_ExamAssignments', 'sc-owner')))
+      await assertFails(getDoc(doc(db, 'SC_ExamAttempts', 'sc-owner')))
+      await assertFails(setDoc(doc(db, 'SC_ExamAttempts', 'attacker'), { answers: {} }))
+    }
+  })
+
   it('limits SC selection and answers to the selected participant', async () => {
     await env.withSecurityRulesDisabled(async (context) => {
       const db = context.firestore()
@@ -198,6 +222,25 @@ describe('Firestore active collection access', () => {
     await assertFails(updateDoc(doc(manager, 'Merch', 'order-1'), { totalAmount: 0 }))
     await assertFails(getDocs(collection(publicDb, 'Merch')))
     await assertFails(setDoc(doc(publicDb, 'Merch', 'new-order'), { status: 'pending' }))
+  })
+})
+
+describe('Smart Competition exam assets', () => {
+  it('allows only Smart Competition managers to upload new limited-size images', async () => {
+    const manager = env.authenticatedContext('sc-manager', {
+      ipfestRole: 'competition_manager', ipfestCompetition: 'smart competition'
+    }).storage()
+    const wrongManager = env.authenticatedContext('other-manager', {
+      ipfestRole: 'competition_manager', ipfestCompetition: 'business case'
+    }).storage()
+    const participant = env.authenticatedContext('sc-owner').storage()
+    const path = 'SC_ExamAssets/sc-manager/diagram.png'
+    await assertSucceeds(uploadBytes(ref(manager, path), new Uint8Array([1]), { contentType: 'image/png' }))
+    await assertFails(uploadBytes(ref(manager, path), new Uint8Array([2]), { contentType: 'image/png' }))
+    await assertFails(uploadBytes(ref(wrongManager, 'SC_ExamAssets/other-manager/diagram.png'), new Uint8Array([1]), { contentType: 'image/png' }))
+    await assertFails(uploadBytes(ref(participant, 'SC_ExamAssets/sc-owner/diagram.png'), new Uint8Array([1]), { contentType: 'image/png' }))
+    await assertFails(uploadBytes(ref(manager, 'SC_ExamAssets/sc-manager/diagram.svg'), new Uint8Array([1]), { contentType: 'image/svg+xml' }))
+    await assertFails(getBytes(ref(participant, path)))
   })
 })
 

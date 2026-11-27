@@ -115,7 +115,7 @@ onDOMReady(() => {
         merch_manager: "./dashboard/merchandise.html",
         event_staff: "./dashboard/event.html",
         competition_manager: roleClaims.competition === 'smart competition'
-          ? "./dashboard/smart-competition/manager.html"
+          ? "./dashboard/smart-competition/exam-admin.html"
           : "./dashboard/compe-manager.html"
       };
       if (roleClaims.role) {

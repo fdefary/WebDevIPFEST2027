@@ -1,6 +1,6 @@
 import path from 'path';
 
-export default {
+export default (_env, argv = {}) => ({
   entry: {
     bootstrap: './src/app/bootstrap.js',
     sponsor: './src/pages/public/sponsor.js'
@@ -9,10 +9,11 @@ export default {
     filename: '[name].bundle.js',
     chunkFilename: '[name].bundle.js',
     path: path.resolve(__dirname, 'public/dist'),
+    publicPath: '/dist/',
     clean: true,
   },
   optimization: {
-    splitChunks: {
+    splitChunks: argv.mode === 'development' ? false : {
       chunks: 'all',
       maxSize: 200_000,
     },
@@ -40,5 +41,6 @@ export default {
     compress: true,
     port: 9000,
   },
-  mode: 'production',
-};
+  devtool: false,
+  mode: argv.mode || 'production',
+});
