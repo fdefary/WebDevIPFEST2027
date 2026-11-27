@@ -100,7 +100,13 @@ assert.match(delegatesRelation, /teamDocumentCells\(team,\s*rows\)/, 'Delegates 
 for (const header of ['Leader Email', 'Last Sign-in']) {
   assert.ok(delegatesRelationHtml.includes(`<th scope="col">${header}</th>`), `Delegates Relation database must include ${header}`);
 }
-assert.equal((delegatesRelationHtml.match(/<th scope="col">/g) || []).length - 9, Number(delegatesRelation.match(/const DB_COLS = (\d+)/)?.[1]), 'DB_COLS must match the Database table headers');
+const headerCount = (html, tableId) => (html.match(new RegExp(`<table[^>]*id="${tableId}"[\\s\\S]*?</table>`))?.[0].match(/<th scope="col">/g) || []).length;
+assert.equal(headerCount(delegatesRelationHtml, 'db-table'), Number(delegatesRelation.match(/const DB_COLS = (\d+)/)?.[1]), 'DB_COLS must match the Database table headers');
+assert.equal(headerCount(delegatesRelationHtml, 'final-payment-table'), Number(delegatesRelation.match(/const PAYMENT_COLS = (\d+)/)?.[1]), 'PAYMENT_COLS must match the Final Payment table headers');
+// Final payment is paid in full only; the down payment scheme was removed.
+for (const [name, source] of [['final-payment.html', readFileSync(path.join(root, 'public/dashboard/final-payment.html'), 'utf8')], ['delegates',readFileSync(path.join(srcRoot, 'pages/competition/delegates.js'), 'utf8')], ['delegates-sc', readFileSync(path.join(srcRoot, 'pages/competition/delegates-sc.js'), 'utf8')], ['treasury', treasury]]) {
+  assert.doesNotMatch(source, /down_payment|Down Payment|leader-payment-type|dpCategory/, `${name} must not offer the removed down payment scheme`);
+}
 assert.match(delegatesRelation, /httpsCallable\(FUNCTIONS, 'listLeaderAccountStatus'\)/);
 // The Database tab can be searched and filtered; Download exports what is shown.
 for (const id of ['db-search', 'db-filter-competition', 'db-filter-payment', 'db-filter-email', 'db-filter-reset', 'db-filter-count']) {
